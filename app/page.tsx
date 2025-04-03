@@ -3,7 +3,7 @@ import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent} from "@/components/ui/card"
 import {ArrowRight, Github, Linkedin, Mail} from "lucide-react"
-import {skills} from "@/data/skills"
+import {homePageSkills} from "@/data/skills"
 import {projects} from "@/data/projects"
 import {experiences} from "@/data/experiences"
 import {Skill} from "@/components/skill";
@@ -45,7 +45,7 @@ export default function Home() {
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold mb-8 text-center text-black">Skills</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {skills.slice(0, 4).map((skill) => (
+                        {homePageSkills.map((skill) => (
                             <Skill skill={skill} />
                         ))}
                     </div>

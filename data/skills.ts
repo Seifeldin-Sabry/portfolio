@@ -143,3 +143,34 @@ export const skills: Skill[] = [
     },
 ]
 
+export const homePageSkills: Skill[] = [
+    {
+        id: "nextjs",
+        name: "Next.js",
+        category: "Frontend",
+        whiteBg: true,
+        icon: "/assets/icons/nextjs_icon.svg",
+    },
+    {
+        id: "python",
+        name: "Python",
+        category: "Backend",
+        whiteBg: true,
+        icon: "/assets/icons/python_icon.svg",
+    },
+    {
+        id: "huggingface",
+        name: "Hugging Face Transformers",
+        category: "AI & Machine Learning",
+        icon: "/assets/icons/hf_icon.svg",
+    },
+    {
+        id: "git",
+        name: "Git",
+        category: "DevOps & Tools",
+        icon: "/assets/icons/git_icon.svg",
+    },
+]
+
+
+
