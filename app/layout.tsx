@@ -17,10 +17,13 @@ export const metadata: Metadata = {
 export default function RootLayout({
                                        children,
                                    }: Readonly<{
-    children: React.ReactNode
+    children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
+        <head>
+            <link rel="icon" href="/assets/icons/favico.ico" sizes="any" />
+        </head>
         <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
             <div className="flex flex-col min-h-screen">
@@ -31,7 +34,8 @@ export default function RootLayout({
         </ThemeProvider>
         </body>
         </html>
-    )
+    );
 }
+
 
 
