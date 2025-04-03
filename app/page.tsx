@@ -114,12 +114,12 @@ export default function Home() {
                                     <h3 className="font-bold text-xl text-black">{experience.role}</h3>
                                     <h4 className="text-gray-600">{experience.company}</h4>
                                     <p className="text-sm text-gray-500">{experience.period}</p>
-                                    <p className="mt-2">{experience.description}</p>
+                                    <p className="mt-2 text-black">{experience.description}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="text-center mt-8">
+                    <div className="text-center mt-2">
                         <Button variant="outline" asChild>
                             <Link href="/experience" className="flex items-center gap-2">
                                 View Full Experience <ArrowRight size={16} />
