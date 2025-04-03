@@ -10,9 +10,8 @@ import './globals.css'
 const inter = Inter({subsets: ["latin"]})
 
 export const metadata: Metadata = {
-    title: "Portfolio | Fullstack Engineer & AI Specialist",
-    description: "Portfolio of a Fullstack Engineer with expertise in AI technologies",
-    generator: 'v0.dev'
+    title: "Seif | Software Engineer",
+    description: "Seifeldin Sabry | Software Engineer | Portfolio",
 }
 
 export default function RootLayout({
