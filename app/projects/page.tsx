@@ -11,7 +11,7 @@ export default function ProjectsPage() {
 
             <div className="max-w-3xl mx-auto mb-12">
                 <p className="text-center text-lg">
-                    Here's a collection of my recent projects, showcasing my skills in fullstack development and
+                    Here's a collection of my academic/side projects, showcasing my skills in fullstack development and
                     artificial
                     intelligence.
                 </p>
