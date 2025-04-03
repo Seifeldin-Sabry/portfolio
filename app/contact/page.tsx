@@ -2,14 +2,15 @@
 
 import type React from "react"
 import {useState} from "react"
-import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea"
 import {Card, CardContent} from "@/components/ui/card"
-import {Github, Linkedin, Mail, MapPin, Phone} from "lucide-react"
+import {MapPin} from "lucide-react"
 import {toast} from "sonner"
 import {z} from "zod"
+import {GithubButton} from "@/components/github";
+import {LinkedinButton} from "@/components/linkedin";
 
 // Define the contact form schema with Zod
 const contactFormSchema = z.object({
@@ -134,26 +135,10 @@ export default function ContactPage() {
 
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <Mail className="text-primary" size={20} />
-                                    <div>
-                                        <h3 className="font-semibold">Email</h3>
-                                        <p className="text-gray-600">your.email@example.com</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-3">
-                                    <Phone className="text-primary" size={20} />
-                                    <div>
-                                        <h3 className="font-semibold">Phone</h3>
-                                        <p className="text-gray-600">+1 (123) 456-7890</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-3">
                                     <MapPin className="text-primary" size={20} />
                                     <div>
                                         <h3 className="font-semibold">Location</h3>
-                                        <p className="text-gray-600">San Francisco, CA</p>
+                                        <p className="text-gray-600">Antwerp, Belgium</p>
                                     </div>
                                 </div>
                             </div>
@@ -161,16 +146,8 @@ export default function ContactPage() {
                             <div className="mt-8">
                                 <h3 className="font-semibold mb-4">Connect with me</h3>
                                 <div className="flex gap-4">
-                                    <Button variant="outline" size="icon" asChild>
-                                        <Link href="https://github.com">
-                                            <Github size={20} />
-                                        </Link>
-                                    </Button>
-                                    <Button variant="outline" size="icon" asChild>
-                                        <Link href="https://linkedin.com">
-                                            <Linkedin size={20} />
-                                        </Link>
-                                    </Button>
+                                    <GithubButton size={20} />
+                                    <LinkedinButton size={20} />
                                 </div>
                             </div>
                         </CardContent>

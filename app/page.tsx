@@ -12,7 +12,7 @@ export default function Home() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <section className="py-20 text-white">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
                     <div className="flex-1">
                         <p className="text-xl md:text-2xl font-bold mb-4">Hi, I'm Seif!</p>
@@ -43,7 +43,7 @@ export default function Home() {
             {/* Skills Preview */}
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold mb-8 text-center">Skills</h2>
+                    <h2 className="text-3xl font-bold mb-8 text-center text-black">Skills</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {skills.slice(0, 4).map((skill) => (
                             <Skill skill={skill} />
@@ -66,20 +66,14 @@ export default function Home() {
                     <div className="grid md:grid-cols-2 gap-8">
                         {projects.slice(0, 2).map((project) => (
                             <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                                <div className="relative h-48 w-full">
-                                    <Image
-                                        src={project.image || "/placeholder.svg?height=192&width=384"}
-                                        alt={project.title}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
                                 <CardContent className="p-6">
                                     <h3 className="font-bold text-xl mb-2">{project.title}</h3>
-                                    <p className="text-gray-600 mb-4">{project.description}</p>
+                                    <p className="text-white mb-4">{project.description}</p>
                                     <div className="flex flex-wrap gap-2 mb-4">
                                         {project.technologies.map((tech) => (
-                                            <span key={tech} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                            <span key={tech}
+                                                  className="bg-gray-100 px-3 py-1 rounded-full text-sm text-black"
+                                            >
                         {tech}
                       </span>
                                         ))}
@@ -136,7 +130,7 @@ export default function Home() {
             </section>
 
             {/* Contact Preview */}
-            <section className="py-16 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <section className="py-16 text-white">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-4">Let's Connect</h2>
                     <p className="mb-8 max-w-2xl mx-auto">
