@@ -99,19 +99,15 @@ export const skills: Skill[] = [
         id: "pandas",
         name: "Pandas",
         category: "AI & Machine Learning",
+        whiteBg: true,
         icon: "/assets/icons/pandas_icon.svg",
     },
     {
         id: "nlp",
         name: "Natural Language Processing",
         category: "AI & Machine Learning",
+        whiteBg: true,
         icon: "/assets/icons/nlp_icon.png",
-    },
-    {
-        id: "cv",
-        name: "Computer Vision",
-        category: "AI & Machine Learning",
-        icon: "/placeholder.svg?height=64&width=64",
     },
     {
         id: "gen-ai",
@@ -137,7 +133,7 @@ export const skills: Skill[] = [
         id: "ci-cd",
         name: "CI/CD",
         category: "DevOps & Tools",
-        icon: "/assets/icons/github_actions_icon.svg",
+        icon: "/assets/icons/github_actions_icon.png",
     },
 ]
 
