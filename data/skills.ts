@@ -135,5 +135,11 @@ export const skills: Skill[] = [
         category: "DevOps & Tools",
         icon: "/assets/icons/github_actions_icon.png",
     },
+    {
+        id: "bash",
+        name: "Bash Scripting",
+        category: "DevOps & Tools",
+        icon: "/assets/icons/bash_icon.png",
+    },
 ]
 
