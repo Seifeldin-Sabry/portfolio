@@ -90,22 +90,22 @@ export const skills: Skill[] = [
 
     // AI & Machine Learning
     {
-        id: "tensorflow",
-        name: "TensorFlow",
+        id: "huggingface",
+        name: "Hugging Face Transformers",
         category: "AI & Machine Learning",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/hf_icon.svg",
     },
     {
-        id: "pytorch",
-        name: "PyTorch",
+        id: "pandas",
+        name: "Pandas",
         category: "AI & Machine Learning",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/pandas_icon.svg",
     },
     {
         id: "nlp",
         name: "Natural Language Processing",
         category: "AI & Machine Learning",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/nlp_icon.png",
     },
     {
         id: "cv",
@@ -114,10 +114,10 @@ export const skills: Skill[] = [
         icon: "/placeholder.svg?height=64&width=64",
     },
     {
-        id: "ml",
-        name: "Machine Learning",
+        id: "gen-ai",
+        name: "Generative AI",
         category: "AI & Machine Learning",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/genai_icon.png",
     },
 
     // DevOps & Tools
@@ -125,19 +125,19 @@ export const skills: Skill[] = [
         id: "git",
         name: "Git",
         category: "DevOps & Tools",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/git_icon.svg",
     },
     {
         id: "docker",
         name: "Docker",
         category: "DevOps & Tools",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/docker_icon.svg",
     },
     {
         id: "ci-cd",
         name: "CI/CD",
         category: "DevOps & Tools",
-        icon: "/placeholder.svg?height=64&width=64",
+        icon: "/assets/icons/github_actions_icon.svg",
     },
 ]
 
