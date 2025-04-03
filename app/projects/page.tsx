@@ -21,8 +21,9 @@ export default function ProjectsPage() {
                 {projects.map((project) => (
                     <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                         <CardContent className="p-6">
-                            <h3 className="font-bold text-xl mb-2">{project.title}</h3>
-                            <p className="text-gray-600 mb-4">{project.description}</p>
+                            <Link href={`/projects/${project.id}`} className="font-bold text-xl underline"
+                            >{project.title}</Link>
+                            <p className="text-white mb-4">{project.description}</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {project.technologies.map((tech) => (
                                     <span
@@ -48,11 +49,6 @@ export default function ProjectsPage() {
                                         </Link>
                                     </Button>
                                 )}
-                                <Button asChild>
-                                    <Link href={`/projects/${project.id}`} className="flex items-center gap-2">
-                                        <ExternalLink size={16} /> Project Details
-                                    </Link>
-                                </Button>
                             </div>
                         </CardContent>
                     </Card>
