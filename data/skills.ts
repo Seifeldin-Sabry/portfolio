@@ -139,7 +139,7 @@ export const skills: Skill[] = [
         id: "bash",
         name: "Bash Scripting",
         category: "DevOps & Tools",
-        icon: "/assets/icons/bash_icon.png",
+        icon: "/assets/icons/bash_icon.svg",
     },
 ]
 
