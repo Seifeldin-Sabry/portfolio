@@ -68,7 +68,7 @@ export default function ProjectPage({params}: ProjectPageProps) {
             {/* Description */}
             <div>
                 <h2 className="text-xl font-semibold">Overview</h2>
-                <p className="text-gray-700">{project.description}</p>
+                <p className="text-white">{project.description}</p>
             </div>
 
             {/* Challenges, Solutions, Features, Results */}
