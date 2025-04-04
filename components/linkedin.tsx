@@ -6,7 +6,7 @@ import type React from "react";
 export const LinkedinButton = ({size}) => {
     return (
         <Button variant="outline" size="icon" asChild>
-            <Link href="https://github.com/Seifeldin-Sabry">
+            <Link target="_blank" href="https://www.linkedin.com/in/seifeldin-sabry-b8a542202/">
                 <Linkedin size={size} />
             </Link>
         </Button>
