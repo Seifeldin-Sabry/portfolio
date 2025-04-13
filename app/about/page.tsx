@@ -14,18 +14,19 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">Software Engineer & AI developer</h2>
+                    <h2 className="text-2xl font-bold mb-4">Software Engineer</h2>
                     <p className="mb-4">
-                        Hello! My name is Seif and I'm a passionate software with expertise in artificial intelligence.
+                        Hello! I'm Seif, a software engineer who enjoys building web applications and working with AI.
                     </p>
                     <p className="mb-4">
-                        My journey in technology began with a degree in Computer Science, and I've since expanded my
-                        skills to
-                        include modern web frameworks, cloud technologies, and machine learning.
+                        I focus on creating solutions that are easy to use and solve real problems. I'm comfortable
+                        working with
+                        different technologies and adapting to what each project needs.
                     </p>
                     <p className="mb-4">
-                        In my free time I'm usually trying to get a side project going. Spending time with my loved ones
-                        and/or travelling the world.
+                        I've worked with both startups and companies like Atlas Copco, where I helped with their
+                        development
+                        projects.
                     </p>
 
                     <div className="flex gap-4 flex-wrap">
