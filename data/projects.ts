@@ -97,27 +97,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: "Application-Tracking-Dashboard",
-    title: "Application Tracking Dashboard",
-    description: "A simple UI to manage employment/educational applications",
-    technologies: ["Nextjs", "Supabase"],
-    github: "https://github.com/Seifeldin-Sabry/Application-Tracking-Dashboard",
-    liveDemo: "https://application-tracking-dashboard.vercel.app",
-    challenges: [
-      "Mobile UI/UX",
-      "Filtering degrees/applications",
-    ],
-    solutions: [
-      "Mobile hook to detect mobile devices",
-      "Data tables for interactive and strongly typed data formatting of applications"
-    ],
-    features: [
-      "Track statuses",
-      "Authentication: manage your own applications",
-      "Filters: by statuses and other criteria"
-    ],
-  },
-  {
     id: "qwirkle",
     title: "Qwirkle",
     description: "A JavaFX-based implementation of the Qwirkle board game, featuring a user-friendly interface and a rule based AI opponent.",

@@ -14,19 +14,18 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">Software Engineer</h2>
+                    <h2 className="text-2xl font-bold mb-4">Software Engineer & AI developer</h2>
                     <p className="mb-4">
-                        Hello! I'm Seif, a software engineer who enjoys building web applications and working with AI.
+                        Hello! My name is Seif and I'm a passionate software with expertise in artificial intelligence.
                     </p>
                     <p className="mb-4">
-                        I focus on creating solutions that are easy to use and solve real problems. I'm comfortable
-                        working with
-                        different technologies and adapting to what each project needs.
+                        My journey in technology began with a degree in Computer Science, and I've since expanded my
+                        skills to
+                        include modern web frameworks, cloud technologies, and machine learning.
                     </p>
                     <p className="mb-4">
-                        I've worked with both startups and companies like Atlas Copco, where I helped with their
-                        development
-                        projects.
+                        In my free time I'm usually trying to get a side project going. Spending time with my loved ones
+                        and/or travelling the world.
                     </p>
 
                     <div className="flex gap-4 flex-wrap">
@@ -66,25 +65,22 @@ export default function AboutPage() {
                     </div>
                     <div className="text-center p-6 border rounded-lg">
                         <div>
-                            <div className="flex gap-3 items-start justify-center">
-                                <a href="http://www.ns2agi.com/" target="_blank"
-                                   className="font-semibold text-xl mb-3 underline"
-                                >North
-                                 Star
-                                 AGI</a>
-                                <Image src="/assets/images/north-star.png" alt="North Star"
-                                       className="object-cover"
-                                       width={30}
-                                       height={30}
-                                />
-                            </div>
+                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
+                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
                             <p>
-                                Currently volunteering to shape the future of AI in Europe. I am part of a team that is
-                                working on creating events, making connections, and building software, a community and a
-                                platform
-                                around AI.
+                                I enjoy working on side projects that allow me to learn new skills and technologies. I
+                                often
+                                share
+                                these
+                                projects on my GitHub.
                             </p>
                         </div>
+                        <p>
+                            Currently volunteering to shape the future of AI in Europe. I am part of a team that is
+                            working on creating events, making connections, and building software, a community and a
+                            platform
+                            around AI.
+                        </p>
                     </div>
                 </div>
             </div>
