@@ -1,7 +1,7 @@
 import Image from "next/image"
 import {Button} from "@/components/ui/button"
 import Link from "next/link"
-import {Download} from "lucide-react"
+import {Calendar, Download} from "lucide-react"
 
 export default function AboutPage() {
     return (
@@ -14,25 +14,126 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">Software Engineer & AI developer</h2>
+                    <h2 className="text-2xl font-bold mb-4">Software Engineer</h2>
                     <p className="mb-4">
-                        Hello! My name is Seif and I'm a passionate software with expertise in artificial intelligence.
+                        Hello! I'm Seif, a software engineer who enjoys building web applications and working with AI.
                     </p>
                     <p className="mb-4">
-                        My journey in technology began with a degree in Computer Science, and I've since expanded my
-                        skills to
-                        include modern web frameworks, cloud technologies, and machine learning.
+                        I focus on creating solutions that are easy to use and solve real problems. I'm comfortable
+                        working with
+                        different technologies and adapting to what each project needs.
                     </p>
                     <p className="mb-4">
-                        In my free time I'm usually trying to get a side project going. Spending time with my loved ones
-                        and/or travelling the world.
+                        I've worked with both startups and companies like Atlas Copco, where I helped with their
+                        development
+                        projects.
                     </p>
 
-                    <Button asChild>
-                        <Link href="/assets/resume/CV%20-%20Seif.pdf" className="flex items-center gap-2">
-                            <Download size={16} /> Download Resume
-                        </Link>
-                    </Button>
+                    <div className="flex gap-4 flex-wrap">
+                        <Button asChild>
+                            <Link href="/assets/resume/CV%20-%20Seif.pdf" className="flex items-center gap-2">
+                                <Download size={16} /> Download Resume
+                            </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
+                            <Link href="/contact" className="flex items-center gap-2">
+                                <Calendar size={16} /> Contact Me
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-16">
+                <h2 className="text-2xl font-bold mb-6 text-center">On the side</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center p-6 border rounded-lg">
+                        <h3 className="font-semibold text-xl mb-3">Travelling</h3>
+                        <p>
+                            I like exploring the world, rejuvenating and energising myself. Allowing myself to feel
+                            better and more
+                            productive. I love to travel and experience different cultures.
+                        </p>
+                    </div>
+                    <div className="text-center p-6 border rounded-lg">
+                        <h3 className="font-semibold text-xl mb-3">Side projects</h3>
+                        <p>
+                            I enjoy working on side projects that allow me to learn new skills and technologies. I often
+                            share
+                            these
+                            projects on my GitHub.
+                        </p>
+                    </div>
+                    <div className="text-center p-6 border rounded-lg">
+                        <div>
+                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
+                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
+                            <p>
+                                I enjoy working on side projects that allow me to learn new skills and technologies. I
+                                often
+                                share
+                                these
+                                projects on my GitHub.
+                            </p>
+                        </div>
+                        <p>
+                            Currently volunteering to shape the future of AI in Europe. I am part of a team that is
+                            working on creating events, making connections, and building software, a community and a
+                            platform
+                            around AI.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="mb-16">
+                <h2 className="text-2xl font-bold mb-6 text-center">How I Work</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center p-6 border rounded-lg">
+                        <h3 className="font-semibold text-xl mb-3">Team Player</h3>
+                        <p>
+                            I work well with others and adapt to your team's way of doing things. I'm happy to use the
+                            tools and
+                            processes you already have in place.
+                        </p>
+                    </div>
+                    <div className="text-center p-6 border rounded-lg">
+                        <h3 className="font-semibold text-xl mb-3">Problem Solver</h3>
+                        <p>
+                            I enjoy tackling technical challenges and finding practical solutions. I focus on writing
+                            clean code
+                            that's easy to maintain.
+                        </p>
+                    </div>
+                    <div className="text-center p-6 border rounded-lg">
+                        <h3 className="font-semibold text-xl mb-3">Always Learning</h3>
+                        <p>
+                            I'm constantly learning new technologies and improving my skills. I bring this curiosity and
+                            growth
+                            mindset to every project.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-16">
+                <h2 className="text-2xl font-bold mb-6 text-center">Work Experience</h2>
+                <div className="max-w-3xl mx-auto">
+                    <p className="mb-4">I've had the opportunity to work with different types of companies and
+                                        projects:</p>
+                    <ul className="list-disc pl-6 space-y-2 mb-6">
+                        <li>Worked with the development team at Atlas Copco</li>
+                        <li>Built features for web applications and AI projects</li>
+                        <li>Collaborated with designers and other developers</li>
+                        <li>Worked on both new projects and existing codebases</li>
+                        <li>Participated in code reviews and team meetings</li>
+                    </ul>
+                    <p>
+                        These experiences have taught me how to work effectively with different teams and contribute to
+                        various
+                        types of projects.
+                    </p>
                 </div>
             </div>
 
@@ -53,4 +154,3 @@ export default function AboutPage() {
         </div>
     )
 }
-
