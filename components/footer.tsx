@@ -1,8 +1,9 @@
 import Link from "next/link"
-import {Mail} from "lucide-react"
-import {GithubButton} from "@/components/github";
-import {LinkedinButton} from "@/components/linkedin";
+import {Github, Linkedin, Mail} from "lucide-react"
+import {SocialButton} from "@/components/social-button";
 import {Button} from "@/components/ui/button";
+import {githubLink, linkedInLink} from "@/lib/links";
+import type React from "react";
 
 export default function Footer() {
     return (
@@ -14,8 +15,8 @@ export default function Footer() {
                                                              reserved.</p>
                     </div>
                     <div className="flex gap-4">
-                        <GithubButton size={20} />
-                        <LinkedinButton size={20} />
+                        <SocialButton icon={<Github size={20} />} link={githubLink} />
+                        <SocialButton icon={<Linkedin size={20} />} link={linkedInLink} />
                         <Button variant="default" size="icon" asChild>
                             <Link href="/contact" className="text-gray-600 hover:text-gray-900">
                                 <Mail size={20} />
