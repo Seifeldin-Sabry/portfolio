@@ -66,22 +66,25 @@ export default function AboutPage() {
                     </div>
                     <div className="text-center p-6 border rounded-lg">
                         <div>
-                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
-                            <h3 className="font-semibold text-xl mb-3">North Star AGI</h3>
+                            <div className="flex gap-3 items-start justify-center">
+                                <a href="http://www.ns2agi.com/" target="_blank"
+                                   className="font-semibold text-xl mb-3 underline"
+                                >North
+                                 Star
+                                 AGI</a>
+                                <Image src="/assets/images/north-star.png" alt="North Star"
+                                       className="object-cover"
+                                       width={30}
+                                       height={30}
+                                />
+                            </div>
                             <p>
-                                I enjoy working on side projects that allow me to learn new skills and technologies. I
-                                often
-                                share
-                                these
-                                projects on my GitHub.
+                                Currently volunteering to shape the future of AI in Europe. I am part of a team that is
+                                working on creating events, making connections, and building software, a community and a
+                                platform
+                                around AI.
                             </p>
                         </div>
-                        <p>
-                            Currently volunteering to shape the future of AI in Europe. I am part of a team that is
-                            working on creating events, making connections, and building software, a community and a
-                            platform
-                            around AI.
-                        </p>
                     </div>
                 </div>
             </div>
