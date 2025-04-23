@@ -7,6 +7,7 @@ import {homePageSkills} from "@/data/skills"
 import {projects} from "@/data/projects"
 import {experiences} from "@/data/experiences"
 import {Skill} from "@/components/skill"
+import {calendlyLink} from "@/lib/links";
 
 export default function Home() {
     return (
@@ -154,7 +155,7 @@ export default function Home() {
                         </Button>
                         <Button variant="outline" asChild className="rounded-full">
                             <a
-                                href="https://calendly.com/your-calendly-link"
+                                href={calendlyLink}
                                 target="_blank"
                                 className="flex items-center gap-2"
                                 rel="noreferrer"
