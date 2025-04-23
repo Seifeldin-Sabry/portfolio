@@ -119,27 +119,7 @@ export default function AboutPage() {
                     </div>
                 </div>
             </div>
-
-            <div className="mb-16">
-                <h2 className="text-2xl font-bold mb-6 text-center">Work Experience</h2>
-                <div className="max-w-3xl mx-auto">
-                    <p className="mb-4">I've had the opportunity to work with different types of companies and
-                                        projects:</p>
-                    <ul className="list-disc pl-6 space-y-2 mb-6">
-                        <li>Worked with the development team at Atlas Copco</li>
-                        <li>Built features for web applications and AI projects</li>
-                        <li>Collaborated with designers and other developers</li>
-                        <li>Worked on both new projects and existing codebases</li>
-                        <li>Participated in code reviews and team meetings</li>
-                    </ul>
-                    <p>
-                        These experiences have taught me how to work effectively with different teams and contribute to
-                        various
-                        types of projects.
-                    </p>
-                </div>
-            </div>
-
+            
             <div>
                 <h2 className="text-2xl font-bold mb-6 text-center">Personal Interests</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
