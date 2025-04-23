@@ -5,7 +5,6 @@ import {Card, CardContent} from "@/components/ui/card"
 import {ArrowRight, Calendar, Mail} from "lucide-react"
 import {homePageSkills} from "@/data/skills"
 import {projects} from "@/data/projects"
-import {services} from "@/data/services"
 import {experiences} from "@/data/experiences"
 import {Skill} from "@/components/skill"
 
@@ -38,33 +37,6 @@ export default function Home() {
                         >
                             <Image src="/assets/images/seif.jpg" alt="Profile" fill className="object-cover" />
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Services Preview */}
-            <section className="py-16">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold mb-8 text-center">Services I Offer</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {services.slice(0, 3).map((service) => (
-                            <Card key={service.id} className="hover:shadow-lg transition-shadow">
-                                <CardContent className="p-6 flex flex-col items-center text-center">
-                                    <div className="w-16 h-16 flex items-center justify-center mb-4 text-primary">
-                                        <service.icon size={40} />
-                                    </div>
-                                    <h3 className="font-bold text-xl mb-2">{service.title}</h3>
-                                    <p className="text-white mb-4">{service.description}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                    <div className="text-center mt-8">
-                        <Button variant="outline" asChild>
-                            <Link href="/services" className="flex items-center gap-2">
-                                View All Services <ArrowRight size={16} />
-                            </Link>
-                        </Button>
                     </div>
                 </div>
             </section>
