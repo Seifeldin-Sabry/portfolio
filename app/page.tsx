@@ -22,9 +22,6 @@ export default function Home() {
                             I help teams build web applications and implement AI solutions.
                         </p>
                         <div className="flex gap-4 flex-wrap">
-                            <Button asChild>
-                                <Link href="/services">My Services</Link>
-                            </Button>
                             <Button variant="outline" asChild>
                                 <Link href="/contact" className="flex items-center gap-2">
                                     <Calendar size={16} /> Contact Me
