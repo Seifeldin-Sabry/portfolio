@@ -1,0 +1,90 @@
+---
+title: "SeifLM Project - Week One"
+date: "08-05-2025"
+excerpt: "Deepdive into the SeifLM project, the Seif Stack RAG code agent, using FastAPI, Supabase, LangChain, and Next.js."
+tags: ["SideProject", "SeifLM", "RAG", "FastAPI", "Supabase", "LangChain", "Next.js"]
+---
+
+## Overview
+This week, I started working on the SeifLM project, which is a code agent that utilizes 'the Seif Stack'. The Stack just consists of my favorite tools for building a Application. The stack includes:
+- **FastAPI**: A modern web framework for building APIs with Python.
+- **Supabase**: An open-source Firebase alternative that provides a backend as a service.
+- **LangChain**: A framework for developing applications powered by language models.
+- **Next.js**: A React framework for building server-rendered applications.
+_________________
+## Project Goals
+The **main goal** is to be able to ask the code agent very framework specific questions and get answers that are relevant to the framework. For example, if I ask "How do I create a new FastAPI endpoint?", the agent should be able to provide me with a code snippet that demonstrates how to do that.
+The agent should also be able to answer questions about Supabase, LangChain, and Next.js. The idea is to create a code agent that can help developers with their day-to-day tasks by providing them with relevant code snippets and explanations.
+
+Main Functional Requirements:
+- The agent should be able to answer questions about FastAPI, Supabase, LangChain, and Next.js.
+- The agent should be able to provide code snippets that are relevant to the framework.
+- The agent should be able to provide explanations for the code snippets.
+- The agent should be able to provide links to the official documentation for the framework.
+
+Todo:
+- [x] Create a scraper that scrapes the official documentation for FastAPI, Supabase, LangChain, and Next.js.
+- [x] Create a chunking pipeline that chunks the scraped documentation into smaller pieces.
+- [x] Create an embedding pipeline that converts the chunks into embeddings.
+- [x] Setup Supabase for storing the embeddings.
+- [ ] Store the embeddings in Supabase.
+- [ ] Create a FastAPI endpoint that takes a question and returns the relevant code snippet and explanation.
+- [ ] Create a Next.js frontend that allows users to ask questions and get answers from the agent.
+- [ ] Create a Dockerfile for hosting Ollama
+
+_________________
+
+## Scraper
+The first step in the project is to create a scraper that scrapes the official documentation for FastAPI, Supabase, LangChain, and Next.js.
+The scraper should be able to scrape the documentation and store it in a format that can be used for chunking and embedding.
+
+I decided to scrape the html and convert it to markdown since LLMs are better at understanding markdown and it would be easy to use MarkdownSplitter to chunk the documentation.
+I used the `markdownify` library to convert the HTML to markdown. The library is very simple to use and does a great job of converting HTML to markdown.
+
+```python
+def save_content(url, content, provider_dir):
+    parsed = urlparse(url)
+    path = parsed.path.strip("/").replace("/", "_")
+    if not path:
+        path = "index"
+    provider_dir.mkdir(parents=True, exist_ok=True)
+    filename = f"{path}.pkl"
+    output_path = provider_dir / filename
+    with output_path.open("wb") as f:
+        doc = Document(
+            page_content=content,
+            metadata={
+                "source": url,
+                "topic": path,
+                "provider": provider_dir.name,
+            }
+        )
+        pickle.dump(doc, f)
+    logging.info(f"Content saved: {output_path}")
+```
+
+
+this is a snippet of the code, saving the files as pickle with `Document` object from langchain. The `Document` object is a simple wrapper around the content and metadata. The metadata is used to store the source of the content and the topic of the content. The topic is used to group the content by provider.
+_________________
+## Chunking
+The chunking was very straightforward, I used the `MarkdownSplitter` from langchain to chunk the markdown content into smaller pieces. The `MarkdownSplitter` is a simple wrapper around the `RecursiveCharacterTextSplitter` that uses the markdown syntax to split the content into smaller pieces.
+This is still in need of testing, but I used it to split on h1, and h2 tags, while also enriching the metadata with the topic and provider. and document source.
+_________________
+## Embedding
+
+I used huggingface's [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) embedding to convert the chunks into embeddings.
+```python
+def embed_chunks(chunks: list[Document]):
+    texts = [chunk.page_content for chunk in chunks]
+    embeddings = model.encode(texts, batch_size=4).tolist()
+    del texts
+    gc.collect()
+    return embeddings
+```
+-----------------
+## Bottlenecks
+
+The main bottleneck in the project is the embedding pipeline. The embedding pipeline is very slow and exceeds my memory usage on my laptop.
+Currently I am investigating loading in the chunks in batches using huggingface `datasets` or even exploring `pyspark` to load the chunks in batches and convert them to embeddings.
+
+This was week one of the project, very solid start.
