@@ -1,0 +1,39 @@
+---
+title: "My first Blog Post"
+date: "08-05-2025"
+excerpt: "Documenting my journey with this blog. From attending a conference to learning new technologies, this blog will cover it all."
+tags: ["MDX", "Next.js"]
+---
+
+This blog will be here to cover my journey and also to document events, conferences, new projects or job opportunities I might encounter.
+
+## How I set up my blog
+
+It was a long journey to get there but I just wanted a way to add a markdown file and have it rendered as a blog post, simple as that.
+
+I took the decision to just ask v0 to help out but then I took over as it missed some things. But what I like is that I just scan anything in `/data/blogs` and then can render these as seperate blog cards,
+I used `matter` to parse the frontmatter and then render the content using `MDXProvider` and `MDXRemote` to render the content.
+
+referred to [MDX](https://mdxjs.com/docs/extending-mdx) and [Next.js | MDX](https://nextjs.org/docs/app/guides/mdx) documentation to get this working.
+
+Using some plugins to format codeblocks and tables in the end it looks somewhat like this:
+```tsx
+ <article className="prose prose-invert max-w-none">
+    <MDXRemote source={post.content} options={{
+        mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [[rehypePrettyCode, options], rehypeMdxCodeProps],
+        },
+    }}/>
+</article>
+```
+
+with my options being:
+```tsx
+const options: Options = {
+    theme: "github-dark",
+    defaultLang: 'txt',
+};
+```
+
+Pretty simple, but moving forward I'll try to put in the language and a copy button to copy the code block.

@@ -6,7 +6,7 @@ import {Card, CardContent} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {BlogSearch} from "@/components/blog-search"
 import {AnimatedCard} from "@/components/animated-card"
-import type {BlogPost} from "@/lib/blog"
+import type {BlogPost} from "@/lib/blogs"
 import {formatDate} from "@/lib/utils"
 
 interface BlogClientProps {
@@ -53,7 +53,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                 <>
                     <div className="grid gap-8 max-w-4xl mx-auto">
                         {paginatedPosts.map((post) => (
-                            <AnimatedCard>
+                            <AnimatedCard key={post.slug}>
                                 <Link href={`/blog/${post.slug}`}>
                                     <Card
                                         className="hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-800 hover:border-gray-600"

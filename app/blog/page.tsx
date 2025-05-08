@@ -1,4 +1,4 @@
-import {getSortedBlogPosts} from "@/lib/blog"
+import {getSortedBlogPosts} from "@/lib/blogs"
 import BlogClient from "./client"
 import type {Metadata} from "next"
 
@@ -16,7 +16,7 @@ export default function BlogPage() {
 
             <div className="max-w-3xl mx-auto mb-12">
                 <p className="text-center text-lg">
-                    Thoughts, tutorials, and insights on my software development, AI, and technology journey.
+                    Thoughts, tutorials, and insights on software development, AI, and technology.
                 </p>
             </div>
 

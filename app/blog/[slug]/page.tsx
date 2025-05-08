@@ -1,12 +1,22 @@
-import {getAllBlogSlugs, getBlogPostBySlug} from "@/lib/blog"
+import {getAllBlogSlugs, getBlogPostBySlug} from "@/lib/blogs"
+import {MDXRemote} from 'next-mdx-remote/rsc'
 import {notFound} from "next/navigation"
 import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {ArrowLeft} from "lucide-react"
 import {formatDate} from "@/lib/utils"
-import {BlogContent} from "@/components/blog-content"
 import type {Metadata} from "next"
-import "../blog.css"
+import type {Options} from "rehype-pretty-code"
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeMdxCodeProps from "rehype-mdx-code-props";
+import remarkGfm from "remark-gfm";
+
+
+const options: Options = {
+    theme: "github-dark",
+    defaultLang: 'txt',
+};
+
 
 interface BlogPostPageProps {
     params: {
@@ -63,9 +73,14 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
                         </div>
                     </div>
                 </div>
-
-                <article>
-                    <BlogContent content={post.content} />
+                <article className="prose prose-invert max-w-none">
+                    <MDXRemote source={post.content} options={{
+                        mdxOptions: {
+                            remarkPlugins: [remarkGfm],
+                            rehypePlugins: [[rehypePrettyCode, options], rehypeMdxCodeProps],
+                        },
+                    }}
+                    />
                 </article>
             </div>
         </div>

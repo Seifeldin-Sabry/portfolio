@@ -1,10 +1,10 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
-import {remark} from "remark"
-import html from "remark-html"
+import {formatDate} from "date-fns";
 
-const blogsDirectory = path.join(process.cwd(), "data/blog")
+const blogsDirectory = path.join(process.cwd(), "data/blogs")
+const fileExtension = ".mdx"
 
 export interface BlogPost {
     slug: string
@@ -20,10 +20,10 @@ export function getSortedBlogPosts(): BlogPost[] {
     // Get file names under /data/blog
     const fileNames = fs.readdirSync(blogsDirectory)
     const allBlogData = fileNames
-        .filter((fileName) => fileName.endsWith(".md"))
+        .filter((fileName) => fileName.endsWith(fileExtension))
         .map((fileName) => {
             // Remove ".md" from file name to get slug
-            const slug = fileName.replace(/\.md$/, "")
+            const slug = fileName.replace(/\.mdx$/, "")
 
             // Read markdown file as string
             const fullPath = path.join(blogsDirectory, fileName)
@@ -39,15 +39,16 @@ export function getSortedBlogPosts(): BlogPost[] {
                     ? [matterResult.data.tags]
                     : []
 
+            const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
+
             // Combine the data with the slug
             return {
                 slug,
                 title: matterResult.data.title || "Untitled",
-                date: matterResult.data.date || new Date().toISOString(),
+                date,
                 excerpt: matterResult.data.excerpt || "",
                 content: matterResult.content,
-                tags,
-                coverImage: matterResult.data.coverImage || undefined,
+                tags
             }
         })
 
@@ -66,7 +67,7 @@ export function getAllBlogSlugs() {
     return fileNames.map((fileName) => {
         return {
             params: {
-                slug: fileName.replace(/\.md$/, ""),
+                slug: fileName.replace(/\.mdx$/, ""),
             },
         }
     })
@@ -74,7 +75,7 @@ export function getAllBlogSlugs() {
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
     try {
-        const fullPath = path.join(blogsDirectory, `${slug}.md`)
+        const fullPath = path.join(blogsDirectory, `${slug}${fileExtension}`)
         const fileContents = fs.readFileSync(fullPath, "utf8")
 
         // Use gray-matter to parse the post metadata section
@@ -87,19 +88,16 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
                 ? [matterResult.data.tags]
                 : []
 
-        // Use remark to convert markdown into HTML string
-        const processedContent = await remark().use(html).process(matterResult.content)
-        const contentHtml = processedContent.toString()
+        const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
 
         // Combine the data with the slug and contentHtml
         return {
             slug,
             title: matterResult.data.title || "Untitled",
-            date: matterResult.data.date || new Date().toISOString(),
+            date,
             excerpt: matterResult.data.excerpt || "",
-            content: contentHtml,
-            tags,
-            coverImage: matterResult.data.coverImage || undefined,
+            content: matterResult.content,
+            tags
         }
     } catch (error) {
         console.error(`Error getting blog post for slug ${slug}:`, error)
