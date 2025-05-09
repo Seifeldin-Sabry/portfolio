@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Upstash
         run: |
-          curl {{ secrets.UPSTASH_REDIS_REST_URL }} -H "Authorization: Bearer {{ secrets.UPSTASH_REDIS_REST_TOKEN }}" -X POST -d 'PING'
+          curl ${{ secrets.UPSTASH_REDIS_REST_URL }} -H "Authorization: Bearer ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}" -X POST -d 'PING'
