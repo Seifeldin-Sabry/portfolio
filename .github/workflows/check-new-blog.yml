@@ -1,0 +1,26 @@
+name: Check New Blog Posts
+
+on:
+  pull_request:
+    paths:
+      - 'data/blogs/**/*.mdx'
+
+jobs:
+  detect-new-mdx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get list of added MDX files
+        id: mdx-check
+        run: |
+          ADDED_FILES=$(git diff --name-status origin/main...HEAD | grep '^A' | awk '{print $2}' | grep '^data/blogs/.*\.mdx$' || true)
+          echo "ADDED_FILES=$ADDED_FILES" >> $GITHUB_ENV
+
+      - name: Act if new blog post detected
+        if: env.ADDED_FILES != ''
+        run: |
+          echo "New blog post(s) detected:"
+          echo "$ADDED_FILES"

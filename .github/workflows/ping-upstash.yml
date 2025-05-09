@@ -1,0 +1,14 @@
+name: Keep Upstash Alive
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Every day at midnight
+  workflow_dispatch:
+
+jobs:
+  ping-upstash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Upstash
+        run: |
+          curl {{ secrets.UPSTASH_REDIS_REST_URL }} -H "Authorization: Bearer {{ secrets.UPSTASH_REDIS_REST_TOKEN }}" -X POST -d 'PING'
