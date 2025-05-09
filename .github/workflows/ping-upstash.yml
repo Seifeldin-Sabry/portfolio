@@ -10,5 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Upstash
+        env:
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
         run: |
-          curl ${{ secrets.UPSTASH_REDIS_REST_URL }} -H "Authorization: Bearer ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}" -X POST -d 'PING'
+          curl $UPSTASH_REDIS_REST_URL -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" -X POST -d 'PING'
