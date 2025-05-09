@@ -13,7 +13,36 @@ export interface BlogPost {
     excerpt: string
     content: string
     tags: string[]
-    coverImage?: string
+}
+
+function parseBlog(fileName: string) {
+    const slug = fileName.replace(/\.mdx$/, "")
+
+    // Read markdown file as string
+    const fullPath = path.join(blogsDirectory, fileName)
+    const fileContents = fs.readFileSync(fullPath, "utf8")
+
+    // Use gray-matter to parse the post metadata section
+    const matterResult = matter(fileContents)
+
+    // Ensure tags is an array
+    const tags = Array.isArray(matterResult.data.tags)
+        ? matterResult.data.tags
+        : matterResult.data.tags
+            ? [matterResult.data.tags]
+            : []
+
+    const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
+
+    // Combine the data with the slug
+    return {
+        slug,
+        title: matterResult.data.title || "Untitled",
+        date,
+        excerpt: matterResult.data.excerpt || "",
+        content: matterResult.content,
+        tags
+    }
 }
 
 export function getSortedBlogPosts(): BlogPost[] {
@@ -21,36 +50,7 @@ export function getSortedBlogPosts(): BlogPost[] {
     const fileNames = fs.readdirSync(blogsDirectory)
     const allBlogData = fileNames
         .filter((fileName) => fileName.endsWith(fileExtension))
-        .map((fileName) => {
-            // Remove ".md" from file name to get slug
-            const slug = fileName.replace(/\.mdx$/, "")
-
-            // Read markdown file as string
-            const fullPath = path.join(blogsDirectory, fileName)
-            const fileContents = fs.readFileSync(fullPath, "utf8")
-
-            // Use gray-matter to parse the post metadata section
-            const matterResult = matter(fileContents)
-
-            // Ensure tags is an array
-            const tags = Array.isArray(matterResult.data.tags)
-                ? matterResult.data.tags
-                : matterResult.data.tags
-                    ? [matterResult.data.tags]
-                    : []
-
-            const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
-
-            // Combine the data with the slug
-            return {
-                slug,
-                title: matterResult.data.title || "Untitled",
-                date,
-                excerpt: matterResult.data.excerpt || "",
-                content: matterResult.content,
-                tags
-            }
-        })
+        .map(parseBlog)
 
     // Sort posts by date
     return allBlogData.sort((a, b) => {
