@@ -23,6 +23,11 @@ export default function Home() {
                         </p>
                         <div className="flex gap-4 flex-wrap">
                             <Button variant="outline" asChild>
+                                <Link href="/blog" className="flex items-center gap-2">
+                                    <Calendar size={16} /> Check out my Blog!
+                                </Link>
+                            </Button>
+                            <Button variant="outline" asChild>
                                 <Link href="/contact" className="flex items-center gap-2">
                                     <Calendar size={16} /> Contact Me
                                 </Link>
