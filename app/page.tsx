@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent} from "@/components/ui/card"
-import {ArrowRight, Calendar, Mail} from "lucide-react"
+import {ArrowRight, Calendar, Mail, Notebook} from "lucide-react"
 import {homePageSkills} from "@/data/skills"
 import {projects} from "@/data/projects"
 import {experiences} from "@/data/experiences"
@@ -24,7 +24,7 @@ export default function Home() {
                         <div className="flex gap-4 flex-wrap">
                             <Button variant="outline" asChild>
                                 <Link href="/blog" className="flex items-center gap-2">
-                                    <Calendar size={16} /> Check out my Blog!
+                                    <Notebook size={16} /> Check out my Blog!
                                 </Link>
                             </Button>
                             <Button variant="outline" asChild>
