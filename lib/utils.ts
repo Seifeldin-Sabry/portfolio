@@ -1,15 +1,13 @@
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
+import {format, parse} from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function formatDate(dateString: string): string {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    }).format(date)
+export function parseDate(dateString: string, dateFormat): string {
+    const parsedDate = parse(dateString, "dd-MM-yyyy", new Date());
+    console.log("Parsed Date:", parsedDate, "Date Format:", dateFormat, "Formatted Date:", format(parsedDate, dateFormat));
+    return format(parsedDate, dateFormat);
 }

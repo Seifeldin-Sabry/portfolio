@@ -4,7 +4,6 @@ import {notFound} from "next/navigation"
 import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {ArrowLeft} from "lucide-react"
-import {formatDate} from "@/lib/utils"
 import type {Metadata} from "next"
 import type {Options} from "rehype-pretty-code"
 import rehypePrettyCode from "rehype-pretty-code";
@@ -63,7 +62,6 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
                     <div className="flex items-center gap-4 text-gray-500 mb-6">
-                        <time dateTime={post.date}>{formatDate(post.date)}</time>
                         <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
                                 <span key={tag} className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs">
@@ -72,6 +70,7 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
                             ))}
                         </div>
                     </div>
+                    <time className="text-gray-500" dateTime={post.date}>{post.date}</time>
                 </div>
                 <article className="prose prose-invert max-w-none">
                     <MDXRemote source={post.content} options={{

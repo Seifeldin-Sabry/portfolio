@@ -7,7 +7,6 @@ import {Button} from "@/components/ui/button"
 import {BlogSearch} from "@/components/blog-search"
 import {AnimatedCard} from "@/components/animated-card"
 import type {BlogPost} from "@/lib/blogs"
-import {formatDate} from "@/lib/utils"
 
 interface BlogClientProps {
     initialPosts: BlogPost[]
@@ -53,13 +52,14 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                 <>
                     <div className="grid gap-8 max-w-4xl mx-auto">
                         {paginatedPosts.map((post) => (
-                            <AnimatedCard key={post.slug}>
+                            <AnimatedCard>
                                 <Link href={`/blog/${post.slug}`}>
                                     <Card
                                         className="hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-800 hover:border-gray-600"
                                     >
                                         <CardContent className="p-6">
-                                            <div className="text-sm text-gray-500 mb-2">{formatDate(post.date)}</div>
+                                            <div className="text-sm text-gray-500 mb-2"
+                                            >{post.date} - {post.timeToRead}</div>
                                             <h2 className="text-xl font-bold mb-2 transition-colors duration-300 hover:text-primary">
                                                 {post.title}
                                             </h2>
