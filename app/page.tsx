@@ -19,7 +19,7 @@ export default function Home() {
                         <p className="text-xl md:text-2xl font-bold mb-4">Hi, I'm Seif!</p>
                         <h1 className="text-4xl md:text-6xl font-bold mb-4">Software Engineer</h1>
                         <p className="text-xl mb-8 text-gray-300">
-                            I help teams build web applications and implement AI solutions.
+                            Passionate about building impactful software solutions
                         </p>
                         <div className="flex gap-4 flex-wrap">
                             <Button variant="outline" asChild>
