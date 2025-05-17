@@ -1,7 +1,8 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
-import {formatDate} from "date-fns";
+import {parseDate} from "@/lib/utils";
+import {parse} from "date-fns";
 
 const blogsDirectory = path.join(process.cwd(), "data/blogs")
 const fileExtension = ".mdx"
@@ -10,10 +11,14 @@ export interface BlogPost {
     slug: string
     title: string
     date: string
+    time: string
+    timeToRead: string
     excerpt: string
     content: string
     tags: string[]
 }
+
+const DATE_FORMAT = "do LLL yyyy" // Example: "1st Jan 2023"
 
 function parseBlog(fileName: string) {
     const slug = fileName.replace(/\.mdx$/, "")
@@ -32,13 +37,15 @@ function parseBlog(fileName: string) {
             ? [matterResult.data.tags]
             : []
 
-    const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
+    const date = parseDate(matterResult.data.date, DATE_FORMAT)
 
     // Combine the data with the slug
     return {
         slug,
         title: matterResult.data.title || "Untitled",
         date,
+        time: matterResult.data.time || "",
+        timeToRead: matterResult.data.timeToRead || "",
         excerpt: matterResult.data.excerpt || "",
         content: matterResult.content,
         tags
@@ -46,19 +53,19 @@ function parseBlog(fileName: string) {
 }
 
 export function getSortedBlogPosts(): BlogPost[] {
-    // Get file names under /data/blog
     const fileNames = fs.readdirSync(blogsDirectory)
     const allBlogData = fileNames
         .filter((fileName) => fileName.endsWith(fileExtension))
         .map(parseBlog)
 
-    // Sort posts by date
     return allBlogData.sort((a, b) => {
-        if (a.date < b.date) {
-            return 1
-        } else {
-            return -1
+        const getDateTime = (post: BlogPost) => {
+            const date = post.date
+            const time = post.time ?? "00:00"
+            return parse(`${date} ${time}`, "dd-MM-yyyy HH:mm", new Date()).getTime()
         }
+
+        return getDateTime(b) < getDateTime(a) ? 1 : -1
     })
 }
 
@@ -88,7 +95,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
                 ? [matterResult.data.tags]
                 : []
 
-        const date = formatDate(matterResult.data.date || new Date().toISOString(), "yyyy-dd-MM")
+        const date = parseDate(matterResult.data.date, DATE_FORMAT)
 
         // Combine the data with the slug and contentHtml
         return {
