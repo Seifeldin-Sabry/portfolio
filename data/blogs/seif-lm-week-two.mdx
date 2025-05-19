@@ -80,8 +80,24 @@ Well, you can just sign up, get the free $20 credits, choose a GPU and create an
 
 The next steps would be:
 1. Connecting to the instance via SSH
-2. Installing the required packages
-3. Uploading the script and running it (don't forget the env!)
+2. SCPing your files (dependencies, env file, script, etc.) to the instance
+3. Make sure python is installed and the requirements are installed
 
-The next week(s) I will be focusing on designing the agentic architecture, testing the queries with similarity scoring and mapping out what I want to do with these embeddings
+For people who struggle to use the terminal for SSH, thundercloud also offers a VScode extension. I just used the terminal for speed of use.
+4. Run the script and wait for it to finish
+5. double check the embeddings are in the vector database
+6. Shut down the instance to avoid being charged
+
+![Script Logs](/assets/blogs/thundercloud-script.png)
+
+![Supabase DB](/assets/blogs/script-supabase-results.png)
+
+As you can see the chunks have all been inserted into the vector database. The embeddings are stored in the `embedding` column and the metadata is stored in the `metadata` column.
+
+The next week(s) I will be focusing on designing the agentic architecture, testing the queries with similarity scoring and mapping out what I want to do with these embeddings.
+
+The TODO list for next week is:
+- [ ] experiment with similarity score and rankings of embeddings
+- [ ] finetune a small model with the Nvidia code reasoning dataset
+- [ ] create an agentic architecture, try out memory and long-term memory
 
