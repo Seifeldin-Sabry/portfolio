@@ -123,7 +123,7 @@ export const projects: Project[] = [
         description: "A JavaFX-based implementation of the Qwirkle board game, featuring a user-friendly interface and a rule based AI opponent.",
         technologies: ["Java", "PostgreSQL"],
         github: "https://github.com/Seifeldin-Sabry/Connect-4/tree/main",
-        liveDemo: "https://qwirkle-website.vercel.app/"
+        liveDemo: "https://qwirkle-website.vercel.app/",
         challenges: [
             "Persisting game state across sessions",
         ],
