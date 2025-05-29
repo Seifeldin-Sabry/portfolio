@@ -15,4 +15,4 @@ jobs:
     steps:
       - name: Ping Upstash
         run: |
-          curl $UPSTASH_REDIS_REST_URL -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" -X POST -d 'PING'
+          curl ${UPSTASH_REDIS_REST_URL}GET/foo -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" -H "Upstash-Encoding: base64"
