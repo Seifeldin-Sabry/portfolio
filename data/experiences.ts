@@ -11,20 +11,6 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
-    id: "ai-engineer",
-    role: "AI Engineer",
-    company: "Trensition",
-    companyLogo: "/assets/logos/trensition_logo.jpg",
-    period: "Sep 2024 - Dec 2024",
-    description:
-      "Developed fullstack UI for the SaaS product and introduced a new NLP processing engine for the product.",
-    achievements: [
-      "Full stack development and maintaining SaaS with Angular and FastAPI",
-      "Working on the AI Engine for extraction of NLP components like GPE’s to enrich our data",
-    ],
-    technologies: ["AngularJS", "FastAPI", "TypeScript", "Python", "NLP"],
-  },
-  {
     id: "ai-engineer-intern",
     role: "Data Science Intern",
     company: "Sparklink",
