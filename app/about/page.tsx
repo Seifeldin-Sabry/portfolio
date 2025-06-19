@@ -1,7 +1,7 @@
 import Image from "next/image"
 import {Button} from "@/components/ui/button"
 import Link from "next/link"
-import {Calendar, Download} from "lucide-react"
+import {Calendar} from "lucide-react"
 
 export default function AboutPage() {
     return (
@@ -30,11 +30,6 @@ export default function AboutPage() {
                     </p>
 
                     <div className="flex gap-4 flex-wrap">
-                        <Button asChild>
-                            <Link href="/assets/resume/CV%20-%20Seif.pdf" className="flex items-center gap-2">
-                                <Download size={16} /> Download Resume
-                            </Link>
-                        </Button>
                         <Button variant="outline" asChild>
                             <Link href="/contact" className="flex items-center gap-2">
                                 <Calendar size={16} /> Contact Me
@@ -119,7 +114,7 @@ export default function AboutPage() {
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <h2 className="text-2xl font-bold mb-6 text-center">Personal Interests</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
