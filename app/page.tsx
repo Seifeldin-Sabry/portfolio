@@ -44,6 +44,28 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Quick Facts Section */}
+            <section className="py-16 bg-gray-50">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold mb-8 text-center text-black">Quick Facts</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-md">
+                            <span className="text-4xl text-primary">🚗</span>
+                            <p className="text-lg text-black">I have a driving license</p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-md">
+                            <span className="text-4xl text-primary">📚</span>
+                            <p className="text-lg text-black">Distance Learning a double master's degree (UDIMA)</p>
+                        </div>
+                        <div className="flex items-center gap-4 bg-white p-4 rounded-lg shadow-md">
+                            <span className="text-4xl text-primary">💼</span>
+                            <p className="text-lg text-black">Open to hybrid or fully remote opportunities</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
             {/* Skills Preview */}
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4">
