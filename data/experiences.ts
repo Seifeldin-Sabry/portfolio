@@ -11,6 +11,16 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
+    id: "software-engineer",
+    role: "Software Engineer",
+    company: "Qfacts",
+    companyLogo: "/assets/logos/qfacts_logo.jpeg",
+    period: "July 2025 - Present",
+    description:
+      "Qfacts is a QMS management company providing a wide variety of features and streamlining Quality Assurance and Auditing across the board for big and small companies. Soon Qfacts will leverage the beaty of AI to provide more advanced features to help increase efficiency and productivity",
+    technologies: ["Typescript", "NestJS", "GCP", "Pulumi"],
+  },
+  {
     id: "ai-engineer-intern",
     role: "Data Science Intern",
     company: "Sparklink",
