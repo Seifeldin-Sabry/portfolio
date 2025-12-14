@@ -18,9 +18,9 @@ export default function Footer() {
                         <SocialButton icon={<Github size={20} />} link={githubLink} />
                         <SocialButton icon={<Linkedin size={20} />} link={linkedInLink} />
                         <Button variant="default" size="icon" asChild>
-                            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+                            <a href="mailto:ismailseifeldin54@gmail.com" className="text-gray-600 hover:text-gray-900">
                                 <Mail size={20} />
-                            </Link>
+                            </a>
                         </Button>
                     </div>
                 </div>
