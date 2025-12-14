@@ -85,7 +85,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -97,7 +97,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-16 bg-muted/30">
+      <section className="py-8 bg-muted/30">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -120,7 +120,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="py-16">
+      <section className="py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
