@@ -27,19 +27,19 @@ export default function Home() {
             <motion.div variants={fadeIn('right', 0)} className="flex-1">
               <motion.p
                 variants={fadeIn('up', 0.1)}
-                className="text-xl md:text-2xl font-bold mb-4"
+                className="text-2xl md:text-3xl font-semibold mb-4"
               >
                 Hi, I'm Seif!
               </motion.p>
               <motion.h1
                 variants={fadeIn('up', 0.2)}
-                className="text-4xl md:text-6xl font-bold mb-4"
+                className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
               >
                 Software Engineer
               </motion.h1>
               <motion.p
                 variants={fadeIn('up', 0.3)}
-                className="text-xl mb-8 text-muted-foreground"
+                className="text-xl md:text-2xl mb-8 text-muted-foreground leading-relaxed"
               >
                 Passionate about building impactful software solutions
               </motion.p>

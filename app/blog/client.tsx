@@ -11,7 +11,6 @@ import type {BlogPost} from "@/lib/blogs"
 import {parse, formatDistanceToNow} from "date-fns"
 import {motion} from "framer-motion"
 import {staggerContainer, fadeIn} from "@/lib/animations"
-import {GlowingLoopEffect} from "@/components/glowing-loop-effect"
 import {BLOG_CONFIG} from "@/lib/constants"
 import {parseBlogDate} from "@/lib/date-utils"
 
@@ -133,32 +132,31 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                 <AnimatedCard>
                                     <Link href={`/blog/${post.slug}`} className="block cursor-pointer">
                                         <Card
-                                            className="hover:shadow-xl transition-all duration-300 border border-gray-800 hover:border-gray-600 relative group"
+                                            className="group relative overflow-hidden border-2 border-border hover:border-primary/40 bg-card transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
                                         >
-                                            <GlowingLoopEffect
-                                                spread={40}
-                                                borderWidth={3}
-                                                rotationSpeed={4}
-                                                variant="default"
-                                            />
-                                            <CardContent className="p-6">
-                                                <div className="text-sm text-gray-500 mb-2">
+                                            <CardContent className="p-8">
+                                                <div className="text-sm text-muted-foreground mb-3 font-medium">
                                                     {formatDistanceToNow(
                                                         parseBlogDate(post.date, post.time),
                                                         { addSuffix: true }
-                                                    )} • {post.timeToRead}
+                                                    )}
+                                                    <span className="mx-2">•</span>
+                                                    {post.timeToRead}
                                                 </div>
-                                                <h2 className="text-xl font-bold mb-2 transition-colors duration-300 hover:text-primary">
+                                                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
                                                     {post.title}
                                                 </h2>
-                                                <p className="text-foreground mb-4">{post.excerpt}</p>
+                                                <p className="text-base text-foreground/90 mb-6 leading-relaxed line-clamp-3">
+                                                    {post.excerpt}
+                                                </p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {post.tags.map((tag) => (
-                                                        <span key={tag}
-                                                              className="bg-muted text-muted-foreground px-2 py-1 rounded-full text-xs"
+                                                        <span
+                                                            key={tag}
+                                                            className="bg-primary/15 text-primary border border-primary/30 px-3 py-1.5 rounded-full text-xs font-medium"
                                                         >
-                                {tag}
-                              </span>
+                                                            {tag}
+                                                        </span>
                                                     ))}
                                                 </div>
                                             </CardContent>

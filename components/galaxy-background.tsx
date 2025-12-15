@@ -31,22 +31,22 @@ export default function GalaxyBackground() {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      // Render static starfield
+      // Render static starfield with lighter gradient
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#0a0a1f');
-      gradient.addColorStop(0.5, '#1a1a3e');
-      gradient.addColorStop(1, '#0f0f2e');
+      gradient.addColorStop(0, '#0f0f2a');
+      gradient.addColorStop(0.5, '#1f1f4a');
+      gradient.addColorStop(1, '#15153a');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw static stars
-      for (let i = 0; i < 100; i++) {
+      // Draw static stars (fewer for reduced motion)
+      for (let i = 0; i < 50; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
         const size = Math.random() * 2 + 0.5;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.fill();
       }
       return;
@@ -54,7 +54,7 @@ export default function GalaxyBackground() {
 
     const initParticles = () => {
       const isMobile = window.innerWidth < 768;
-      const particleCount = isMobile ? 75 : 200;
+      const particleCount = isMobile ? 25 : 50; // Reduced from 75/200
 
       particlesRef.current = [];
       for (let i = 0; i < particleCount; i++) {
@@ -68,7 +68,7 @@ export default function GalaxyBackground() {
           vx: 0,
           vy: 0,
           size: Math.random() * 2 + 0.5,
-          opacity: Math.random() * 0.5 + 0.3,
+          opacity: Math.random() * 0.3 + 0.15, // Reduced from 0.5 + 0.3
           twinkleSpeed: Math.random() * 0.02 + 0.01,
           twinkleOffset: Math.random() * Math.PI * 2,
         });
@@ -91,52 +91,33 @@ export default function GalaxyBackground() {
 
     window.addEventListener('resize', handleResize);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
     // Animation loop
     let time = 0;
     const animate = () => {
       time += 0.01;
 
-      // Create gradient background
+      // Create gradient background (lighter colors for better contrast)
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#0a0a1f');
-      gradient.addColorStop(0.5, '#1a1a3e');
-      gradient.addColorStop(1, '#0f0f2e');
+      gradient.addColorStop(0, '#0f0f2a');   // Lightened from #0a0a1f
+      gradient.addColorStop(0.5, '#1f1f4a'); // Lightened from #1a1a3e
+      gradient.addColorStop(1, '#15153a');   // Lightened from #0f0f2e
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
       particlesRef.current.forEach((particle) => {
-        // Calculate distance from mouse
-        const dx = mouseRef.current.x - particle.x;
-        const dy = mouseRef.current.y - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDistance = 150;
-
-        // Repel from mouse
-        if (distance < maxDistance) {
-          const force = (maxDistance - distance) / maxDistance;
-          const angle = Math.atan2(dy, dx);
-          particle.vx -= Math.cos(angle) * force * 2;
-          particle.vy -= Math.sin(angle) * force * 2;
-        }
-
-        // Apply velocity
+        // Subtle drift animation only (removed mouse repulsion)
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Return to base position
-        particle.vx += (particle.baseX - particle.x) * 0.01;
-        particle.vy += (particle.baseY - particle.y) * 0.01;
+        // Gentle return to base position
+        particle.vx += (particle.baseX - particle.x) * 0.005;
+        particle.vy += (particle.baseY - particle.y) * 0.005;
 
         // Apply friction
-        particle.vx *= 0.95;
-        particle.vy *= 0.95;
+        particle.vx *= 0.98;
+        particle.vy *= 0.98;
 
         // Keep particles in bounds
         if (particle.x < 0 || particle.x > canvas.width) {
@@ -148,9 +129,9 @@ export default function GalaxyBackground() {
           particle.y = particle.baseY;
         }
 
-        // Twinkling effect
+        // Twinkling effect (reduced intensity by 50%)
         const twinkle = Math.sin(time * particle.twinkleSpeed + particle.twinkleOffset);
-        const currentOpacity = particle.opacity + twinkle * 0.3;
+        const currentOpacity = particle.opacity + twinkle * 0.15; // Reduced from 0.3
 
         // Draw particle
         ctx.beginPath();
@@ -158,7 +139,7 @@ export default function GalaxyBackground() {
         ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity})`;
         ctx.fill();
 
-        // Add glow for larger particles
+        // Add glow for larger particles (softer, warmer color)
         if (particle.size > 1.5) {
           ctx.beginPath();
           ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
@@ -170,8 +151,9 @@ export default function GalaxyBackground() {
             particle.y,
             particle.size * 2
           );
-          glowGradient.addColorStop(0, `rgba(147, 197, 253, ${currentOpacity * 0.3})`);
-          glowGradient.addColorStop(1, 'rgba(147, 197, 253, 0)');
+          // Warmer, subtler glow (reduced from 0.3 to 0.12 opacity)
+          glowGradient.addColorStop(0, `rgba(200, 200, 255, ${currentOpacity * 0.12})`);
+          glowGradient.addColorStop(1, 'rgba(200, 200, 255, 0)');
           ctx.fillStyle = glowGradient;
           ctx.fill();
         }
@@ -184,7 +166,6 @@ export default function GalaxyBackground() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

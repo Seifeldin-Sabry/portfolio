@@ -37,7 +37,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 
   const currentProject = projects[currentIndex];
   const theme = projectThemes[currentIndex % projectThemes.length];
-  const hasDetails = currentProject.challenges || currentProject.solutions || currentProject.features || currentProject.results;
+  const hasDetails = currentProject.challenges || currentProject.solutions || currentProject.generalFeatures || currentProject.myContributions || currentProject.results;
 
   return (
     <div className="relative w-full px-4 py-12">
@@ -52,7 +52,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
         <CarouselContent>
           {projects.map((project, index) => {
             const itemTheme = projectThemes[index % projectThemes.length];
-            const itemHasDetails = project.challenges || project.solutions || project.features || project.results;
+            const itemHasDetails = project.challenges || project.solutions || project.generalFeatures || project.myContributions || project.results;
 
             return (
               <CarouselItem key={project.id}>
@@ -165,12 +165,23 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                                         </div>
                                       )}
 
-                                      {project.features && (
+                                      {project.generalFeatures && (
                                         <div>
-                                          <h4 className="font-semibold text-sm mb-2">Features</h4>
+                                          <h4 className="font-semibold text-sm mb-2">General Features</h4>
                                           <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                                            {project.features.map((feature, i) => (
+                                            {project.generalFeatures.map((feature, i) => (
                                               <li key={i}>{feature}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      )}
+
+                                      {project.myContributions && (
+                                        <div>
+                                          <h4 className="font-semibold text-sm mb-2">My Contributions</h4>
+                                          <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                                            {project.myContributions.map((contribution, i) => (
+                                              <li key={i}>{contribution}</li>
                                             ))}
                                           </ul>
                                         </div>
