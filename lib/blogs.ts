@@ -3,6 +3,7 @@ import path from "path"
 import matter from "gray-matter"
 import {parseDate} from "@/lib/utils";
 import {parse} from "date-fns";
+import readingTime from "reading-time";
 
 const blogsDirectory = path.join(process.cwd(), "data/blogs")
 const fileExtension = ".mdx"
@@ -19,6 +20,7 @@ export interface BlogPost {
 }
 
 const DATE_FORMAT = "do LLL yyyy" // Example: "1st Jan 2023"
+const READING_SPEED_WPM = 150 // Technical content reading speed (words per minute)
 
 function parseBlog(fileName: string) {
     const slug = fileName.replace(/\.mdx$/, "")
@@ -39,13 +41,20 @@ function parseBlog(fileName: string) {
 
     const date = parseDate(matterResult.data.date, DATE_FORMAT)
 
+    // Calculate reading time automatically (150 WPM for technical content)
+    const stats = readingTime(matterResult.content, { wordsPerMinute: READING_SPEED_WPM })
+    const autoTimeToRead = `${Math.ceil(stats.minutes)} min read`
+
+    // Use manual timeToRead from frontmatter if provided, otherwise use calculated
+    const timeToRead = matterResult.data.timeToRead || autoTimeToRead
+
     // Combine the data with the slug
     return {
         slug,
         title: matterResult.data.title || "Untitled",
         date,
         time: matterResult.data.time || "",
-        timeToRead: matterResult.data.timeToRead || "",
+        timeToRead,
         excerpt: matterResult.data.excerpt || "",
         content: matterResult.content,
         tags
@@ -65,7 +74,8 @@ export function getSortedBlogPosts(): BlogPost[] {
             return parse(`${date} ${time}`, "dd-MM-yyyy HH:mm", new Date()).getTime()
         }
 
-        return getDateTime(b) < getDateTime(a) ? 1 : -1
+        // Sort descending (newest first)
+        return getDateTime(b) - getDateTime(a)
     })
 }
 
@@ -97,11 +107,20 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
         const date = parseDate(matterResult.data.date, DATE_FORMAT)
 
+        // Calculate reading time automatically (150 WPM for technical content)
+        const stats = readingTime(matterResult.content, { wordsPerMinute: READING_SPEED_WPM })
+        const autoTimeToRead = `${Math.ceil(stats.minutes)} min read`
+
+        // Use manual timeToRead from frontmatter if provided, otherwise use calculated
+        const timeToRead = matterResult.data.timeToRead || autoTimeToRead
+
         // Combine the data with the slug and contentHtml
         return {
             slug,
             title: matterResult.data.title || "Untitled",
             date,
+            time: matterResult.data.time || "",
+            timeToRead,
             excerpt: matterResult.data.excerpt || "",
             content: matterResult.content,
             tags
