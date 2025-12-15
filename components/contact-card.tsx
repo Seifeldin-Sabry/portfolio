@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Github, Linkedin, MapPin, Mail } from 'lucide-react';
 import { SocialButton } from '@/components/social-button';
 import { calendlyLink, githubLink, linkedInLink } from '@/lib/links';
+import { GlowingLoopEffect } from '@/components/glowing-loop-effect';
 
 interface ContactCardProps {
   className?: string;
@@ -11,7 +12,13 @@ interface ContactCardProps {
 
 export default function ContactCard({ className = '' }: ContactCardProps) {
   return (
-    <Card className={`border-2 border-primary/20 bg-card/80 backdrop-blur-sm ${className}`}>
+    <Card className={`border-2 border-primary/20 bg-card/80 backdrop-blur-sm ${className} relative`}>
+      <GlowingLoopEffect
+        spread={40}
+        borderWidth={3}
+        rotationSpeed={5.5}
+        variant="default"
+      />
       <CardContent className="p-12">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold mb-4">Let's Connect</h2>

@@ -11,12 +11,15 @@ import type {BlogPost} from "@/lib/blogs"
 import {parse, formatDistanceToNow} from "date-fns"
 import {motion} from "framer-motion"
 import {staggerContainer, fadeIn} from "@/lib/animations"
+import {GlowingLoopEffect} from "@/components/glowing-loop-effect"
+import {BLOG_CONFIG} from "@/lib/constants"
+import {parseBlogDate} from "@/lib/date-utils"
 
 interface BlogClientProps {
     initialPosts: BlogPost[]
 }
 
-const POSTS_PER_PAGE = 6
+const POSTS_PER_PAGE = BLOG_CONFIG.POSTS_PER_PAGE
 
 export default function BlogClient({initialPosts}: BlogClientProps) {
     const [searchQuery, setSearchQuery] = useState("")
@@ -60,7 +63,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
         // Apply date range filter
         if (selectedDateRange) {
             results = results.filter((post) => {
-                const postDate = parse(`${post.date} ${post.time || "00:00"}`, "do LLL yyyy HH:mm", new Date())
+                const postDate = parseBlogDate(post.date, post.time)
                 const fromDate = selectedDateRange.from ? new Date(selectedDateRange.from) : null
                 const toDate = selectedDateRange.to ? new Date(selectedDateRange.to) : null
 
@@ -128,33 +131,39 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                 variants={fadeIn('up', index * 0.1)}
                             >
                                 <AnimatedCard>
-                                    <Link href={`/blog/${post.slug}`}>
-                                        <Card
-                                            className="hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-800 hover:border-gray-600"
-                                        >
+                                    <Card
+                                        className="hover:shadow-xl transition-all duration-300 border border-gray-800 hover:border-gray-600 relative group"
+                                    >
+                                        <GlowingLoopEffect
+                                            spread={40}
+                                            borderWidth={3}
+                                            rotationSpeed={4}
+                                            variant="default"
+                                        />
+                                        <Link href={`/blog/${post.slug}`}>
                                             <CardContent className="p-6">
                                                 <div className="text-sm text-gray-500 mb-2">
                                                     {formatDistanceToNow(
-                                                        parse(`${post.date} ${post.time || "00:00"}`, "do LLL yyyy HH:mm", new Date()),
+                                                        parseBlogDate(post.date, post.time),
                                                         { addSuffix: true }
                                                     )} • {post.timeToRead}
                                                 </div>
                                                 <h2 className="text-xl font-bold mb-2 transition-colors duration-300 hover:text-primary">
                                                     {post.title}
                                                 </h2>
-                                                <p className="text-white mb-4">{post.excerpt}</p>
+                                                <p className="text-foreground mb-4">{post.excerpt}</p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {post.tags.map((tag) => (
                                                         <span key={tag}
-                                                              className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs"
+                                                              className="bg-muted text-muted-foreground px-2 py-1 rounded-full text-xs"
                                                         >
                                 {tag}
                               </span>
                                                     ))}
                                                 </div>
                                             </CardContent>
-                                        </Card>
-                                    </Link>
+                                        </Link>
+                                    </Card>
                                 </AnimatedCard>
                             </motion.div>
                         ))}

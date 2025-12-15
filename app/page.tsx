@@ -70,15 +70,58 @@ export default function Home() {
               <motion.div
                 whileHover={{ scale: 1.05, rotate: 2 }}
                 transition={{ duration: 0.3 }}
-                className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary shadow-2xl shadow-primary/20"
+                className="relative w-64 h-64 md:w-80 md:h-80"
               >
-                <Image
-                  src="/assets/images/seif.jpg"
-                  alt="Profile"
-                  fill
-                  className="object-cover"
-                  priority
+                {/* Sound wave rings */}
+                <motion.div
+                  animate={{
+                    scale: [1, 1.15],
+                    opacity: [0.6, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                  }}
+                  className="absolute inset-0 rounded-full border-2 border-primary/40"
                 />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.15],
+                    opacity: [0.4, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: 1,
+                  }}
+                  className="absolute inset-0 rounded-full border-2 border-primary/30"
+                />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.15],
+                    opacity: [0.2, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                    delay: 2,
+                  }}
+                  className="absolute inset-0 rounded-full border-2 border-primary/20"
+                />
+
+                {/* Profile image container */}
+                <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-primary shadow-2xl shadow-primary/20">
+                  <Image
+                    src="/assets/images/seif.jpg"
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
