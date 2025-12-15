@@ -16,7 +16,7 @@ export default function ContactCard({ className = '' }: ContactCardProps) {
       <GlowingLoopEffect
         spread={40}
         borderWidth={3}
-        rotationSpeed={5.5}
+        rotationSpeed={4}
         variant="default"
       />
       <CardContent className="p-12">

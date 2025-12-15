@@ -131,16 +131,16 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                 variants={fadeIn('up', index * 0.1)}
                             >
                                 <AnimatedCard>
-                                    <Card
-                                        className="hover:shadow-xl transition-all duration-300 border border-gray-800 hover:border-gray-600 relative group"
-                                    >
-                                        <GlowingLoopEffect
-                                            spread={40}
-                                            borderWidth={3}
-                                            rotationSpeed={4}
-                                            variant="default"
-                                        />
-                                        <Link href={`/blog/${post.slug}`}>
+                                    <Link href={`/blog/${post.slug}`} className="block cursor-pointer">
+                                        <Card
+                                            className="hover:shadow-xl transition-all duration-300 border border-gray-800 hover:border-gray-600 relative group"
+                                        >
+                                            <GlowingLoopEffect
+                                                spread={40}
+                                                borderWidth={3}
+                                                rotationSpeed={4}
+                                                variant="default"
+                                            />
                                             <CardContent className="p-6">
                                                 <div className="text-sm text-gray-500 mb-2">
                                                     {formatDistanceToNow(
@@ -162,8 +162,8 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                                     ))}
                                                 </div>
                                             </CardContent>
-                                        </Link>
-                                    </Card>
+                                        </Card>
+                                    </Link>
                                 </AnimatedCard>
                             </motion.div>
                         ))}
