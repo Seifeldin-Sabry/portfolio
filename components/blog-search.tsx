@@ -24,7 +24,7 @@ export function BlogSearch({onSearch}: BlogSearchProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2 w-full max-w-md mx-auto mb-8">
+        <form onSubmit={handleSubmit} className="flex gap-2 w-full">
             <div className="relative flex-grow">
                 <Input
                     type="text"

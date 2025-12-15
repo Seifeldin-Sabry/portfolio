@@ -25,6 +25,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
         <head>
             <link rel="icon" href="/assets/icons/favico.png" sizes="any" />
+            <link rel="alternate" type="application/rss+xml" title="Seif Ismail's Blog RSS Feed" href="/feed.xml" />
         </head>
         <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>

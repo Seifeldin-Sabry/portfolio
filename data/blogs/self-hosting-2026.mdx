@@ -1,0 +1,527 @@
+---
+title: "Self-Hosting in 2026: Running My Projects 24/7 from My Garage with an N100"
+date: "14-12-2025"
+time: "21:00"
+excerpt: "Breaking free from cloud dependency: My plan to host personal projects, databases, and services 24/7 using an N100 mini PC from my garage. Cost savings, full control, and lessons learned."
+tags: ["Self-Hosting", "Homelab", "DevOps", "Infrastructure", "2026", "N100"]
+---
+
+Cloud services are convenient, but they come with strings attached: recurring costs, vendor lock-in, data privacy concerns, and limited control. For 2026, I'm making a change. I'm buying an N100 mini PC and hosting my personal projects, databases, and development environments 24/7 from my garage.
+
+I've already had my share of tinkering with servers—managing them with scripts, setting up local CI/CD pipelines, and getting my hands dirty with infrastructure. But this time, I'm taking it to the next level with a dedicated homelab setup that runs 24/7.
+
+Let me share why I'm doing this, how I'm planning it, and what I've learned from my past server adventures.
+
+## Why Self-Host?
+
+### The Cloud Cost Problem
+
+Let's do the math on what I'm currently paying for cloud services:
+
+**Monthly cloud costs:**
+- Vercel Pro: $20/month
+- Database hosting (Neon/PlanetScale): $25/month
+- Redis (Upstash): $10/month
+- Object storage: $5/month
+- **Total: $60/month = $720/year**
+
+That's $720 annually for services I could run on hardware I own.
+
+**N100 Mini PC cost:**
+- Initial purchase: ~$200
+- Annual electricity (24/7 at 15W): ~$20/year
+- **Year 1 total: $220**
+- **Year 2+ total: $20/year**
+
+**Break-even point: 4 months**. After that, I'm saving $700+ annually.
+
+### Full Control Over My Data
+
+When you use cloud services, your data lives on someone else's servers:
+- You don't control backups
+- You rely on their uptime SLAs
+- Your data might be analyzed or scanned
+- API changes can break your app
+- Service shutdowns force migrations (RIP Heroku free tier)
+
+With self-hosting:
+- I control exactly where data is stored
+- I own the backup strategy
+- No third-party has access
+- No surprise policy changes
+- Full transparency into what's running
+
+### Deepening My Infrastructure Skills
+
+I've already learned a lot from managing servers with custom scripts and setting up CI/CD workflows locally. Running my own 24/7 infrastructure will deepen these skills even further:
+- Advanced Linux system administration
+- Production-grade Docker orchestration
+- Complex networking and reverse proxy configurations
+- Security hardening beyond the basics
+- Real-time monitoring and observability
+- Robust backup and disaster recovery strategies
+
+Every challenge I overcome adds to my engineering toolkit.
+
+### Avoiding Vendor Lock-In
+
+Ever tried migrating from one cloud provider to another? It's painful:
+- Proprietary APIs and services
+- Different configuration formats
+- Complex migration paths
+- Potential downtime
+
+Self-hosted infrastructure is portable. If something breaks or I want to upgrade, I can move everything to new hardware without changing application code.
+
+## Why the N100?
+
+The Intel N100 is perfect for homelabs: 4 cores at 3.4GHz, 6W TDP, DDR5 support, and costs ~$200-250. At 15W average power draw, I'm looking at just ~$20/year in electricity versus $130+ for traditional servers.
+
+## Projects I'll Be Hosting
+
+Here's what I'm planning to run on this machine:
+
+### 1. Personal Projects & Side Projects
+
+All my side projects currently deployed on Vercel:
+- Portfolio website (Next.js)
+- Experimental apps
+- API services
+- Static sites
+
+**Why self-host these?**
+- No serverless cold starts
+- Full control over caching
+- Can use features that Vercel limits (like long-running processes)
+- No bandwidth charges
+
+### 2. Databases
+
+**PostgreSQL**: Primary database for all projects
+- Full control over configuration
+- No connection limits
+- Can use extensions freely
+- Proper backup strategy
+
+**Redis**: Caching and session storage
+- No rate limits
+- Full in-memory dataset
+- Pub/sub for real-time features
+
+**Maybe MongoDB**: For document storage experiments
+
+### 3. Development & Services
+
+**GitLab/Gitea**: Self-hosted Git with CI/CD
+**VS Code Server**: Code from any browser
+**Plausible Analytics**: Privacy-friendly, GDPR-compliant analytics
+**Uptime Kuma**: Service monitoring with alerts
+**MinIO**: S3-compatible object storage
+**Caddy**: Reverse proxy with automatic HTTPS
+
+## Infrastructure Setup
+
+Here's how I'm architecting this homelab:
+
+### The Network Layer
+
+**Internet Connection**: Home fiber (1Gbps down, 100Mbps up)
+
+**DNS**: Cloudflare for domain management
+
+**Reverse Proxy**: Caddy as the main entry point
+```caddyfile
+blog.seifismail.com {
+    reverse_proxy localhost:3000
+}
+
+api.seifismail.com {
+    reverse_proxy localhost:8080
+}
+```
+
+**Firewall**: Only expose ports 80, 443 (HTTPS), and 22 (SSH with key-only auth)
+
+### Containerization Strategy
+
+Everything runs in Docker containers for isolation and portability:
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+    restart: unless-stopped
+```
+
+**Benefits of Docker:**
+- Easy updates (just pull new images)
+- Isolated environments
+- Reproducible setups
+- Resource limits
+- Easy backup (just copy volumes)
+
+### Storage Strategy
+
+**System**: 512GB NVMe SSD
+- Operating system (Ubuntu Server)
+- Docker images and containers
+- Application code
+
+**Future expansion**: External SSD via USB-C
+- Media files
+- Backups
+- Larger databases
+
+### Automated Backups
+
+Daily backups are critical for self-hosting:
+
+```bash
+#!/bin/bash
+# Daily backup script
+
+# Backup PostgreSQL databases
+docker exec postgres pg_dumpall -U postgres > /backups/postgres-$(date +%F).sql
+
+# Backup Docker volumes
+tar -czf /backups/volumes-$(date +%F).tar.gz /var/lib/docker/volumes/
+
+# Upload to cloud storage (encrypted)
+rclone copy /backups/ remote:backups/homelab --checksum
+
+# Keep only last 30 days locally
+find /backups/ -mtime +30 -delete
+```
+
+**3-2-1 Backup Rule:**
+- 3 copies of data
+- 2 different media types (local SSD + external drive)
+- 1 offsite backup (encrypted cloud storage)
+
+### Monitoring & Observability
+
+**Prometheus + Grafana**: Metrics and dashboards
+- CPU, RAM, disk usage
+- Container stats
+- Network traffic
+- Application metrics
+
+**Uptime Kuma**: Service monitoring
+- HTTP endpoint checks
+- Docker container status
+- Email/Discord alerts
+
+**Portainer**: Docker GUI
+- Visual container management
+- Easy updates and logs
+- Resource monitoring
+
+## Challenges & Solutions
+
+Self-hosting isn't without challenges. Here's what I'm prepared for:
+
+### Challenge 1: Dynamic IP Address
+
+**Problem**: Most home ISPs give you a dynamic IP that changes periodically
+
+**Solution**: Cloudflare Tunnel (free!)
+```bash
+# Creates secure tunnel to Cloudflare
+cloudflared tunnel create homelab
+cloudflared tunnel route dns homelab blog.seifismail.com
+```
+
+**Benefits:**
+- No open ports needed
+- Automatic DNS updates
+- DDoS protection
+- Works behind CGNAT
+
+**Alternative**: Dynamic DNS (DDNS) services like DuckDNS
+
+### Challenge 2: Power Outages
+
+**Problem**: Power loss = downtime
+
+**Solutions:**
+1. **UPS (Uninterruptible Power Supply)**: $50-100
+   - Gives 30-60 minutes of runtime
+   - Time for graceful shutdown
+   - Protects against power surges
+
+2. **Monitoring**: Get notified of power issues
+   ```bash
+   # UPS monitoring with NUT (Network UPS Tools)
+   apt install nut
+   ```
+
+3. **Auto-restart**: Configure services to auto-start after power returns
+   ```bash
+   # Enable Docker containers to restart
+   restart: unless-stopped
+   ```
+
+### Challenge 3: Internet Reliability
+
+**Problem**: ISP outages mean your services are offline
+
+**Solutions:**
+1. **Status page**: External monitoring (UptimeRobot) that shows current status
+
+2. **Failover for critical services**: Keep authentication on cloud provider
+
+3. **Mobile hotspot backup**: For short-term outages
+
+4. **Accept the tradeoff**: Personal projects don't need 99.9% uptime
+
+### Challenge 4: Security
+
+**Problem**: Self-hosting means you're responsible for security
+
+**Solutions:**
+
+**1. Firewall configuration:**
+```bash
+# UFW (Uncomplicated Firewall)
+ufw default deny incoming
+ufw default allow outgoing
+ufw allow 22/tcp  # SSH (key-only)
+ufw allow 80/tcp  # HTTP
+ufw allow 443/tcp # HTTPS
+ufw enable
+```
+
+**2. SSH hardening:**
+```bash
+# /etc/ssh/sshd_config
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+Port 22  # Or non-standard port
+```
+
+**3. Automatic security updates:**
+```bash
+# Unattended upgrades
+apt install unattended-upgrades
+dpkg-reconfigure unattended-upgrades
+```
+
+**4. Fail2ban**: Blocks brute-force attempts
+```bash
+apt install fail2ban
+```
+
+**5. Regular updates:**
+```bash
+# Update Docker images weekly
+docker-compose pull
+docker-compose up -d
+```
+
+### Challenge 5: Heat & Noise
+
+**Problem**: Servers generate heat and noise
+
+**Solution**: N100's low TDP solves both
+- Fanless models available
+- Minimal heat output
+- Can sit anywhere in the house
+
+## The Migration Plan
+
+Here's my step-by-step rollout for 2026:
+
+### Phase 1: Setup & Testing (Month 1)
+
+- Purchase N100 mini PC
+- Install Ubuntu Server
+- Configure Docker and Docker Compose
+- Set up Caddy reverse proxy
+- Test with one simple project
+
+### Phase 2: Core Infrastructure (Month 2)
+
+- Deploy PostgreSQL
+- Deploy Redis
+- Set up automated backups
+- Configure monitoring (Prometheus + Grafana)
+- Set up Cloudflare Tunnel
+
+### Phase 3: Migrate Projects (Month 3-4)
+
+- Migrate portfolio website
+- Migrate APIs and services
+- Set up development tools (GitLab/VS Code Server)
+- Deploy analytics (Plausible)
+- Test everything under load
+
+### Phase 4: Optimization (Month 5-6)
+
+- Fine-tune performance
+- Implement caching strategies
+- Set up alerting
+- Document everything
+- Create runbooks for common issues
+
+## Cost Comparison: Year 1 vs Cloud
+
+Let's compare the real costs:
+
+### Cloud (Current State)
+- Hosting: $240
+- Database: $300
+- Redis: $120
+- Storage: $60
+- **Total: $720/year**
+
+### Self-Hosted (Year 1)
+- Hardware: $220
+- Electricity: $20
+- Backup storage (cloud): $24
+- Domain: $12
+- **Total: $276/year**
+
+**Year 1 savings: $444**
+
+### Self-Hosted (Year 2+)
+- Electricity: $20
+- Backup storage: $24
+- Domain: $12
+- **Total: $56/year**
+
+**Year 2+ savings: $664/year**
+
+## Long-Term Vision
+
+This N100 is just the start. Future expansion possibilities:
+
+**Hardware upgrades:**
+- Second N100 for redundancy/failover
+- NAS for larger storage needs
+- Dedicated media server
+
+**Software expansion:**
+- Email server (Mailcow)
+- VPN (WireGuard)
+- Home automation (Home Assistant)
+- Personal cloud storage (Nextcloud)
+- Password manager (Vaultwarden)
+
+**Learning opportunities:**
+- Kubernetes cluster
+- Infrastructure as Code (Terraform)
+- Advanced networking
+- Security hardening
+- Performance optimization
+
+## Why Now?
+
+Several factors make 2026 perfect for self-hosting:
+
+1. **Efficient hardware**: N100 brings server capabilities at laptop power consumption
+
+2. **Mature tooling**: Docker, Cloudflare Tunnels, and monitoring tools are production-ready
+
+3. **Rising cloud costs**: Inflation hits cloud services too
+
+4. **Privacy concerns**: Data sovereignty matters more than ever
+
+5. **Skills development**: DevOps and infrastructure skills are highly valuable
+
+## Is Self-Hosting Right for You?
+
+Self-hosting makes sense if you:
+- ✅ Run multiple personal projects
+- ✅ Want to learn infrastructure/DevOps
+- ✅ Care about data privacy
+- ✅ Have reliable home internet
+- ✅ Don't need 99.99% uptime for personal projects
+- ✅ Enjoy tinkering and optimization
+
+**Don't self-host if you:**
+- ❌ Need guaranteed enterprise SLAs
+- ❌ Run business-critical production apps
+- ❌ Don't want to handle security/maintenance
+- ❌ Need geo-distributed deployments
+- ❌ Want zero-effort infrastructure
+
+## Expected Challenges
+
+I'm going in with eyes open, and my past server experience has taught me what to expect:
+
+**Troubleshooting at 2 AM**: When something breaks, there's no support team to call. It's just me, my terminal, and logs. I've been there before with my local setups, and I know the drill.
+
+**Maintenance burden**: Updates, security patches, monitoring—it all takes time. From my experience managing servers with scripts, I know this is ongoing work, not a one-time setup.
+
+**Production uptime pressure**: Unlike my local dev setups, this will be serving real traffic 24/7. That's a whole new level of responsibility.
+
+**Initial setup time**: Getting everything configured perfectly takes longer than clicking "Deploy" on Vercel. But I'd rather spend time upfront learning than paying monthly forever.
+
+But here's the thing: **these challenges are features, not bugs**. Each problem I solve adds to my skillset. Each late-night debugging session makes me a better engineer. I've seen this firsthand from my previous server work—the struggles become strengths.
+
+## The Bottom Line
+
+Self-hosting isn't for everyone, and that's okay. But for me, the benefits far outweigh the costs:
+
+**Financial**: Save $600+ annually
+**Technical**: Learn invaluable infrastructure skills
+**Control**: Full ownership of data and services
+**Privacy**: No third-party access to my data
+**Flexibility**: No arbitrary limits or quotas
+**Fun**: There's real satisfaction in running your own infrastructure
+
+## Resources
+
+**Communities:** r/selfhosted, r/homelab
+**Tools:** Awesome Self-Hosted list, DockSTARTer, YunoHost
+**Learning:** Ubuntu Server tutorials, Docker docs, Linux hardening guides
+
+## Conclusion
+
+2026 is my year of breaking free from cloud dependency. An N100 mini PC, running 24/7 from my garage, powering my projects, databases, and development environments.
+
+Is it more work than using cloud services? Yes.
+Will I encounter challenges? Absolutely, and I've learned that from managing servers before.
+Am I going to deepen my infrastructure skills even further? You bet.
+
+But here's what I know from my experience: at the end of 2026, I'll have:
+- Saved hundreds of dollars annually
+- Taken my server management skills to the next level
+- Full control over my data and infrastructure
+- A foundation I can build on for years to come
+- Real production experience running 24/7 services
+
+The cloud isn't going anywhere, and I'll still use it for specific use cases. But for my personal projects, development environments, and experimentation? That's coming home. I've dabbled with servers and CI/CD before—now it's time to go all-in.
+
+**Want to follow my self-hosting journey?** I'll be documenting everything on this blog and on [Twitter](https://twitter.com/seifismail). Tips, challenges, wins, and failures—I'll share it all.
+
+**Already self-hosting?** I'd love to hear about your setup! Drop me an [email](mailto:seifsabry99@gmail.com) or connect on [Twitter](https://twitter.com/seifismail).
+
+---
+
+**Update**: After publishing this post, I ordered the N100! Stay tuned for setup guides, configuration walkthroughs, and real-world performance updates throughout 2026.
+
+Here's to owning our infrastructure. 🏠🖥️
