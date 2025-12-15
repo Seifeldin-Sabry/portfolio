@@ -32,17 +32,17 @@ export default function GalaxyBackground() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       // Render static starfield with lighter gradient
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      const gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
       gradient.addColorStop(0, '#0f0f2a');
       gradient.addColorStop(0.5, '#1f1f4a');
       gradient.addColorStop(1, '#15153a');
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
       // Draw static stars (fewer for reduced motion)
       for (let i = 0; i < 50; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
         const size = Math.random() * 2 + 0.5;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, Math.PI * 2);
@@ -58,8 +58,8 @@ export default function GalaxyBackground() {
 
       particlesRef.current = [];
       for (let i = 0; i < particleCount; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
         particlesRef.current.push({
           x,
           y,
@@ -76,8 +76,19 @@ export default function GalaxyBackground() {
     };
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      // Set canvas size to physical pixels for sharp rendering
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+
+      // Set display size to logical pixels
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+
+      // Scale context to account for device pixel ratio
+      ctx.scale(dpr, dpr);
+
       initParticles();
     };
 
@@ -97,13 +108,13 @@ export default function GalaxyBackground() {
       time += 0.01;
 
       // Create gradient background (lighter colors for better contrast)
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      const gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
       gradient.addColorStop(0, '#0f0f2a');   // Lightened from #0a0a1f
       gradient.addColorStop(0.5, '#1f1f4a'); // Lightened from #1a1a3e
       gradient.addColorStop(1, '#15153a');   // Lightened from #0f0f2e
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
       // Update and draw particles
       particlesRef.current.forEach((particle) => {
@@ -120,12 +131,12 @@ export default function GalaxyBackground() {
         particle.vy *= 0.98;
 
         // Keep particles in bounds
-        if (particle.x < 0 || particle.x > canvas.width) {
-          particle.baseX = Math.random() * canvas.width;
+        if (particle.x < 0 || particle.x > window.innerWidth) {
+          particle.baseX = Math.random() * window.innerWidth;
           particle.x = particle.baseX;
         }
-        if (particle.y < 0 || particle.y > canvas.height) {
-          particle.baseY = Math.random() * canvas.height;
+        if (particle.y < 0 || particle.y > window.innerHeight) {
+          particle.baseY = Math.random() * window.innerHeight;
           particle.y = particle.baseY;
         }
 
@@ -176,7 +187,6 @@ export default function GalaxyBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10 pointer-events-none"
-      style={{ width: '100%', height: '100%' }}
     />
   );
 }

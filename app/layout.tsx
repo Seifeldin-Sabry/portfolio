@@ -16,6 +16,12 @@ export const metadata: Metadata = {
     description: "Seifeldin Sabry | Software Engineer | Portfolio",
 }
 
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+}
+
 export default function RootLayout({
                                        children,
                                    }: Readonly<{

@@ -143,7 +143,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                                     <span className="mx-2">•</span>
                                                     {post.timeToRead}
                                                 </div>
-                                                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
+                                                <h2 className="text-xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
                                                     {post.title}
                                                 </h2>
                                                 <p className="text-base text-foreground/90 mb-6 leading-relaxed line-clamp-3">
