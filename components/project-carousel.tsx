@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Github, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from '@/components/ui/carousel';
 import { Project } from '@/data/projects';
-import { useEffect } from 'react';
 
 interface ProjectCarouselProps {
   projects: Project[];
@@ -62,25 +61,21 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className={`${itemTheme.bg} ${itemTheme.border} border-2 backdrop-blur-sm overflow-hidden`}>
-                    <CardContent className="p-0">
-                      <div className="flex flex-col lg:flex-row">
-                        <div className="lg:w-1/2 bg-gradient-to-br from-muted/50 to-muted/20 p-8 flex items-center justify-center min-h-[400px]">
-                          <div className="text-center">
-                            <div className={`w-24 h-24 mx-auto mb-6 rounded-full ${itemTheme.bg} flex items-center justify-center border-2 ${itemTheme.border}`}>
-                              <ExternalLink className={`w-12 h-12 ${itemTheme.accent}`} />
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-4">Video Demo Placeholder</p>
-                            <p className="text-xs text-muted-foreground">Full project demonstration coming soon</p>
-                          </div>
-                        </div>
-
-                        <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+                  <Card className={`${itemTheme.bg} ${itemTheme.border} border-2 backdrop-blur-sm`}>
+                    <CardContent className="p-8 lg:p-12">
                           <div className="mb-6">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                               <span className="text-sm text-muted-foreground">
                                 Project {index + 1} of {projects.length}
                               </span>
+                              {project.status && (
+                                <Badge
+                                  variant={project.status === "In Production" ? "default" : project.status === "Live" ? "default" : "secondary"}
+                                  className={project.status === "Coming Soon" ? "opacity-70" : ""}
+                                >
+                                  {project.status}
+                                </Badge>
+                              )}
                             </div>
                             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${itemTheme.accent}`}>
                               {project.title}
@@ -197,8 +192,6 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                               </AnimatePresence>
                             </>
                           )}
-                        </div>
-                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
