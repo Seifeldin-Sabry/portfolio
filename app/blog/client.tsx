@@ -8,7 +8,7 @@ import {BlogSearch} from "@/components/blog-search"
 import {BlogFilters} from "@/components/blog-filters"
 import {AnimatedCard} from "@/components/animated-card"
 import type {BlogPost} from "@/lib/blogs"
-import {parse} from "date-fns"
+import {parse, formatDistanceToNow} from "date-fns"
 import {motion} from "framer-motion"
 import {staggerContainer, fadeIn} from "@/lib/animations"
 
@@ -133,8 +133,12 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                             className="hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-800 hover:border-gray-600"
                                         >
                                             <CardContent className="p-6">
-                                                <div className="text-sm text-gray-500 mb-2"
-                                                >{post.date} - {post.timeToRead}</div>
+                                                <div className="text-sm text-gray-500 mb-2">
+                                                    {formatDistanceToNow(
+                                                        parse(`${post.date} ${post.time || "00:00"}`, "do LLL yyyy HH:mm", new Date()),
+                                                        { addSuffix: true }
+                                                    )} • {post.timeToRead}
+                                                </div>
                                                 <h2 className="text-xl font-bold mb-2 transition-colors duration-300 hover:text-primary">
                                                     {post.title}
                                                 </h2>

@@ -81,7 +81,7 @@ The Intel N100 is perfect for homelabs: 4 cores at 3.4GHz, 6W TDP, DDR5 support,
 
 Here's what I'm planning to run on this machine:
 
-### 1. Personal Projects & Side Projects
+### Personal Projects & Side Projects
 
 All my side projects currently deployed on Vercel:
 - Portfolio website (Next.js)
@@ -95,7 +95,7 @@ All my side projects currently deployed on Vercel:
 - Can use features that Vercel limits (like long-running processes)
 - No bandwidth charges
 
-### 2. Databases
+### Databases
 
 **PostgreSQL**: Primary database for all projects
 - Full control over configuration
@@ -110,7 +110,7 @@ All my side projects currently deployed on Vercel:
 
 **Maybe MongoDB**: For document storage experiments
 
-### 3. Development & Services
+### Development & Services
 
 **GitLab/Gitea**: Self-hosted Git with CI/CD
 **VS Code Server**: Code from any browser
@@ -266,35 +266,37 @@ cloudflared tunnel route dns homelab blog.seifismail.com
 **Problem**: Power loss = downtime
 
 **Solutions:**
-1. **UPS (Uninterruptible Power Supply)**: $50-100
-   - Gives 30-60 minutes of runtime
-   - Time for graceful shutdown
-   - Protects against power surges
 
-2. **Monitoring**: Get notified of power issues
+**1) UPS (Uninterruptible Power Supply)**: $50-100
+- Gives 30-60 minutes of runtime
+- Time for graceful shutdown
+- Protects against power surges
+
+**2) Monitoring**: Get notified of power issues
    ```bash
    # UPS monitoring with NUT (Network UPS Tools)
    apt install nut
    ```
 
-3. **Auto-restart**: Configure services to auto-start after power returns
-   ```bash
-   # Enable Docker containers to restart
-   restart: unless-stopped
-   ```
+**3) Auto-restart**: Configure services to auto-start after power returns
+```bash
+# Enable Docker containers to restart
+restart: unless-stopped
+```
 
 ### Challenge 3: Internet Reliability
 
 **Problem**: ISP outages mean your services are offline
 
 **Solutions:**
-1. **Status page**: External monitoring (UptimeRobot) that shows current status
 
-2. **Failover for critical services**: Keep authentication on cloud provider
+**1) Status page**: External monitoring (UptimeRobot) that shows current status
 
-3. **Mobile hotspot backup**: For short-term outages
+**2) Failover for critical services**: Keep authentication on cloud provider
 
-4. **Accept the tradeoff**: Personal projects don't need 99.9% uptime
+**3) Mobile hotspot backup**: For short-term outages
+
+**4) Accept the tradeoff**: Personal projects don't need 99.9% uptime
 
 ### Challenge 4: Security
 
@@ -302,7 +304,7 @@ cloudflared tunnel route dns homelab blog.seifismail.com
 
 **Solutions:**
 
-**1. Firewall configuration:**
+**1) Firewall configuration:**
 ```bash
 # UFW (Uncomplicated Firewall)
 ufw default deny incoming
@@ -313,7 +315,7 @@ ufw allow 443/tcp # HTTPS
 ufw enable
 ```
 
-**2. SSH hardening:**
+**2) SSH hardening:**
 ```bash
 # /etc/ssh/sshd_config
 PermitRootLogin no
@@ -322,19 +324,19 @@ PubkeyAuthentication yes
 Port 22  # Or non-standard port
 ```
 
-**3. Automatic security updates:**
+**3) Automatic security updates:**
 ```bash
 # Unattended upgrades
 apt install unattended-upgrades
 dpkg-reconfigure unattended-upgrades
 ```
 
-**4. Fail2ban**: Blocks brute-force attempts
+**4) Fail2ban**: Blocks brute-force attempts
 ```bash
 apt install fail2ban
 ```
 
-**5. Regular updates:**
+**5) Regular updates:**
 ```bash
 # Update Docker images weekly
 docker-compose pull
@@ -441,15 +443,15 @@ This N100 is just the start. Future expansion possibilities:
 
 Several factors make 2026 perfect for self-hosting:
 
-1. **Efficient hardware**: N100 brings server capabilities at laptop power consumption
+**1) Efficient hardware**: N100 brings server capabilities at laptop power consumption
 
-2. **Mature tooling**: Docker, Cloudflare Tunnels, and monitoring tools are production-ready
+**2) Mature tooling**: Docker, Cloudflare Tunnels, and monitoring tools are production-ready
 
-3. **Rising cloud costs**: Inflation hits cloud services too
+**3) Rising cloud costs**: Inflation hits cloud services too
 
-4. **Privacy concerns**: Data sovereignty matters more than ever
+**4) Privacy concerns**: Data sovereignty matters more than ever
 
-5. **Skills development**: DevOps and infrastructure skills are highly valuable
+**5) Skills development**: DevOps and infrastructure skills are highly valuable
 
 ## Is Self-Hosting Right for You?
 

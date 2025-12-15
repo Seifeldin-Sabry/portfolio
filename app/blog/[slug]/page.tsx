@@ -18,13 +18,14 @@ const options: Options = {
 
 
 interface BlogPostPageProps {
-    params: {
+    params: Promise<{
         slug: string
-    }
+    }>
 }
 
 export async function generateMetadata({params}: BlogPostPageProps): Promise<Metadata> {
-    const post = await getBlogPostBySlug(params.slug)
+    const { slug } = await params
+    const post = await getBlogPostBySlug(slug)
 
     if (!post) {
         return {
@@ -44,7 +45,8 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPostPage({params}: BlogPostPageProps) {
-    const post = await getBlogPostBySlug(params.slug)
+    const { slug } = await params
+    const post = await getBlogPostBySlug(slug)
 
     if (!post) {
         notFound()

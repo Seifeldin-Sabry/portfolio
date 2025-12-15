@@ -71,7 +71,7 @@ export function getSortedBlogPosts(): BlogPost[] {
         const getDateTime = (post: BlogPost) => {
             const date = post.date
             const time = post.time ?? "00:00"
-            return parse(`${date} ${time}`, "dd-MM-yyyy HH:mm", new Date()).getTime()
+            return parse(`${date} ${time}`, "do LLL yyyy HH:mm", new Date()).getTime()
         }
 
         // Sort descending (newest first)
