@@ -12,8 +12,9 @@ export function AnimatedCard({children, className = ""}: AnimatedCardProps) {
     return (
         <motion.div
             whileHover={{
-                scale: 1.03,
-                transition: {duration: 0.2},
+                y: -8,
+                scale: 1.02,
+                transition: {duration: 0.3},
             }}
             className={`transform transition-all duration-300 ${className}`}
         >

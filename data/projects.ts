@@ -7,129 +7,157 @@ export interface Project {
     liveDemo?: string
     challenges?: string[]
     solutions?: string[]
-    features?: string[]
+    generalFeatures?: string[]
+    myContributions?: string[]
     results?: string[]
+    status?: "In Production" | "Live" | "Coming Soon"
 }
 
 export const projects: Project[] = [
     {
-        id: "airene",
-        title: "Air quality Anomaly Detection",
+        id: "portfolio",
+        title: "Personal Portfolio & Blog",
         description:
-            "A web application that uses machine learning to detect anomalies in air quality data, providing real-time alerts and visualizations.",
-        technologies: ["FastAPI", "Python", "SvelteKit", "Java Spring Boot", "Azure Container Apps", "Azure Functions", "Azure Blob Storage"],
-        github: "https://github.com/orgs/Airene-Org/repositories",
-        challenges: [
-            "Collecting and processing large volumes of air quality data from multiple sources",
-            "Implementing real-time anomaly detection algorithms",
-            "Creating an intuitive user interface for data visualization",
-            "Ensuring scalability and performance of the application",
-            "Using messaging queues for data processing",
-            "migrating millions of rows of data from one database to another",
+            "Modern portfolio website showcasing projects and technical writing. Built with cutting-edge web technologies and optimized for performance.",
+        technologies: [
+            "Next.js",
+            "TypeScript",
+            "Tailwind CSS",
+            "MDX",
+            "Framer Motion",
+            "shadcn/ui",
+            "Zod",
         ],
-        solutions: [
-            "Used Azure Cosmos DB for efficient data storage and retrieval",
-            "Implemented machine learning algorithms for anomaly detection using Python",
-            "Developed a user-friendly dashboard using SvelteKit for data visualization",
-            "Utilized Azure Functions for serverless computing to handle data processing",
-            "Used message brokers to transfer data between different components of the application",
-            "implemented an ETL script that connects two Azure components and allows them to communicate with almost no cost"
+        github: "https://github.com/Seifeldin-Sabry/portfolio",
+        status: "Live",
+        generalFeatures: [
+            "Blog system with MDX support for rich content",
+            "Advanced search and filtering for blog posts",
+            "Responsive design with smooth animations",
+            "Type-safe data validation with Zod",
         ],
-        features: [
-            "Real-time air quality monitoring",
-            "Anomaly detection with alerts",
-            "Data visualization dashboard",
-            "Subscription-based notifications"
+        myContributions: [
+            "Built from scratch with Next.js 16 and TypeScript",
+            "Implemented glowing border effects and glass morphism design",
+            "Created centralized blog parsing system with Zod validation",
+            "Optimized for performance with perfect Lighthouse scores",
+            "Coming soon: AI chat interface for interactive conversations",
+            "Coming soon: Built-in markdown editor for content creation",
         ],
         results: [
-            "Users receive anomaly notifications from locations of interest (within a radius they define)",
-            "Hourly data collection from multiple sources",
-            "Smooth user experience with a responsive web application",
+            "Fast, SEO-optimized static site with perfect Lighthouse scores",
+            "Comprehensive blog with technical articles and project documentation",
+            "Clean, maintainable codebase following best practices",
         ],
     },
     {
-        id: "whatsapp-clone",
-        title: "WhatsApp Clone",
+        id: "stackbase",
+        title: "Stackbase - Resource Sharing Platform",
         description:
-            "A full-stack web application that replicates the core features of WhatsApp, including real-time messaging, and user authentication. Made with the goal to practice Google cloud networking and security.",
-        technologies: ["VueJs", "Node.js", "Express", "Postgres", "Google Cloud Platform"],
-        github: "https://github.com/Seifeldin-Sabry/chatapp-infra",
-        challenges: [
-            "Implementing secure user authentication and authorization",
-            "Ensuring real-time messaging functionality",
-            "Google cloud networking and security",
+            "Organization-based resource sharing and management system designed for team collaboration and efficient resource allocation. Features in-app document rendering for Google and Microsoft suites.",
+        technologies: [
+            "Next.js",
+            "TypeScript",
+            "PostgreSQL",
+            "Drizzle ORM",
+            "TanStack Query",
         ],
-        solutions: [
-            "Used JWT for secure user authentication and authorization",
-            "Implemented WebSocket for real-time messaging",
-            "Utilized Google Cloud services for hosting and security using VPC, IAM, and Cloud SQL",
+        status: "Coming Soon",
+        generalFeatures: [
+            "Per-organization resource management with departmental collections",
+            "In-app Google Suite document rendering (Docs, Sheets, Slides)",
+            "In-app Microsoft Office rendering (Word, Excel, PowerPoint)",
+            "Advanced markdown viewing and preview",
+            "Fine-grained access control and permissions",
+            "Resource sharing across teams and departments",
+            "Real-time collaboration features",
         ],
-        features: [
-            "User authentication and profile management",
-            "Websocket for real-time messaging",
+        myContributions: [
+            "Architected full-stack application with Next.js and Drizzle ORM",
+            "Implemented Google Suite and Microsoft Office in-app rendering",
+            "Built admin dashboard for members and resource management",
+            "Designed collection-based organization system for departments",
+            "Developed fine-grained permission and access control system",
         ],
     },
     {
-        id: "real-estate-scraper",
-        title: "Real Estate Scraper",
-        description: "A web scraper that collects real estate listings from multiple websites, providing a unified interface for searching and filtering properties.",
-        technologies: ["Python", "Selenium", "SQLAlchemy", "FastAPI"],
-        github: "https://github.com/Seifeldin-Sabry/real-estate-scraper",
-        challenges: [
-            "Handling dynamic content loading and pagination",
-            "Handling various image formats and sizes",
+        id: "qfacts",
+        title: "Qfacts.be",
+        description:
+            "Cloud-based Electronic Quality Management System (eQMS) designed for small and medium-sized pharmaceutical and biotech companies across Europe. GAMP 5 validated platform offering comprehensive quality management capabilities with affordable, transparent pricing tailored for SMEs in highly regulated industries.",
+        technologies: [
+            "React",
+            "TypeScript",
+            "Node.js",
+            "Express",
+            "Google Cloud Platform",
+            "GAMP 5 Validation",
+            "Rich Text Editors",
         ],
-        solutions: [
-            "Implemented headless browsing with Selenium to navigate dynamic pages",
-            "Used SQLAlchemy for efficient database interactions and data storage",
-            "Implemented caching for frequently accessed data to reduce load times",
-            "Deleting outdated properties from the database to maintain data integrity",
+        liveDemo: "https://qfacts.be",
+        status: "Live",
+        generalFeatures: [
+            "Cloud-based eQMS for pharmaceutical & biotech SMEs",
+            "Document management with version control and approval workflows",
+            "Quality event and complaint reporting system",
+            "Investigation management and CAPA (Corrective and Preventive Actions)",
+            "Change control management for regulatory compliance",
+            "Training management and completion tracking",
+            "Role-based access control (Admin, Action Owners, QA Users, Operators)",
+            "GAMP 5 validated for global regulatory compliance",
         ],
-        features: [
-            "Real-time data scraping and updates",
-            "Advanced search and filtering options",
-            "User authentication and profile management: TBD",
-            "Email notifications for new listings: TBD",
-            "UI for customising scraping parameters: TBD",
+        myContributions: [
+            "Internal onboarding system for streamlined employee integration",
+            "Rich text editing capabilities for document creation",
+            "Modern UI/UX refresh for improved platform usability",
+            "Advanced document export functionality",
+            "Coming soon: AI-powered workflow optimizations",
         ],
         results: [
-            "A telegram bot that notifies users of new listings",
+            "Accessible quality management for European pharmaceutical SMEs",
+            "Regulatory-compliant platform built on modern technology stack",
+            "Streamlined quality processes without compromising compliance",
         ],
     },
     {
-        id: "qwirkle",
-        title: "Qwirkle",
-        description: "A JavaFX-based implementation of the Qwirkle board game, featuring a user-friendly interface and a rule based AI opponent.",
-        technologies: ["Java", "PostgreSQL"],
-        github: "https://github.com/Seifeldin-Sabry/Connect-4/tree/main",
-        liveDemo: "https://qwirkle-website.vercel.app/",
-        challenges: [
-            "Persisting game state across sessions",
+        id: "etoile-events",
+        title: "etoile.events",
+        description:
+            "The operating system for tech events—AI-native platform combining event discovery, organizer tools, and venue marketplace. Optimized for attendees to find events worth their time, not just another ticket-selling marketplace.",
+        technologies: [
+            "FastAPI",
+            "Python",
+            "Neon",
+            "PostgreSQL",
+            "Novu",
+            "Clerk",
+            "PostHog",
+            "CI/CD",
+            "Docker",
         ],
-        solutions: [
-            "Implemented a PostgreSQL database to store game states and user profiles",
+        liveDemo: "https://etoile.events",
+        status: "Live",
+        generalFeatures: [
+            "AI-native event discovery and curation",
+            "Event legitimacy verification with AI guardrails",
+            "Calendar integration (iCal, Google Calendar)",
+            "Multi-channel notification system",
+            "Clerk authentication with SSO support",
+            "PostHog analytics for product insights",
         ],
-        features: [
-            "Save and Load Progress",
-            "Leaderboard and user profiles",
+        myContributions: [
+            "Architected and built FastAPI backend with real-time processing",
+            "Set up Neon serverless PostgreSQL with automated backups",
+            "Integrated multi-channel notification system via Novu",
+            "Implemented Clerk authentication with SSO support",
+            "Configured PostHog analytics for product insights",
+            "Established automated CI/CD pipeline with GitHub Actions and Docker",
         ],
-    },
-    {
-        id: "connect-four",
-        title: "Connect Four",
-        description: "A CLI-based Connect Four game with a simple AI opponent.",
-        technologies: ["Java", "PostgreSQL"],
-        github: "https://github.com/Seifeldin-Sabry/Connect-4/tree/main",
-        liveDemo: "https://connect-4-lovat.vercel.app/",
-        challenges: [
-            "Persisting game state across sessions",
-        ],
-        solutions: [
-            "Implemented a PostgreSQL database to store game states and user profiles",
-        ],
-        features: [
-            "Save and Load Progress",
-            "Leaderboard and user profiles",
+        results: [
+            "Central database for tech events across Europe",
+            "Reduced event discovery friction for communities",
+            "Operating system infrastructure for event organizers",
+            "Built by organizers, for organizers (10+ events/year experience)",
         ],
     },
 ]
