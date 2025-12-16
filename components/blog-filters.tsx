@@ -36,8 +36,6 @@ export function BlogFilters({
     const [isOpen, setIsOpen] = useState(false)
     const [tagSearch, setTagSearch] = useState("")
 
-    const MAX_VISIBLE_TAGS = 5
-
     const activeFilterCount =
         selectedTags.length + (selectedDateRange ? 1 : 0)
 
@@ -48,10 +46,6 @@ export function BlogFilters({
             tag.toLowerCase().includes(tagSearch.toLowerCase())
         )
     }, [availableTags, tagSearch])
-
-    // First 5 tags to show directly
-    const visibleTags = availableTags.slice(0, MAX_VISIBLE_TAGS)
-    const hasMoreTags = availableTags.length > MAX_VISIBLE_TAGS
 
     const toggleTag = (tag: string) => {
         if (selectedTags.includes(tag)) {
@@ -110,7 +104,7 @@ export function BlogFilters({
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="w-96 p-0"
+                    className="w-[calc(100vw-2rem)] sm:w-96 p-0"
                     align="start"
                     sideOffset={8}
                 >
@@ -143,80 +137,54 @@ export function BlogFilters({
                             <div className="flex items-center gap-2">
                                 <Tag className="h-4 w-4 text-muted-foreground" />
                                 <label className="text-sm font-medium">Tags</label>
+                                {selectedTags.length > 0 && (
+                                    <Badge variant="secondary" className="ml-auto">
+                                        {selectedTags.length}
+                                    </Badge>
+                                )}
                             </div>
 
-                            {/* First 5 tags as badges */}
-                            <div className="flex flex-wrap gap-2">
-                                <AnimatePresence>
-                                    {visibleTags.map((tag, index) => (
-                                        <motion.div
-                                            key={tag}
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: index * 0.03 }}
-                                        >
-                                            <Badge
-                                                variant={
-                                                    selectedTags.includes(tag)
-                                                        ? "default"
-                                                        : "outline"
-                                                }
-                                                className="cursor-pointer hover:bg-accent transition-all duration-200 gap-1"
-                                                onClick={() => toggleTag(tag)}
-                                            >
-                                                {tag}
-                                                {selectedTags.includes(tag) && (
-                                                    <X className="h-3 w-3" />
-                                                )}
-                                            </Badge>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* More tags dropdown if there are more than 5 */}
-                            {hasMoreTags && (
-                                <div className="space-y-2 pt-2 border-t">
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            placeholder="Search tags..."
-                                            value={tagSearch}
-                                            onChange={(e) => setTagSearch(e.target.value)}
-                                            className="pl-9 h-9"
-                                        />
-                                    </div>
-                                    <ScrollArea className="h-[200px] rounded-md border p-3">
-                                        <div className="space-y-2">
-                                            {filteredTags.length === 0 ? (
-                                                <p className="text-sm text-muted-foreground text-center py-4">
-                                                    No tags found
-                                                </p>
-                                            ) : (
-                                                filteredTags.map((tag) => (
-                                                    <div
-                                                        key={tag}
-                                                        className="flex items-center space-x-2 hover:bg-accent p-2 rounded-md cursor-pointer transition-colors"
-                                                        onClick={() => toggleTag(tag)}
-                                                    >
-                                                        <Checkbox
-                                                            id={`tag-${tag}`}
-                                                            checked={selectedTags.includes(tag)}
-                                                            onCheckedChange={() => toggleTag(tag)}
-                                                        />
-                                                        <label
-                                                            htmlFor={`tag-${tag}`}
-                                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
-                                                        >
-                                                            {tag}
-                                                        </label>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    </ScrollArea>
+                            {/* Search and multi-select dropdown for all tags */}
+                            <div className="space-y-2">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search tags..."
+                                        value={tagSearch}
+                                        onChange={(e) => setTagSearch(e.target.value)}
+                                        className="pl-9 h-9"
+                                    />
                                 </div>
-                            )}
+                                <ScrollArea className="h-[200px] rounded-md border p-3">
+                                    <div className="space-y-2">
+                                        {filteredTags.length === 0 ? (
+                                            <p className="text-sm text-muted-foreground text-center py-4">
+                                                No tags found
+                                            </p>
+                                        ) : (
+                                            filteredTags.map((tag) => (
+                                                <div
+                                                    key={tag}
+                                                    className="flex items-center space-x-2 hover:bg-accent p-2 rounded-md cursor-pointer transition-colors"
+                                                    onClick={() => toggleTag(tag)}
+                                                >
+                                                    <Checkbox
+                                                        id={`tag-${tag}`}
+                                                        checked={selectedTags.includes(tag)}
+                                                        onCheckedChange={() => toggleTag(tag)}
+                                                    />
+                                                    <label
+                                                        htmlFor={`tag-${tag}`}
+                                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+                                                    >
+                                                        {tag}
+                                                    </label>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </ScrollArea>
+                            </div>
                         </div>
 
                         {/* Date Range Section */}
