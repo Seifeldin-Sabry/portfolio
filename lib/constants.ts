@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   BASE_URL:
     process.env.NEXT_PUBLIC_FRONTEND_URL || "https://www.seifeldinismail.com",
   AUTHOR: "Seif-DX",
-  TITLE: "Seif-DX Portfolio",
+  TITLE: "Seif-DX",
 } as const;
 
 // UI Configuration

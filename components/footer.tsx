@@ -30,7 +30,7 @@ export default function Footer() {
                         className="text-center md:text-left"
                     >
                         <p className="text-sm text-muted-foreground mb-1">
-                            © {new Date().getFullYear()} Seif-DX Portfolio
+                            © {new Date().getFullYear()} Seif-DX
                         </p>
                         <p className="text-xs text-muted-foreground/70">
                             Crafted with passion and precision
