@@ -13,13 +13,12 @@ interface ProjectCarouselProps {
   projects: Project[];
 }
 
-const projectThemes = [
-  { bg: 'bg-blue-500/5', accent: 'text-blue-400', border: 'border-blue-500/30' },
-  { bg: 'bg-purple-500/5', accent: 'text-purple-400', border: 'border-purple-500/30' },
-  { bg: 'bg-pink-500/5', accent: 'text-pink-400', border: 'border-pink-500/30' },
-  { bg: 'bg-green-500/5', accent: 'text-green-400', border: 'border-green-500/30' },
-  { bg: 'bg-orange-500/5', accent: 'text-orange-400', border: 'border-orange-500/30' },
-];
+// Monochrome theme - no color variations needed
+const monochromeTheme = {
+  bg: 'bg-white/[0.02]',
+  border: 'border-white/10',
+  accent: 'text-white'
+};
 
 export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
@@ -36,7 +35,6 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
   }, [api]);
 
   const currentProject = projects[currentIndex];
-  const theme = projectThemes[currentIndex % projectThemes.length];
   const hasDetails = currentProject.challenges || currentProject.solutions || currentProject.generalFeatures || currentProject.myContributions || currentProject.results;
 
   return (
@@ -51,7 +49,6 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
       >
         <CarouselContent>
           {projects.map((project, index) => {
-            const itemTheme = projectThemes[index % projectThemes.length];
             const itemHasDetails = project.challenges || project.solutions || project.generalFeatures || project.myContributions || project.results;
 
             return (
@@ -59,9 +56,9 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Card className={`${itemTheme.bg} ${itemTheme.border} border-2 backdrop-blur-sm`}>
+                  <Card className={`${monochromeTheme.bg} ${monochromeTheme.border} border backdrop-blur-sm`}>
                     <CardContent className="p-8 lg:p-12">
                           <div className="mb-6">
                             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -77,7 +74,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                                 </Badge>
                               )}
                             </div>
-                            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${itemTheme.accent}`}>
+                            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${monochromeTheme.accent}`}>
                               {project.title}
                             </h2>
                             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
@@ -92,7 +89,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
                                 <Badge
                                   key={tech}
                                   variant="secondary"
-                                  className={`${itemTheme.bg} ${itemTheme.accent} border ${itemTheme.border}`}
+                                  className="bg-white/10 text-white border border-white/20"
                                 >
                                   {tech}
                                 </Badge>
@@ -237,10 +234,10 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
           <button
             key={index}
             onClick={() => api?.scrollTo(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full transition-all duration-200 ${
               index === currentIndex
-                ? `${theme.bg} ${theme.border} border-2 w-8`
-                : 'bg-muted border border-muted-foreground/20'
+                ? 'bg-white border-white border-2 w-8'
+                : 'bg-white/20 border border-white/30'
             }`}
             aria-label={`Go to project ${index + 1}`}
           />

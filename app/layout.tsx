@@ -5,7 +5,6 @@ import "./globals.css"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import {ThemeProvider} from "@/components/theme-provider"
-import ConditionalGalaxy from "@/components/conditional-galaxy"
 import MotionWrapper from "@/components/motion-wrapper"
 
 
@@ -36,8 +35,7 @@ export default function RootLayout({
         <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
             <MotionWrapper>
-                <ConditionalGalaxy />
-                <div className="flex flex-col min-h-screen">
+                <div className="flex flex-col min-h-screen bg-black">
                     <Navbar />
                     <main className="flex-grow">{children}</main>
                     <Footer />

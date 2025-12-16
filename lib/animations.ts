@@ -1,21 +1,21 @@
 import { Variants } from 'framer-motion';
 
-// Fade in from direction
+// Fade in from direction - simplified and subtle
 export const fadeIn = (direction: 'up' | 'down' | 'left' | 'right' = 'up', delay = 0): Variants => {
   return {
     hidden: {
       opacity: 0,
-      x: direction === 'left' ? -60 : direction === 'right' ? 60 : 0,
-      y: direction === 'up' ? 60 : direction === 'down' ? -60 : 0,
+      x: direction === 'left' ? -20 : direction === 'right' ? 20 : 0,
+      y: direction === 'up' ? 20 : direction === 'down' ? -20 : 0,
     },
     visible: {
       opacity: 1,
       x: 0,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.3,
         delay,
-        ease: [0.25, 0.25, 0.25, 0.75],
+        ease: [0.4, 0, 0.2, 1],
       },
     },
   };
@@ -34,69 +34,69 @@ export const staggerContainer = (staggerChildren = 0.1, delayChildren = 0): Vari
   };
 };
 
-// Scale in animation
+// Scale in animation - subtle
 export const scaleIn = (delay = 0): Variants => {
   return {
     hidden: {
       opacity: 0,
-      scale: 0.8,
+      scale: 0.95,
     },
     visible: {
       opacity: 1,
       scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.3,
         delay,
-        ease: [0.25, 0.25, 0.25, 0.75],
+        ease: [0.4, 0, 0.2, 1],
       },
     },
   };
 };
 
-// Slide in from side (for project cards)
+// Slide in from side - subtle
 export const slideIn = (direction: 'left' | 'right', delay = 0): Variants => {
   return {
     hidden: {
       opacity: 0,
-      x: direction === 'left' ? -100 : 100,
+      x: direction === 'left' ? -30 : 30,
     },
     visible: {
       opacity: 1,
       x: 0,
       transition: {
-        duration: 0.7,
+        duration: 0.4,
         delay,
-        ease: [0.25, 0.25, 0.25, 0.75],
+        ease: [0.4, 0, 0.2, 1],
       },
     },
   };
 };
 
-// Hover lift effect
+// Hover lift effect - minimal
 export const hoverLift = {
   rest: {
     y: 0,
     scale: 1,
   },
   hover: {
-    y: -8,
-    scale: 1.02,
+    y: -4,
+    scale: 1.01,
     transition: {
-      duration: 0.3,
-      ease: 'easeOut',
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
     },
   },
 };
 
-// Glow effect on hover
+// Glow effect on hover - monochrome, subtle
 export const glowOnHover = {
   rest: {
-    boxShadow: '0 0 0 rgba(147, 197, 253, 0)',
+    boxShadow: '0 0 0 rgba(255, 255, 255, 0)',
   },
   hover: {
-    boxShadow: '0 0 30px rgba(147, 197, 253, 0.4)',
+    boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
     transition: {
-      duration: 0.3,
+      duration: 0.2,
     },
   },
 };
@@ -115,73 +115,73 @@ export const typewriter = {
   },
 };
 
-// Rotate in animation
+// Rotate in animation - subtle
 export const rotateIn = (delay = 0): Variants => {
   return {
     hidden: {
       opacity: 0,
-      rotate: -10,
-      scale: 0.9,
+      rotate: -5,
+      scale: 0.97,
     },
     visible: {
       opacity: 1,
       rotate: 0,
       scale: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.3,
         delay,
-        ease: [0.25, 0.25, 0.25, 0.75],
+        ease: [0.4, 0, 0.2, 1],
       },
     },
   };
 };
 
-// Parallax scroll effect
+// Parallax scroll effect - subtle
 export const parallaxScroll = (offset: number) => {
   return {
     y: offset,
     transition: {
-      duration: 0.5,
-      ease: 'easeOut',
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
     },
   };
 };
 
-// Page transition
+// Page transition - subtle
 export const pageTransition = {
   initial: {
     opacity: 0,
-    y: 20,
+    y: 10,
   },
   animate: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.4,
-      ease: 'easeOut',
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
     },
   },
   exit: {
     opacity: 0,
-    y: -20,
+    y: -10,
     transition: {
-      duration: 0.3,
-      ease: 'easeIn',
+      duration: 0.2,
+      ease: [0.4, 0, 1, 1],
     },
   },
 };
 
-// Magnetic button effect
+// Magnetic button effect - minimal
 export const magneticButton = {
   rest: {
     x: 0,
     y: 0,
   },
   hover: {
-    scale: 1.05,
+    scale: 1.02,
     transition: {
-      duration: 0.3,
-      ease: 'easeOut',
+      duration: 0.2,
+      ease: [0.4, 0, 0.2, 1],
     },
   },
 };

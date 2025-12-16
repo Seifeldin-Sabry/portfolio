@@ -132,7 +132,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                 <AnimatedCard>
                                     <Link href={`/blog/${post.slug}`} className="block cursor-pointer">
                                         <Card
-                                            className="group relative overflow-hidden border-2 border-border hover:border-primary/40 bg-card transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
+                                            className="group relative overflow-hidden border border-white/10 hover:border-white/20 bg-card transition-all duration-200 hover:shadow-lg hover:shadow-white/5"
                                         >
                                             <CardContent className="p-8">
                                                 <div className="text-sm text-muted-foreground mb-3 font-medium">
@@ -143,7 +143,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                                     <span className="mx-2">•</span>
                                                     {post.timeToRead}
                                                 </div>
-                                                <h2 className="text-xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-primary transition-colors">
+                                                <h2 className="text-xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-white transition-colors">
                                                     {post.title}
                                                 </h2>
                                                 <p className="text-base text-foreground/90 mb-6 leading-relaxed line-clamp-3">
@@ -153,7 +153,7 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
                                                     {post.tags.map((tag) => (
                                                         <span
                                                             key={tag}
-                                                            className="bg-primary/15 text-primary border border-primary/30 px-3 py-1.5 rounded-full text-xs font-medium"
+                                                            className="bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-full text-xs font-medium"
                                                         >
                                                             {tag}
                                                         </span>
