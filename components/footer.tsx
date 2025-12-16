@@ -29,11 +29,8 @@ export default function Footer() {
                         transition={{duration: 0.6, delay: 0.2}}
                         className="text-center md:text-left"
                     >
-                        <p className="text-sm text-muted-foreground mb-1">
+                        <p className="text-sm text-muted-foreground">
                             © {new Date().getFullYear()} Seif-DX Portfolio
-                        </p>
-                        <p className="text-xs text-muted-foreground/70">
-                            Crafted with passion and precision
                         </p>
                     </motion.div>
 

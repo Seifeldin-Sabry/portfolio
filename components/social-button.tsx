@@ -5,7 +5,12 @@ import type React from "react";
 export const SocialButton = ({icon, link}) => {
     return (
         <Button variant="outline" size="icon" asChild>
-            <Link target="_blank" href={link}>
+            <Link
+                target="_blank"
+                href={link}
+                className="touch-manipulation"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+            >
                 {icon}
             </Link>
         </Button>
