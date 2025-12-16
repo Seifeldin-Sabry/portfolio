@@ -46,10 +46,10 @@ export default function ContactCard({ className = '' }: ContactCardProps) {
 
         <div className="text-center">
           <h3 className="font-semibold mb-6 text-lg">Connect with me</h3>
-          <div className="flex justify-center gap-6">
-            <SocialButton icon={<Github size={28} />} link={githubLink} />
-            <SocialButton icon={<Linkedin size={28} />} link={linkedInLink} />
-            <SocialButton icon={<Calendar size={28} />} link={calendlyLink} />
+          <div className="flex justify-center gap-6 items-center">
+            <SocialButton icon={<Github size={24} />} link={githubLink} />
+            <SocialButton icon={<Linkedin size={24} />} link={linkedInLink} />
+            <SocialButton icon={<Calendar size={24} />} link={calendlyLink} />
           </div>
         </div>
       </CardContent>

@@ -66,7 +66,7 @@ const GlowingLoopEffect = memo(
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
       >
         <div
           ref={containerRef}
