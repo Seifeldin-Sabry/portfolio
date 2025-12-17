@@ -46,7 +46,8 @@ export function BlogSearchFilter({
 }: BlogSearchFilterProps) {
     const [fromDate, setFromDate] = useState("")
     const [toDate, setToDate] = useState("")
-    const [isOpen, setIsOpen] = useState(false)
+    const [isMobileOpen, setIsMobileOpen] = useState(false)
+    const [isDesktopOpen, setIsDesktopOpen] = useState(false)
     const [tagSearch, setTagSearch] = useState("")
 
     const activeFilterCount =
@@ -254,92 +255,88 @@ export function BlogSearchFilter({
     return (
         <div className="space-y-3">
             {/* Mobile View: Sheet (slides from bottom) */}
-            <div className="md:hidden">
-                <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                    <SheetTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="w-full gap-2 relative transition-all duration-200 hover:border-primary"
-                        >
-                            <Search className="h-4 w-4" />
-                            <span>Search & Filter</span>
-                            <AnimatePresence>
-                                {activeFilterCount > 0 && (
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        exit={{ scale: 0 }}
-                                        className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
-                                    >
-                                        {activeFilterCount}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
-                        <SheetHeader className="text-left">
-                            <SheetTitle className="flex items-center gap-2">
-                                <Filter className="h-5 w-5" />
-                                Search & Filter Posts
-                            </SheetTitle>
-                            <SheetDescription>
-                                Search and filter blog posts by keywords, tags, and date range
-                            </SheetDescription>
-                        </SheetHeader>
-                        <div className="mt-6">
-                            <FilterContent />
-                        </div>
-                    </SheetContent>
-                </Sheet>
-            </div>
+            <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+                <SheetTrigger asChild>
+                    <Button
+                        variant="outline"
+                        className="w-full md:w-auto gap-2 relative transition-all duration-200 hover:border-primary md:hidden"
+                    >
+                        <Search className="h-4 w-4" />
+                        <span>Search & Filter</span>
+                        <AnimatePresence>
+                            {activeFilterCount > 0 && (
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    exit={{ scale: 0 }}
+                                    className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                                >
+                                    {activeFilterCount}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[85vh] overflow-y-auto">
+                    <SheetHeader className="text-left">
+                        <SheetTitle className="flex items-center gap-2">
+                            <Filter className="h-5 w-5" />
+                            Search & Filter Posts
+                        </SheetTitle>
+                        <SheetDescription>
+                            Search and filter blog posts by keywords, tags, and date range
+                        </SheetDescription>
+                    </SheetHeader>
+                    <div className="mt-6">
+                        <FilterContent />
+                    </div>
+                </SheetContent>
+            </Sheet>
 
             {/* Desktop View: Popover */}
-            <div className="hidden md:block">
-                <Popover open={isOpen} onOpenChange={setIsOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="gap-2 relative transition-all duration-200 hover:border-primary"
-                        >
-                            <Search className="h-4 w-4" />
-                            <span>Search & Filter</span>
-                            <AnimatePresence>
-                                {activeFilterCount > 0 && (
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        exit={{ scale: 0 }}
-                                        className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
-                                    >
-                                        {activeFilterCount}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        className="w-96 p-0"
-                        align="start"
-                        sideOffset={8}
+            <Popover open={isDesktopOpen} onOpenChange={setIsDesktopOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        className="gap-2 relative transition-all duration-200 hover:border-primary hidden md:flex"
                     >
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="p-4"
-                        >
-                            <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
-                                <div className="flex items-center gap-2">
-                                    <Filter className="h-4 w-4 text-muted-foreground" />
-                                    <h3 className="font-semibold">Search & Filter</h3>
-                                </div>
+                        <Search className="h-4 w-4" />
+                        <span>Search & Filter</span>
+                        <AnimatePresence>
+                            {activeFilterCount > 0 && (
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    exit={{ scale: 0 }}
+                                    className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                                >
+                                    {activeFilterCount}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                    className="w-96 p-0"
+                    align="start"
+                    sideOffset={8}
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="p-4"
+                    >
+                        <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
+                            <div className="flex items-center gap-2">
+                                <Filter className="h-4 w-4 text-muted-foreground" />
+                                <h3 className="font-semibold">Search & Filter</h3>
                             </div>
-                            <FilterContent />
-                        </motion.div>
-                    </PopoverContent>
-                </Popover>
-            </div>
+                        </div>
+                        <FilterContent />
+                    </motion.div>
+                </PopoverContent>
+            </Popover>
 
             {/* Active Filters Display */}
             <AnimatePresence>
