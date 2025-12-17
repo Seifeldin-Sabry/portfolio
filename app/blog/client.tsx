@@ -4,8 +4,7 @@ import {useState, useMemo} from "react"
 import Link from "next/link"
 import {Card, CardContent} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
-import {BlogSearch} from "@/components/blog-search"
-import {BlogFilters} from "@/components/blog-filters"
+import {BlogSearchFilter} from "@/components/blog-search-filter"
 import {AnimatedCard} from "@/components/animated-card"
 import type {BlogPost} from "@/lib/blogs"
 import {parse, formatDistanceToNow} from "date-fns"
@@ -83,12 +82,12 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
     const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
     const paginatedPosts = filteredPosts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE)
 
-    const handleSearch = (query: string) => {
+    const handleSearchChange = (query: string) => {
         setSearchQuery(query)
         setCurrentPage(1)
     }
 
-    const handleClearFilters = () => {
+    const handleClearAll = () => {
         setSelectedTags([])
         setSelectedDateRange(null)
         setSearchQuery("")
@@ -97,17 +96,16 @@ export default function BlogClient({initialPosts}: BlogClientProps) {
 
     return (
         <>
-            <div className="flex gap-2 w-full max-w-4xl mx-auto mb-8 items-start">
-                <div className="flex-1">
-                    <BlogSearch onSearch={handleSearch} />
-                </div>
-                <BlogFilters
+            <div className="w-full max-w-4xl mx-auto mb-8">
+                <BlogSearchFilter
                     availableTags={availableTags}
                     selectedTags={selectedTags}
                     onTagsChange={setSelectedTags}
                     selectedDateRange={selectedDateRange}
                     onDateRangeChange={setSelectedDateRange}
-                    onClearFilters={handleClearFilters}
+                    searchQuery={searchQuery}
+                    onSearchChange={handleSearchChange}
+                    onClearAll={handleClearAll}
                 />
             </div>
 
