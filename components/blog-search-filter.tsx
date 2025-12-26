@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Filter, X, Calendar, Tag, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -49,6 +49,8 @@ export function BlogSearchFilter({
     const [isMobileOpen, setIsMobileOpen] = useState(false)
     const [isDesktopOpen, setIsDesktopOpen] = useState(false)
     const [tagSearch, setTagSearch] = useState("")
+    const searchInputRef = useRef<HTMLInputElement>(null)
+    const isTypingRef = useRef(false)
 
     const activeFilterCount =
         selectedTags.length + (selectedDateRange ? 1 : 0) + (searchQuery ? 1 : 0)
@@ -94,6 +96,17 @@ export function BlogSearchFilter({
         }
     }, [selectedDateRange])
 
+    // Restore focus to search input after re-render if user was typing
+    useEffect(() => {
+        if (isTypingRef.current && searchInputRef.current) {
+            const timer = setTimeout(() => {
+                searchInputRef.current?.focus()
+                isTypingRef.current = false
+            }, 50)
+            return () => clearTimeout(timer)
+        }
+    }, [searchQuery])
+
     // Filter content component (reusable for both mobile and desktop)
     const FilterContent = () => (
         <div className="space-y-6">
@@ -107,7 +120,11 @@ export function BlogSearchFilter({
                     <Input
                         placeholder="Search by title, content, or tags..."
                         value={searchQuery}
-                        onChange={(e) => onSearchChange(e.target.value)}
+                        onChange={(e) => {
+                            isTypingRef.current = true
+                            onSearchChange(e.target.value)
+                        }}
+                        ref={searchInputRef}
                         className="pr-10"
                     />
                     {searchQuery && (
