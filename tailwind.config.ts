@@ -8,9 +8,6 @@ const config: Config = {
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
         "*.{js,ts,jsx,tsx,mdx}",
     ],
-    plugins: [
-        require("@tailwindcss/typography"),
-    ],
     theme: {
         extend: {
             colors: {
@@ -70,6 +67,9 @@ const config: Config = {
                 md: "calc(var(--radius) - 2px)",
                 sm: "calc(var(--radius) - 4px)",
             },
+            fontFamily: {
+                mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
+            },
             keyframes: {
                 "accordion-down": {
                     from: {
@@ -87,19 +87,53 @@ const config: Config = {
                         height: "0",
                     },
                 },
+                "fade-in": {
+                    "0%": { opacity: "0", transform: "translateY(10px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" },
+                },
+                "fade-in-up": {
+                    "0%": { opacity: "0", transform: "translateY(20px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" },
+                },
+                "pulse-glow": {
+                    "0%, 100%": { 
+                        boxShadow: "0 0 5px rgba(0, 255, 65, 0.4), 0 0 10px rgba(0, 255, 65, 0.2)" 
+                    },
+                    "50%": { 
+                        boxShadow: "0 0 15px rgba(0, 255, 65, 0.6), 0 0 25px rgba(0, 255, 65, 0.3)" 
+                    },
+                },
+                "slide-in-right": {
+                    "0%": { transform: "translateX(10px)", opacity: "0" },
+                    "100%": { transform: "translateX(0)", opacity: "1" },
+                },
+                "typewriter": {
+                    "0%": { width: "0" },
+                    "100%": { width: "100%" },
+                },
+                "blink": {
+                    "0%, 100%": { opacity: "1" },
+                    "50%": { opacity: "0" },
+                },
             },
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
+                "fade-in": "fade-in 0.5s ease-out",
+                "fade-in-up": "fade-in-up 0.6s ease-out",
+                "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+                "slide-in-right": "slide-in-right 0.3s ease-out",
+                "typewriter": "typewriter 2s steps(40) 1s forwards",
+                "blink": "blink 1s step-end infinite",
             },
             typography: {
                 DEFAULT: {
                     css: {
                         color: "hsl(var(--foreground))",
                         a: {
-                            color: "hsl(var(--primary))",
+                            color: "hsl(var(--accent))",
                             "&:hover": {
-                                color: "hsl(var(--primary))",
+                                color: "hsl(var(--accent))",
                             },
                         },
                         h1: {
@@ -125,6 +159,10 @@ const config: Config = {
                         },
                         code: {
                             color: "hsl(var(--foreground))",
+                            backgroundColor: "hsl(var(--muted))",
+                            padding: "0.2em 0.4em",
+                            borderRadius: "0.25rem",
+                            fontFamily: "JetBrains Mono, Fira Code, Consolas, monospace",
                         },
                         figcaption: {
                             color: "hsl(var(--muted-foreground))",
@@ -138,6 +176,9 @@ const config: Config = {
             },
         },
     },
-    plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+    plugins: [
+        require("tailwindcss-animate"), 
+        require("@tailwindcss/typography")
+    ],
 }
 export default config

@@ -2,66 +2,62 @@
 
 import {useState} from "react"
 import Link from "next/link"
-import {usePathname} from "next/navigation"
 import {Button} from "@/components/ui/button"
 import {Menu, X} from "lucide-react"
-import {cn} from "@/lib/utils"
 
 const navLinks = [
-    {href: "/", label: "Home"},
-    {href: "/about", label: "About"},
-    {href: "/blog", label: "Blog"},
+    {href: "/#projects", label: "Projects"},
+    {href: "/#experience", label: "Experience"},
+    {href: "/#blog", label: "Blog"},
 ]
 
 export default function Navbar() {
-    const pathname = usePathname()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
-        <header
-            className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-        >
-            <div className="flex h-16 items-center justify-between px-4">
-                <Link href="/" className="font-bold text-xl">
-                    Seif-DX
+        <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+            <div className="flex h-14 items-center justify-between px-4 max-w-4xl mx-auto">
+                {/* Logo */}
+                <Link 
+                    href="/" 
+                    className="font-bold text-lg tracking-tight hover:text-accent transition-colors duration-300"
+                >
+                    <span className="font-mono text-accent">&gt;</span> Seif-DX
                 </Link>
-
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex gap-6">
+                
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex gap-1">
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className={cn(
-                                "text-sm font-medium transition-colors hover:text-primary px-2",
-                                pathname === link.href ? "text-primary" : "text-muted-foreground",
-                            )}
+                            className="text-sm text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-md hover:bg-accent/5 transition-all duration-300"
                         >
                             {link.label}
                         </Link>
                     ))}
                 </nav>
-
+                
                 {/* Mobile Menu Button */}
-                <Button variant="ghost" size="icon" className="md:hidden"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:hidden hover:bg-accent/5"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >
-                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </Button>
             </div>
-
-            {/* Mobile Navigation */}
+            
+            {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden border-b">
-                    <nav className="container py-4 flex flex-col gap-4">
+                <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md">
+                    <nav className="py-3 px-4 flex flex-col gap-1 max-w-4xl mx-auto">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={cn(
-                                    "text-sm font-medium transition-colors hover:text-primary p-2",
-                                    pathname === link.href ? "text-primary" : "text-muted-foreground",
-                                )}
+                                className="text-sm text-muted-foreground hover:text-foreground hover:bg-accent/5 px-3 py-2 rounded-md transition-all duration-300"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 {link.label}

@@ -5,9 +5,6 @@ import "./globals.css"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import {ThemeProvider} from "@/components/theme-provider"
-import MotionWrapper from "@/components/motion-wrapper"
-
-
 const inter = Inter({subsets: ["latin"]})
 
 export const metadata: Metadata = {
@@ -27,20 +24,18 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="scroll-smooth">
         <head>
             <link rel="icon" href="/assets/icons/favico.png" sizes="any" />
             <link rel="alternate" type="application/rss+xml" title="Seif Ismail's Blog RSS Feed" href="/feed.xml" />
         </head>
         <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
-            <MotionWrapper>
-                <div className="flex flex-col min-h-screen bg-black">
+                <div className="flex flex-col min-h-screen bg-background">
                     <Navbar />
                     <main className="flex-grow">{children}</main>
                     <Footer />
                 </div>
-            </MotionWrapper>
         </ThemeProvider>
         </body>
         </html>

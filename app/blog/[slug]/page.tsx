@@ -55,9 +55,9 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-3xl mx-auto">
-                <Link href="/blog">
+                <Link href="/#blog">
                     <Button variant="outline" className="mb-8 flex items-center gap-2">
-                        <ArrowLeft size={16} /> Back to Blog
+                        <ArrowLeft size={16} /> Back
                     </Button>
                 </Link>
 
@@ -66,9 +66,9 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
                     <div className="flex items-center gap-4 text-gray-500 mb-6">
                         <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
-                                <span key={tag} className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs">
-                  {tag}
-                </span>
+                                <span key={tag} className="bg-secondary text-secondary-foreground px-2.5 py-0.5 rounded-full text-xs">
+                                    {tag}
+                                </span>
                             ))}
                         </div>
                     </div>
