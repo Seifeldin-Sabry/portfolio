@@ -1,143 +1,112 @@
 import Image from "next/image"
-import Link from "next/link"
-import {Github, Linkedin, Mail, Calendar, MapPin, ArrowRight} from "lucide-react"
-import {Button} from "@/components/ui/button"
-import {Badge} from "@/components/ui/badge"
-import {Card, CardContent} from "@/components/ui/card"
+import {Github, Linkedin, Mail, Calendar, Zap, Route, Atom, Wind, Database, Shield} from "lucide-react"
 import {githubLink, linkedInLink, calendlyLink} from "@/lib/links"
 import {SITE_CONFIG} from "@/lib/constants"
-import {getSortedBlogPosts} from "@/lib/blogs"
+
+const techStack = [
+    { name: "ElysiaJS", icon: Zap, color: "text-yellow-400" },
+    { name: "TanStack", icon: Route, color: "text-blue-400" },
+    { name: "React", icon: Atom, color: "text-cyan-400" },
+    { name: "Tailwind", icon: Wind, color: "text-sky-400" },
+    { name: "Drizzle", icon: Database, color: "text-green-400" },
+    { name: "Better Auth", icon: Shield, color: "text-orange-400" },
+]
 
 export default function ProfileSection() {
-    const posts = getSortedBlogPosts()
-    const latestPost = posts[0]
-
     return (
-        <section className="py-20 px-4 animate-fade-in">
-            <div className="max-w-4xl mx-auto">
-                {/* Main Hero Card */}
-                <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 md:p-8 mb-6">
-                    <div className="flex flex-col md:flex-row items-start gap-6">
-                        {/* Profile Image - Small and to the side */}
-                        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 border-border flex-shrink-0 group">
+        <section className="py-12 px-4">
+            <div className="max-w-2xl mx-auto">
+                {/* Compact Profile Card */}
+                <div className="flex items-start gap-4 mb-6">
+                    {/* Profile Image with Status */}
+                    <div className="relative">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-border">
                             <Image
                                 src="/assets/images/seif.jpg"
                                 alt="Seif Ismail"
                                 fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                className="object-cover"
                                 priority
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                         </div>
+                        {/* Status Indicator - Discord Style */}
+                        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full border-2 border-background animate-pulse-glow" />
+                    </div>
 
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                            {/* Name and Status */}
-                            <div className="mb-3">
-                                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-                                    Seif Ismail
-                                </h1>
-                                <div className="flex flex-wrap items-center gap-2 text-sm">
-                                    <Badge 
-                                        variant="outline" 
-                                        className="text-xs font-mono border-accent/30 text-accent"
-                                    >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse mr-1.5" />
-                                        Currently building
-                                    </Badge>
-                                    <span className="text-muted-foreground">
-                                        Qfacts & Etoile
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Personal Bio */}
-                            <p className="text-muted-foreground mb-5 leading-relaxed max-w-2xl">
-                                I build software that actually solves problems. After spending years watching 
-                                companies struggle with bloated tools, I decided to create lean, efficient 
-                                solutions. When I&apos;m not coding, you&apos;ll find me exploring new tech or 
-                                optimizing my workflow for the 47th time.
-                            </p>
-
-                            {/* Location and Links */}
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                                    <MapPin size={14} className="text-accent" />
-                                    <span>Antwerp, Belgium</span>
-                                </div>
-                                
-                                <div className="flex items-center gap-2">
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon" 
-                                        className="h-9 w-9 border-border hover:border-accent/50 hover:bg-accent/5 transition-all duration-300"
-                                        asChild
-                                    >
-                                        <a href={githubLink} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                                            <Github size={16} />
-                                        </a>
-                                    </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon"
-                                        className="h-9 w-9 border-border hover:border-accent/50 hover:bg-accent/5 transition-all duration-300"
-                                        asChild
-                                    >
-                                        <a href={linkedInLink} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                                            <Linkedin size={16} />
-                                        </a>
-                                    </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon"
-                                        className="h-9 w-9 border-border hover:border-accent/50 hover:bg-accent/5 transition-all duration-300"
-                                        asChild
-                                    >
-                                        <a href={`mailto:${SITE_CONFIG.EMAIL}`} aria-label="Email">
-                                            <Mail size={16} />
-                                        </a>
-                                    </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon"
-                                        className="h-9 w-9 border-border hover:border-accent/50 hover:bg-accent/5 transition-all duration-300"
-                                        asChild
-                                    >
-                                        <a href={calendlyLink} target="_blank" rel="noopener noreferrer" aria-label="Calendly">
-                                            <Calendar size={16} />
-                                        </a>
-                                    </Button>
-                                </div>
-                            </div>
+                    {/* Name & Status */}
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <h1 className="text-xl font-bold">Seif Ismail</h1>
+                            <span className="text-xs font-mono text-accent bg-accent/10 px-1.5 py-0.5 rounded">Live</span>
                         </div>
+                        <p className="text-sm text-muted-foreground">
+                            Currently building <span className="text-foreground font-medium">Qfacts</span> & <span className="text-foreground font-medium">Etoile</span>
+                        </p>
                     </div>
                 </div>
 
-                {/* Latest Blog Post Preview */}
-                {latestPost && (
-                    <Link href={`/blog/${latestPost.slug}`} className="block group">
-                        <Card className="border border-border hover:border-accent/30 transition-all duration-300 card-hover bg-card/30 backdrop-blur-sm">
-                            <CardContent className="p-4 md:p-5">
-                                <div className="flex items-center justify-between gap-4">
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1.5">
-                                            <span className="text-xs font-mono text-accent">Latest writing</span>
-                                            <span className="text-muted-foreground">·</span>
-                                            <span className="text-xs text-muted-foreground">{latestPost.date}</span>
-                                        </div>
-                                        <h3 className="text-base md:text-lg font-medium truncate group-hover:text-accent transition-colors">
-                                            {latestPost.title}
-                                        </h3>
-                                    </div>
-                                    <ArrowRight 
-                                        size={18} 
-                                        className="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" 
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                )}
+                {/* Tech Stack Grid */}
+                <div className="grid grid-cols-3 gap-2 mb-5">
+                    {techStack.map((tech) => (
+                        <div 
+                            key={tech.name}
+                            className="flex items-center gap-2 px-3 py-2 bg-secondary/30 rounded-lg border border-border hover:border-accent/30 transition-all duration-300 hover:-translate-y-0.5"
+                        >
+                            <tech.icon size={14} className={tech.color} />
+                            <span className="text-xs font-medium">{tech.name}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Status Line */}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-5">
+                    <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                        Remote
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                        Open to opportunities
+                    </span>
+                </div>
+
+                {/* Social Icons - Compact */}
+                <div className="flex items-center gap-2">
+                    <a 
+                        href={githubLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
+                        aria-label="GitHub"
+                    >
+                        <Github size={16} />
+                    </a>
+                    <a 
+                        href={linkedInLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
+                        aria-label="LinkedIn"
+                    >
+                        <Linkedin size={16} />
+                    </a>
+                    <a 
+                        href={`mailto:${SITE_CONFIG.EMAIL}`}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
+                        aria-label="Email"
+                    >
+                        <Mail size={16} />
+                    </a>
+                    <a 
+                        href={calendlyLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
+                        aria-label="Calendly"
+                    >
+                        <Calendar size={16} />
+                    </a>
+                </div>
             </div>
         </section>
     )

@@ -1,64 +1,61 @@
+"use client"
+
+import {useState} from "react"
 import Image from "next/image"
 import {experiences} from "@/data/experiences"
 import {education} from "@/data/education"
 import {Badge} from "@/components/ui/badge"
+import {ChevronDown} from "lucide-react"
 
 export default function ExperienceSection() {
-    return (
-        <section id="experience" className="py-16 px-4 scroll-mt-20">
-            <div className="max-w-4xl mx-auto">
-                {/* Section Header */}
-                <div className="mb-10">
-                    <h2 className="text-3xl font-bold tracking-tight mb-2">Where I&apos;ve Worked</h2>
-                    <p className="text-muted-foreground">
-                        My journey through different roles and the lessons learned along the way.
-                    </p>
-                </div>
+    const [isExpanded, setIsExpanded] = useState(false)
 
-                {/* Experience Timeline */}
-                <div className="space-y-0">
-                    {experiences.map((exp, index) => (
-                        <div 
-                            key={exp.id} 
-                            className="group relative"
-                        >
-                            {/* Timeline connector */}
-                            {index < experiences.length - 1 && (
-                                <div className="absolute left-7 top-14 bottom-0 w-px bg-border group-hover:bg-accent/30 transition-colors duration-300" />
-                            )}
-                            
-                            <div className="flex gap-4 py-6 hover:bg-accent/5 rounded-lg transition-colors duration-300 -mx-2 px-2">
+    return (
+        <section id="experience" className="py-6 px-4">
+            <div className="max-w-2xl mx-auto">
+                {/* Accordion Header */}
+                <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="w-full flex items-center justify-between mb-4 hover:text-accent transition-colors duration-300"
+                >
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-lg font-semibold">Where I&apos;ve Worked</h2>
+                        <span className="text-xs font-mono bg-secondary/50 px-2 py-0.5 rounded-full">{experiences.length}</span>
+                    </div>
+                    <ChevronDown 
+                        size={18} 
+                        className={`text-muted-foreground transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                    />
+                </button>
+
+                {/* Expandable Content */}
+                {isExpanded && (
+                    <div className="space-y-3 animate-fade-in">
+                        {/* Experience */}
+                        {experiences.map((exp) => (
+                            <div key={exp.id} className="flex items-start gap-3 p-3 bg-secondary/20 rounded-lg border border-border hover:border-accent/30 transition-all duration-300">
                                 {exp.companyLogo && (
-                                    <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-secondary/50 flex-shrink-0 border border-border group-hover:border-accent/30 transition-all duration-300">
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-secondary/50 flex-shrink-0">
                                         <Image
                                             src={exp.companyLogo}
                                             alt={exp.company}
                                             fill
-                                            className="object-contain p-2"
+                                            className="object-contain p-1.5"
                                         />
                                     </div>
                                 )}
                                 <div className="flex-1 min-w-0">
-                                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
-                                        <h3 className="text-lg font-semibold group-hover:text-accent transition-colors duration-300">
-                                            {exp.role}
-                                        </h3>
-                                        <span className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded">
-                                            {exp.period}
-                                        </span>
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div>
+                                            <h3 className="text-sm font-medium">{exp.role}</h3>
+                                            <p className="text-xs text-muted-foreground">{exp.company}</p>
+                                        </div>
+                                        <span className="text-xs font-mono text-muted-foreground flex-shrink-0">{exp.period}</span>
                                     </div>
-                                    <p className="text-muted-foreground font-medium mb-2">{exp.company}</p>
-                                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-                                        {exp.description}
-                                    </p>
                                     {exp.technologies && (
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {exp.technologies.map((tech) => (
-                                                <Badge 
-                                                    key={tech} 
-                                                    variant="secondary" 
-                                                    className="text-xs font-mono bg-secondary/50"
-                                                >
+                                        <div className="flex flex-wrap gap-1 mt-2">
+                                            {exp.technologies.slice(0, 3).map((tech) => (
+                                                <Badge key={tech} variant="secondary" className="text-xs font-mono">
                                                     {tech}
                                                 </Badge>
                                             ))}
@@ -66,45 +63,37 @@ export default function ExperienceSection() {
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Education Section */}
-                <div className="mt-12">
-                    <h3 className="text-xl font-semibold mb-6">Education</h3>
-                    <div className="space-y-4">
-                        {education.map((edu) => (
-                            <div 
-                                key={edu.id} 
-                                className="group flex gap-4 py-4 hover:bg-accent/5 rounded-lg transition-colors duration-300 -mx-2 px-2"
-                            >
-                                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-secondary/50 flex-shrink-0 border border-border group-hover:border-accent/30 transition-all duration-300">
-                                    <Image
-                                        src={edu.logo}
-                                        alt={edu.school}
-                                        fill
-                                        className="object-contain p-2"
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
-                                        <h3 className="text-lg font-semibold group-hover:text-accent transition-colors duration-300">
-                                            {edu.degree}
-                                        </h3>
-                                        <span className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded">
-                                            {edu.start} - {edu.end}
-                                        </span>
-                                    </div>
-                                    <p className="text-muted-foreground font-medium">{edu.school}</p>
-                                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                                        {edu.info}
-                                    </p>
-                                </div>
-                            </div>
                         ))}
+
+                        {/* Education */}
+                        <div className="pt-2">
+                            <h3 className="text-sm font-medium text-muted-foreground mb-3">Education</h3>
+                            {education.map((edu) => (
+                                <div key={edu.id} className="flex items-start gap-3 p-3 bg-secondary/20 rounded-lg border border-border">
+                                    <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-secondary/50 flex-shrink-0">
+                                        <Image
+                                            src={edu.logo}
+                                            alt={edu.school}
+                                            fill
+                                            className="object-contain p-1.5"
+                                        />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div>
+                                                <h3 className="text-sm font-medium">{edu.degree}</h3>
+                                                <p className="text-xs text-muted-foreground">{edu.school}</p>
+                                            </div>
+                                            <span className="text-xs font-mono text-muted-foreground flex-shrink-0">
+                                                {edu.start}-{edu.end}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </section>
     )
