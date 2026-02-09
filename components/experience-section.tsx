@@ -75,7 +75,7 @@ export default function ExperienceSection() {
                                             src={edu.logo}
                                             alt={edu.school}
                                             fill
-                                            className="object-contain p-1.5"
+                                            className="object-contain p-1.5 brightness-0 invert"
                                         />
                                     </div>
                                     <div className="flex-1 min-w-0">
