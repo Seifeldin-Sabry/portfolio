@@ -27,6 +27,7 @@ export default function RootLayout({
         <head>
             <link rel="icon" href="/assets/icons/favico.png" sizes="any" />
             <link rel="alternate" type="application/rss+xml" title="Seif Ismail's Blog RSS Feed" href="/feed.xml" />
+            <script defer src="https://cloud.umami.is/script.js" data-website-id="58ea0ecd-d768-4e47-b26e-374a65a6d005"></script>
         </head>
         <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
