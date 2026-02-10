@@ -134,23 +134,21 @@ export default function SkillsSection() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                     className="relative overflow-hidden"
                 >
-                    {/* Scrolling track - separated from Framer Motion to avoid animation conflicts */}
-                    <div
-                        className="marquee-track flex w-fit hover:[animation-play-state:paused]"
-                    >
+                    {/* Scrolling track - each set wrapped so both halves are structurally identical */}
+                    <div className="marquee-track flex w-fit hover:[animation-play-state:paused]">
                         {/* First Set */}
-                        {skillCategories.map((category) => (
-                            <div key={`first-${category.id}`} className="pl-2 flex-shrink-0">
-                                <SkillCard category={category} />
-                            </div>
-                        ))}
+                        <div className="flex gap-2 shrink-0 pr-2">
+                            {skillCategories.map((category) => (
+                                <SkillCard key={`first-${category.id}`} category={category} />
+                            ))}
+                        </div>
 
                         {/* Duplicate Set for Seamless Loop */}
-                        {skillCategories.map((category) => (
-                            <div key={`second-${category.id}`} className="pl-2 flex-shrink-0">
-                                <SkillCard category={category} />
-                            </div>
-                        ))}
+                        <div className="flex gap-2 shrink-0 pr-2">
+                            {skillCategories.map((category) => (
+                                <SkillCard key={`second-${category.id}`} category={category} />
+                            ))}
+                        </div>
                     </div>
                 </motion.div>
             </div>
