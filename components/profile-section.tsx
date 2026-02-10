@@ -20,7 +20,7 @@ export default function ProfileSection() {
                 <div className="flex items-start gap-4 mb-6">
                     {/* Profile Image with Status */}
                     <div className="relative">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-border">
+                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-border">
                             <Image
                                 src="/assets/images/seif.jpg"
                                 alt="Seif Ismail"
@@ -36,7 +36,7 @@ export default function ProfileSection() {
                     {/* Name & Status */}
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <h1 className="text-xl font-bold">Seif Ismail</h1>
+                            <h1 className="text-xl font-bold">Seif</h1>
                             <span className="text-xs font-mono text-accent bg-accent/10 px-1.5 py-0.5 rounded">Live</span>
                         </div>
                         <p className="text-sm text-muted-foreground">

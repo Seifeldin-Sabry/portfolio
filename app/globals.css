@@ -200,3 +200,19 @@ p {
 .font-mono {
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
+
+/* Code block styling for rehype-pretty-code */
+figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+}
+
+figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
+/* Ensure inline code doesn't get the code block treatment */
+:not(pre) > code {
+  font-size: 0.875em;
+}

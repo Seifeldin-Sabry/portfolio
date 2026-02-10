@@ -134,7 +134,7 @@ export default function SkillsSection() {
                         initial={{ opacity: 0 }}
                         animate={isInView ? { opacity: 1 } : {}}
                         transition={{ duration: 0.4, delay: 0.1 }}
-                        className="flex gap-2 hover:[animation-play-state:paused]"
+                        className="flex hover:[animation-play-state:paused]"
                         style={{
                             animation: "marquee 20s linear infinite",
                             width: "fit-content",
@@ -142,12 +142,16 @@ export default function SkillsSection() {
                     >
                         {/* First Set */}
                         {skillCategories.map((category) => (
-                            <SkillCard key={`first-${category.id}`} category={category} />
+                            <div key={`first-${category.id}`} className="pr-2 flex-shrink-0">
+                                <SkillCard category={category} />
+                            </div>
                         ))}
-                        
+
                         {/* Duplicate Set for Seamless Loop */}
                         {skillCategories.map((category) => (
-                            <SkillCard key={`second-${category.id}`} category={category} />
+                            <div key={`second-${category.id}`} className="pr-2 flex-shrink-0">
+                                <SkillCard category={category} />
+                            </div>
                         ))}
                     </motion.div>
                 </div>
