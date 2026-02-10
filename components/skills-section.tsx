@@ -128,46 +128,32 @@ export default function SkillsSection() {
                 </motion.div>
 
                 {/* Marquee Container */}
-                <div className="relative overflow-hidden">
-                    {/* Scrolling Container */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={isInView ? { opacity: 1 } : {}}
-                        transition={{ duration: 0.4, delay: 0.1 }}
-                        className="flex hover:[animation-play-state:paused]"
-                        style={{
-                            animation: "marquee 20s linear infinite",
-                            width: "fit-content",
-                        }}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="relative overflow-hidden"
+                >
+                    {/* Scrolling track - separated from Framer Motion to avoid animation conflicts */}
+                    <div
+                        className="marquee-track flex w-fit hover:[animation-play-state:paused]"
                     >
                         {/* First Set */}
                         {skillCategories.map((category) => (
-                            <div key={`first-${category.id}`} className="pr-2 flex-shrink-0">
+                            <div key={`first-${category.id}`} className="pl-2 flex-shrink-0">
                                 <SkillCard category={category} />
                             </div>
                         ))}
 
                         {/* Duplicate Set for Seamless Loop */}
                         {skillCategories.map((category) => (
-                            <div key={`second-${category.id}`} className="pr-2 flex-shrink-0">
+                            <div key={`second-${category.id}`} className="pl-2 flex-shrink-0">
                                 <SkillCard category={category} />
                             </div>
                         ))}
-                    </motion.div>
-                </div>
+                    </div>
+                </motion.div>
             </div>
-
-            {/* Custom CSS for marquee */}
-            <style jsx>{`
-                @keyframes marquee {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-            `}</style>
         </section>
     )
 }

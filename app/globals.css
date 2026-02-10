@@ -216,3 +216,17 @@ figure[data-rehype-pretty-code-figure] {
 :not(pre) > code {
   font-size: 0.875em;
 }
+
+/* Seamless marquee animation for skills section */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 20s linear infinite;
+}
