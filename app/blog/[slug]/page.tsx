@@ -9,6 +9,7 @@ import type {Options} from "rehype-pretty-code"
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeMdxCodeProps from "rehype-mdx-code-props";
 import remarkGfm from "remark-gfm";
+import {CodeBlock} from "@/components/mdx/code-block";
 
 
 const options: Options = {
@@ -80,6 +81,9 @@ export default async function BlogPostPage({params}: BlogPostPageProps) {
                             remarkPlugins: [remarkGfm],
                             rehypePlugins: [[rehypePrettyCode, options], rehypeMdxCodeProps],
                         },
+                    }}
+                    components={{
+                        pre: CodeBlock,
                     }}
                     />
                 </article>

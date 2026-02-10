@@ -200,3 +200,33 @@ p {
 .font-mono {
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
+
+/* Code block styling for rehype-pretty-code */
+figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+}
+
+figure[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
+/* Ensure inline code doesn't get the code block treatment */
+:not(pre) > code {
+  font-size: 0.875em;
+}
+
+/* Seamless marquee animation for skills section */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--marquee-distance, -50%));
+  }
+}
+
+.marquee-track {
+  animation: marquee 20s linear infinite;
+}

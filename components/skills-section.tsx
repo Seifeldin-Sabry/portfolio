@@ -1,12 +1,12 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import { motion, useInView } from "framer-motion"
-import { 
-    Sparkles, 
-    Wrench, 
-    Code2, 
-    Layers, 
+import {
+    Sparkles,
+    Wrench,
+    Code2,
+    Layers,
     Cloud,
     Bot,
 } from "lucide-react"
@@ -95,7 +95,7 @@ function SkillCard({ category }: { category: typeof skillCategories[0] }) {
                 ) : (
                     <div className="flex items-center gap-1.5">
                         {category.items.map((item) => (
-                            <span 
+                            <span
                                 key={item}
                                 className="text-[10px] text-muted-foreground"
                             >
@@ -111,7 +111,29 @@ function SkillCard({ category }: { category: typeof skillCategories[0] }) {
 
 export default function SkillsSection() {
     const containerRef = useRef<HTMLDivElement>(null)
+    const firstSetRef = useRef<HTMLDivElement>(null)
     const isInView = useInView(containerRef, { once: true, margin: "-50px" })
+    const [trackWidth, setTrackWidth] = useState(0)
+
+    const measure = useCallback(() => {
+        if (firstSetRef.current) {
+            setTrackWidth(firstSetRef.current.offsetWidth)
+        }
+    }, [])
+
+    useEffect(() => {
+        measure()
+        let timeoutId: ReturnType<typeof setTimeout>
+        const debouncedMeasure = () => {
+            clearTimeout(timeoutId)
+            timeoutId = setTimeout(measure, 150)
+        }
+        window.addEventListener("resize", debouncedMeasure)
+        return () => {
+            clearTimeout(timeoutId)
+            window.removeEventListener("resize", debouncedMeasure)
+        }
+    }, [measure])
 
     return (
         <section ref={containerRef} className="py-2 -mt-2">
@@ -128,42 +150,32 @@ export default function SkillsSection() {
                 </motion.div>
 
                 {/* Marquee Container */}
-                <div className="relative overflow-hidden">
-                    {/* Scrolling Container */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={isInView ? { opacity: 1 } : {}}
-                        transition={{ duration: 0.4, delay: 0.1 }}
-                        className="flex gap-2 hover:[animation-play-state:paused]"
-                        style={{
-                            animation: "marquee 20s linear infinite",
-                            width: "fit-content",
-                        }}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="relative overflow-hidden"
+                >
+                    <div
+                        className="marquee-track flex w-fit hover:[animation-play-state:paused]"
+                        style={{ "--marquee-distance": `-${trackWidth}px` } as React.CSSProperties}
                     >
                         {/* First Set */}
-                        {skillCategories.map((category) => (
-                            <SkillCard key={`first-${category.id}`} category={category} />
-                        ))}
-                        
-                        {/* Duplicate Set for Seamless Loop */}
-                        {skillCategories.map((category) => (
-                            <SkillCard key={`second-${category.id}`} category={category} />
-                        ))}
-                    </motion.div>
-                </div>
-            </div>
+                        <div ref={firstSetRef} className="flex gap-2 shrink-0 pr-2">
+                            {skillCategories.map((category) => (
+                                <SkillCard key={`first-${category.id}`} category={category} />
+                            ))}
+                        </div>
 
-            {/* Custom CSS for marquee */}
-            <style jsx>{`
-                @keyframes marquee {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-            `}</style>
+                        {/* Duplicate Set for Seamless Loop */}
+                        <div className="flex gap-2 shrink-0 pr-2">
+                            {skillCategories.map((category) => (
+                                <SkillCard key={`second-${category.id}`} category={category} />
+                            ))}
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
         </section>
     )
 }
