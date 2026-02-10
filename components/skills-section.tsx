@@ -2,11 +2,11 @@
 
 import { useRef, useEffect, useState, useCallback } from "react"
 import { motion, useInView } from "framer-motion"
-import { 
-    Sparkles, 
-    Wrench, 
-    Code2, 
-    Layers, 
+import {
+    Sparkles,
+    Wrench,
+    Code2,
+    Layers,
     Cloud,
     Bot,
 } from "lucide-react"
@@ -95,7 +95,7 @@ function SkillCard({ category }: { category: typeof skillCategories[0] }) {
                 ) : (
                     <div className="flex items-center gap-1.5">
                         {category.items.map((item) => (
-                            <span 
+                            <span
                                 key={item}
                                 className="text-[10px] text-muted-foreground"
                             >
@@ -113,18 +113,26 @@ export default function SkillsSection() {
     const containerRef = useRef<HTMLDivElement>(null)
     const firstSetRef = useRef<HTMLDivElement>(null)
     const isInView = useInView(containerRef, { once: true, margin: "-50px" })
-    const [setWidth, setSetWidth] = useState(0)
+    const [trackWidth, setTrackWidth] = useState(0)
 
     const measure = useCallback(() => {
         if (firstSetRef.current) {
-            setSetWidth(firstSetRef.current.offsetWidth)
+            setTrackWidth(firstSetRef.current.offsetWidth)
         }
     }, [])
 
     useEffect(() => {
         measure()
-        window.addEventListener("resize", measure)
-        return () => window.removeEventListener("resize", measure)
+        let timeoutId: ReturnType<typeof setTimeout>
+        const debouncedMeasure = () => {
+            clearTimeout(timeoutId)
+            timeoutId = setTimeout(measure, 150)
+        }
+        window.addEventListener("resize", debouncedMeasure)
+        return () => {
+            clearTimeout(timeoutId)
+            window.removeEventListener("resize", debouncedMeasure)
+        }
     }, [measure])
 
     return (
@@ -150,7 +158,7 @@ export default function SkillsSection() {
                 >
                     <div
                         className="marquee-track flex w-fit hover:[animation-play-state:paused]"
-                        style={{ "--marquee-distance": `-${setWidth}px` } as React.CSSProperties}
+                        style={{ "--marquee-distance": `-${trackWidth}px` } as React.CSSProperties}
                     >
                         {/* First Set */}
                         <div ref={firstSetRef} className="flex gap-2 shrink-0 pr-2">

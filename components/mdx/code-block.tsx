@@ -1,31 +1,33 @@
 "use client"
 
-import {useState, useRef, useEffect, type ReactNode} from "react"
+import {useState, useRef, useEffect, type ComponentProps} from "react"
 import {Check, Copy} from "lucide-react"
 
-interface CodeBlockProps {
-    children: ReactNode
-
-    [key: string]: unknown
-}
-
-export function CodeBlock({children, ...props}: CodeBlockProps) {
+export function CodeBlock({children, ...props}: ComponentProps<"pre">) {
     const preRef = useRef<HTMLPreElement>(null)
     const [copied, setCopied] = useState(false)
     const [language, setLanguage] = useState("")
+    const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
 
     useEffect(() => {
         const code = preRef.current?.querySelector("code")
         if (code) {
             setLanguage(code.getAttribute("data-language") || "")
         }
+        return () => {
+            if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+        }
     }, [])
 
     const copyCode = () => {
         const code = preRef.current?.textContent || ""
-        navigator.clipboard.writeText(code)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
+        navigator.clipboard.writeText(code).then(() => {
+            setCopied(true)
+            if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current)
+            copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000)
+        }).catch(() => {
+            setCopied(false)
+        })
     }
 
     return (
