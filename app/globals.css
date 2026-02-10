@@ -223,7 +223,7 @@ figure[data-rehype-pretty-code-figure] {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(var(--marquee-distance, -50%));
   }
 }
 

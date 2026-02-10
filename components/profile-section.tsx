@@ -20,7 +20,7 @@ export default function ProfileSection() {
                 <div className="flex items-start gap-4 mb-6">
                     {/* Profile Image with Status */}
                     <div className="relative">
-                        <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-border">
+                        <div className="relative w-16 h-16 rounded-3xl overflow-hidden border-2 border-border">
                             <Image
                                 src="/assets/images/seif.jpg"
                                 alt="Seif Ismail"

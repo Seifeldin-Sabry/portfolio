@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import { motion, useInView } from "framer-motion"
 import { 
     Sparkles, 
@@ -111,7 +111,21 @@ function SkillCard({ category }: { category: typeof skillCategories[0] }) {
 
 export default function SkillsSection() {
     const containerRef = useRef<HTMLDivElement>(null)
+    const firstSetRef = useRef<HTMLDivElement>(null)
     const isInView = useInView(containerRef, { once: true, margin: "-50px" })
+    const [setWidth, setSetWidth] = useState(0)
+
+    const measure = useCallback(() => {
+        if (firstSetRef.current) {
+            setSetWidth(firstSetRef.current.offsetWidth)
+        }
+    }, [])
+
+    useEffect(() => {
+        measure()
+        window.addEventListener("resize", measure)
+        return () => window.removeEventListener("resize", measure)
+    }, [measure])
 
     return (
         <section ref={containerRef} className="py-2 -mt-2">
@@ -134,10 +148,12 @@ export default function SkillsSection() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                     className="relative overflow-hidden"
                 >
-                    {/* Scrolling track - each set wrapped so both halves are structurally identical */}
-                    <div className="marquee-track flex w-fit hover:[animation-play-state:paused]">
+                    <div
+                        className="marquee-track flex w-fit hover:[animation-play-state:paused]"
+                        style={{ "--marquee-distance": `-${setWidth}px` } as React.CSSProperties}
+                    >
                         {/* First Set */}
-                        <div className="flex gap-2 shrink-0 pr-2">
+                        <div ref={firstSetRef} className="flex gap-2 shrink-0 pr-2">
                             {skillCategories.map((category) => (
                                 <SkillCard key={`first-${category.id}`} category={category} />
                             ))}
