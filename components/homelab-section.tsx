@@ -36,7 +36,7 @@ export default function HomelabSection() {
                 {isOpen && (
                     <>
                         {/* Services Grid */}
-                        <div className="grid grid-cols-2 gap-3 animate-fade-in">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-in">
                             {homelabServices.map((service) => {
                                 const isExpanded = expandedId === service.id
 
@@ -125,6 +125,7 @@ export default function HomelabSection() {
                                 </div>
                                 <iframe
                                     src="https://status.homelab.seif-dx.com/status/homelab"
+                                    sandbox="allow-scripts allow-same-origin"
                                     title="Homelab Uptime Status"
                                     className="w-full h-[300px] bg-background"
                                     loading="lazy"
