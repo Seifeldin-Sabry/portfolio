@@ -43,8 +43,17 @@ export default function HomelabSection() {
                                 return (
                                     <div
                                         key={service.id}
+                                        role="button"
+                                        tabIndex={0}
+                                        aria-expanded={isExpanded}
                                         onClick={() => setExpandedId(isExpanded ? null : service.id)}
-                                        className={`cursor-pointer bg-secondary/20 border border-border rounded-lg overflow-hidden transition-all duration-300 hover:border-accent/30 ${
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault()
+                                                setExpandedId(isExpanded ? null : service.id)
+                                            }
+                                        }}
+                                        className={`cursor-pointer bg-secondary/20 border border-border rounded-lg overflow-hidden transition-all duration-300 hover:border-accent/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent ${
                                             isExpanded ? 'col-span-2 bg-secondary/30' : ''
                                         }`}
                                     >

@@ -59,7 +59,7 @@ Proxmox's built-in vzdump runs daily at 2 AM, creating full snapshots of every V
 
 I follow the 3-2-1 backup rule:
 - **3 copies** of all critical data
-- **2 different media types** (NVMe + USB HDD + PBS)
+- **2 different media types** (NVMe + USB HDD, managed via Proxmox Backup Server)
 - **1 offsite** backup (encrypted, pushed to remote storage)
 
 Retention policies keep daily backups for 7 days, weekly for 4 weeks, and monthly for 6 months.
