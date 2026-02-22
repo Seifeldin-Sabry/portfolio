@@ -1,0 +1,154 @@
+---
+title: "My Homelab: A Tour of My Self-Hosted Infrastructure"
+date: "22-02-2026"
+excerpt: "A walkthrough of my Proxmox-based homelab — from network architecture and Docker stacks to automated backups, DNS filtering, and security hardening with CrowdSec."
+tags: ["Homelab", "Self-Hosting", "Proxmox", "Docker", "Infrastructure"]
+---
+
+What started as an N100 mini PC experiment quickly grew into a full self-hosted infrastructure running 24/7 from my home. This post is a tour of everything running on my Proxmox VE homelab — the architecture, the services, the security, and the backup strategy that keeps it all safe.
+
+## Why I Built This
+
+I wrote about my motivation in a [previous post](/blog/self-hosting-2026). The short version: I wanted full control over my data, wanted to stop paying cloud providers for things I can run myself, and wanted to build real infrastructure skills. A few months in, the homelab has exceeded every expectation.
+
+## Hardware Overview
+
+The entire stack runs on a single Proxmox VE host:
+
+- **CPU**: 16 cores
+- **RAM**: 30 GB
+- **Storage**: 4 TB USB HDD for bulk data, NVMe for OS and VMs
+- **Network**: Dual bridge — vmbr0 for LAN, vmbr1 for private NAT (10.10.10.0/24)
+
+Proxmox VE acts as a type-1 hypervisor, managing both LXC containers (lightweight, for single-purpose services) and full VMs (for Docker workloads).
+
+## Network Architecture
+
+The network design separates concerns cleanly:
+
+**vmbr0 (LAN Bridge)** — Connects containers and VMs to the home network. Services that need to be reachable from other devices on the LAN use this bridge.
+
+**vmbr1 (Private NAT — 10.10.10.0/24)** — An isolated network for inter-service communication. Services on this bridge can talk to each other but aren't directly accessible from the LAN unless explicitly routed.
+
+**DNS Forwarding** — iptables DNAT rules on the Proxmox host redirect all DNS traffic (port 53) to AdGuard Home, ensuring every device on the network benefits from DNS filtering regardless of its configured DNS server.
+
+## Automated Backups
+
+Backups are the most important part of any homelab. I run two complementary backup systems:
+
+### Borgmatic (Docker Configs)
+
+Borgmatic runs daily at 3 AM and backs up all Docker Compose files, environment files, and persistent volumes. BorgBackup handles deduplication and compression, so incremental backups are fast and storage-efficient.
+
+**What it covers:**
+- Docker Compose configurations
+- Application data volumes
+- Environment files and secrets
+- Custom scripts and cron jobs
+
+### vzdump to PBS (VMs & Containers)
+
+Proxmox's built-in vzdump runs daily at 2 AM, creating full snapshots of every VM and LXC container. These snapshots are stored on Proxmox Backup Server (PBS) running in CT 104.
+
+**What it covers:**
+- Complete VM disk images
+- LXC container filesystems
+- Proxmox configuration
+
+### 3-2-1 Strategy
+
+I follow the 3-2-1 backup rule:
+- **3 copies** of all critical data
+- **2 different media types** (NVMe + USB HDD, managed via Proxmox Backup Server)
+- **1 offsite** backup (encrypted, pushed to remote storage)
+
+Retention policies keep daily backups for 7 days, weekly for 4 weeks, and monthly for 6 months.
+
+## Jellyfin & Jellyseerr
+
+Jellyfin is my self-hosted media server, streaming my personal library to any device on the network. It handles hardware-accelerated transcoding for smooth playback on lower-powered clients.
+
+Jellyseerr sits in front of it as a request and discovery portal — it provides a clean UI for browsing, searching, and organizing the library. Multi-user support means family members get their own profiles and watch history.
+
+Everything runs in the media Docker stack on VM 100, with media files stored on the 4 TB USB HDD.
+
+## Uptime Kuma
+
+Uptime Kuma monitors every service in the homelab. It runs HTTP, TCP, and ping checks on configurable intervals and sends instant Telegram alerts when something goes down.
+
+The public status page at [status.homelab.seif-dx.com](https://status.homelab.seif-dx.com) gives a real-time view of service health. I also wrote a custom health check script that verifies not just that containers are running, but that they're actually responding correctly.
+
+Key monitors include:
+- All reverse-proxied services (HTTP 200 checks)
+- DNS resolution (AdGuard primary and replica)
+- Backup job completion (via webhook)
+- VPN tunnel status
+- Disk space and memory thresholds
+
+## VPN Gateway
+
+The VPN setup has two layers:
+
+### Gluetun (Outbound VPN)
+
+Gluetun runs as a Docker container providing a WireGuard tunnel for services that need VPN-routed outbound traffic. It includes a kill switch that blocks all traffic if the tunnel drops, preventing any leaks. Services connect through Gluetun's network stack using Docker's `network_mode: "service:gluetun"` pattern.
+
+### Tailscale (Remote Access)
+
+Tailscale runs in its own LXC container (CT 102) and provides mesh VPN access to the entire homelab from anywhere. Whether I'm on my phone, laptop, or a remote server, I can reach every service as if I were on the local network.
+
+Tailscale also enables:
+- SSH access without exposing port 22 to the internet
+- Sharing specific services with friends/family via Tailscale Funnel
+- Exit node functionality for routing all traffic through the homelab
+
+## AdGuard Home
+
+DNS filtering runs on two dedicated LXC containers:
+
+- **CT 101 — Primary**: Handles all DNS queries with custom filter lists
+- **CT 103 — Replica**: Syncs configuration from the primary for redundancy
+
+Both instances use DNS-over-HTTPS upstream resolvers for privacy. The Proxmox host runs iptables DNAT rules that intercept all outbound DNS traffic (port 53) and redirect it to the primary AdGuard instance. This means even devices with hardcoded DNS servers (smart TVs, IoT devices) go through filtering.
+
+Filter lists include:
+- Standard ad and tracker blocking
+- Malware and phishing domain lists
+- Custom rules for specific services
+
+The replica ensures DNS continues working even during primary maintenance or updates.
+
+## Security: CrowdSec WAF & Caddy
+
+Security is multi-layered:
+
+### Caddy (Reverse Proxy)
+
+Caddy handles all incoming HTTPS traffic. It uses the Cloudflare DNS-01 challenge for automatic TLS certificate provisioning, which means I never expose port 80 for HTTP-01 challenges. Wildcard certificates cover all subdomains.
+
+### CrowdSec (WAF)
+
+CrowdSec is the collaborative security layer. It analyzes Caddy's access logs in real-time and blocks malicious IPs based on:
+
+- **Local decisions**: Detected attacks against my infrastructure (brute force, path scanning, exploit attempts)
+- **Community blocklists**: Shared threat intelligence from thousands of other CrowdSec users
+
+The CrowdSec bouncer integrates directly with Caddy, blocking bad actors at the reverse proxy level before requests ever reach backend services.
+
+### Defense in Depth
+
+The full security stack:
+1. **Cloudflare** — DDoS protection, rate limiting at the edge
+2. **Caddy** — TLS termination, header hardening
+3. **CrowdSec** — WAF, community threat intelligence
+4. **AdGuard** — DNS-level filtering
+5. **Tailscale** — Zero-trust remote access (no exposed SSH)
+6. **Gluetun** — VPN kill switch for outbound traffic
+
+## Conclusion
+
+Building this homelab has been one of the most rewarding projects I've worked on. Every service I add deepens my understanding of networking, Linux administration, containerization, and security. The 3-2-1 backup strategy means I can recover from any failure, and the monitoring setup means I know about problems before they become outages.
+
+If you're considering building your own homelab, start small — a single Docker host with Caddy and one or two services is enough to learn the fundamentals. The complexity grows naturally as your needs expand.
+
+The full stack is visible on my [portfolio homelab section](/#homelab), and you can check real-time service status on the [status page](https://status.homelab.seif-dx.com).

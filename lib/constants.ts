@@ -13,9 +13,15 @@ export const BLOG_CONFIG = {
 
 // Site Configuration
 export const SITE_CONFIG = {
-  EMAIL: "ismailseifeldin54@gmail.com",
-  BASE_URL:
-    process.env.NEXT_PUBLIC_FRONTEND_URL || "https://www.seifeldinismail.com",
+  EMAIL: "seif-dx@proton.me",
+  BASE_URL: process.env.NEXT_PUBLIC_FRONTEND_URL || "https://seif-dx.com",
   AUTHOR: "Seif-DX",
   TITLE: "Seif-DX Portfolio",
+} as const;
+
+// External Links
+export const LINKS = {
+  GITHUB: "https://github.com/Seifeldin-Sabry",
+  LINKEDIN: "https://www.linkedin.com/in/seif-sabry-b8a542202/",
+  CALENDLY: "https://calendly.com/ismailseifeldin54/45min",
 } as const;

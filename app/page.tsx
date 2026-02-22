@@ -1,6 +1,7 @@
 import ProfileSection from "@/components/profile-section"
 import SkillsSection from "@/components/skills-section"
 import ProjectsSection from "@/components/projects-section"
+import HomelabSection from "@/components/homelab-section"
 import ExperienceSection from "@/components/experience-section"
 import BlogSection from "@/components/blog-section"
 import {getSortedBlogPosts} from "@/lib/blogs"
@@ -13,6 +14,7 @@ export default function Home() {
             <ProfileSection/>
             <SkillsSection/>
             <ProjectsSection/>
+            <HomelabSection/>
             <ExperienceSection/>
             <BlogSection posts={allPosts}/>
         </div>
