@@ -1,7 +1,6 @@
 import Image from "next/image"
 import {Github, Linkedin, Mail, Calendar, Zap, Route, Atom, Wind, Database, Shield} from "lucide-react"
-import {githubLink, linkedInLink, calendlyLink} from "@/lib/links"
-import {SITE_CONFIG} from "@/lib/constants"
+import {SITE_CONFIG, LINKS} from "@/lib/constants"
 
 const techStack = [
     { name: "ElysiaJS", icon: Zap, color: "text-yellow-400" },
@@ -73,7 +72,7 @@ export default function ProfileSection() {
                 {/* Social Icons - Compact */}
                 <div className="flex items-center gap-2">
                     <a 
-                        href={githubLink} 
+                        href={LINKS.GITHUB} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
@@ -82,7 +81,7 @@ export default function ProfileSection() {
                         <Github size={16} />
                     </a>
                     <a 
-                        href={linkedInLink} 
+                        href={LINKS.LINKEDIN} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
@@ -98,7 +97,7 @@ export default function ProfileSection() {
                         <Mail size={16} />
                     </a>
                     <a 
-                        href={calendlyLink} 
+                        href={LINKS.CALENDLY} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
