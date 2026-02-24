@@ -117,21 +117,21 @@ export default function HomelabSection() {
                             })}
                         </div>
 
-                        {/* Uptime Kuma Status Embed */}
-                        {expandedId === "uptime-kuma" && (
-                            <div className="mt-4 rounded-lg border border-border overflow-hidden animate-fade-in">
-                                <div className="px-3 py-2 bg-secondary/30 border-b border-border/50">
-                                    <p className="text-xs font-mono text-muted-foreground">Live Status — Uptime Kuma</p>
-                                </div>
-                                <iframe
-                                    src="https://status.homelab.seif-dx.com/status/homelab"
-                                    sandbox="allow-scripts allow-same-origin"
-                                    title="Homelab Uptime Status"
-                                    className="w-full h-[300px] bg-background"
-                                    loading="lazy"
-                                />
-                            </div>
-                        )}
+                        {/*/!* Uptime Kuma Status Embed *!/*/}
+                        {/*{expandedId === "uptime-kuma" && (*/}
+                        {/*    <div className="mt-4 rounded-lg border border-border overflow-hidden animate-fade-in">*/}
+                        {/*        <div className="px-3 py-2 bg-secondary/30 border-b border-border/50">*/}
+                        {/*            <p className="text-xs font-mono text-muted-foreground">Live Status — Uptime Kuma</p>*/}
+                        {/*        </div>*/}
+                        {/*        <iframe*/}
+                        {/*            src="https://status.homelab.seif-dx.com/status/homelab"*/}
+                        {/*            sandbox="allow-scripts allow-same-origin"*/}
+                        {/*            title="Homelab Uptime Status"*/}
+                        {/*            className="w-full h-[300px] bg-background"*/}
+                        {/*            loading="lazy"*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                     </>
                 )}
             </div>
