@@ -1,5 +1,5 @@
 import Image from "next/image"
-import {Github, Linkedin, Mail, Calendar, Zap, Route, Atom, Wind, Database, Shield} from "lucide-react"
+import {Github, Linkedin, Mail, Calendar, Globe, Zap, Route, Atom, Wind, Database, Shield} from "lucide-react"
 import {SITE_CONFIG, LINKS} from "@/lib/constants"
 
 const techStack = [
@@ -39,7 +39,7 @@ export default function ProfileSection() {
                             <span className="text-xs font-mono text-accent bg-accent/10 px-1.5 py-0.5 rounded">Live</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            Currently building <span className="text-foreground font-medium">Qfacts</span> & <span className="text-foreground font-medium">Etoile</span>
+                            Founder @ <span className="text-foreground font-medium">SDX Studio</span> · Building <span className="text-foreground font-medium">Arkive</span> & <span className="text-foreground font-medium">Qfacts</span>
                         </p>
                     </div>
                 </div>
@@ -71,9 +71,18 @@ export default function ProfileSection() {
 
                 {/* Social Icons - Compact */}
                 <div className="flex items-center gap-2">
-                    <a 
-                        href={LINKS.GITHUB} 
-                        target="_blank" 
+                    <a
+                        href={LINKS.SDX_STUDIO}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
+                        aria-label="SDX Studio"
+                    >
+                        <Globe size={16} />
+                    </a>
+                    <a
+                        href={LINKS.GITHUB}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary/30 border border-border text-muted-foreground hover:text-accent hover:border-accent/30 transition-all duration-300"
                         aria-label="GitHub"

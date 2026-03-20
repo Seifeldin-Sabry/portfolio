@@ -11,14 +11,41 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
+    id: "sdx-studio-founder",
+    role: "Founder",
+    company: "SDX Studio",
+    companyLogo: "/assets/logos/brand-mark.svg",
+    period: "March 2026 – Present",
+    description:
+      "Independent software studio building focused SaaS tools and providing IT consulting for businesses that need clear technical thinking. First product: Arkive — a reading list app for serious readers.",
+    technologies: ["Next.js", "TypeScript", "PostgreSQL", "Drizzle ORM", "ElysiaJS"],
+  },
+  {
     id: "software-engineer",
     role: "Software Engineer",
     company: "Qfacts",
     companyLogo: "/assets/logos/qfacts_logo.jpeg",
     period: "July 2025 - Present",
     description:
-      "Qfacts is a QMS management company providing a wide variety of features and streamlining Quality Assurance and Auditing across the board for big and small companies. Soon Qfacts will leverage the beaty of AI to provide more advanced features to help increase efficiency and productivity",
+        "Qfacts is a QMS management company providing a wide variety of features and streamlining Quality Assurance and Auditing across the board for big and small companies. Soon Qfacts will leverage the beaty of AI to provide more advanced features to help increase efficiency and productivity",
     technologies: ["Typescript", "NestJS", "GCP", "Pulumi"],
+  },
+  {
+    id: "north-star",
+    role: "Founder",
+    company: "North Star",
+    companyLogo: "/assets/logos/nsagi.png",
+    period: "May 2025 – February 2026",
+    description:
+      "AI-native event discovery platform combining event discovery, organizer tools, and venue marketplace. Built for attendees to find events worth their time, not just another ticket-selling marketplace.",
+    achievements: [
+      "Architected and built FastAPI backend with real-time processing",
+      "Set up Neon serverless PostgreSQL with automated backups",
+      "Integrated multi-channel notification system via Novu",
+      "Implemented Clerk authentication with SSO support",
+      "Established automated CI/CD pipeline with GitHub Actions and Docker",
+    ],
+    technologies: ["FastAPI", "Python", "Neon", "PostgreSQL", "Novu", "Clerk", "PostHog"],
   },
   {
     id: "ai-engineer-intern",
