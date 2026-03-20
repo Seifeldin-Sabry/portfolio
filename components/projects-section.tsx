@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useState, useRef} from "react"
 import {projects} from "@/data/projects"
 import {Badge} from "@/components/ui/badge"
 import {Github, ExternalLink, ChevronLeft, ChevronRight} from "lucide-react"
@@ -21,6 +21,7 @@ export default function ProjectsSection() {
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [currentPage, setCurrentPage] = useState(0)
     const [direction, setDirection] = useState(0)
+    const touchStartX = useRef<number | null>(null)
 
     const goToPage = (page: number) => {
         if (page < 0 || page >= pages.length) return
@@ -29,14 +30,17 @@ export default function ProjectsSection() {
         setCurrentPage(page)
     }
 
-    const handleDragEnd = (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
-        const swipeThreshold = 50
-        const velocityThreshold = 500
-        if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
-            goToPage(currentPage + 1)
-        } else if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
-            goToPage(currentPage - 1)
-        }
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX
+    }
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX.current === null) return
+        const delta = e.changedTouches[0].clientX - touchStartX.current
+        const threshold = 50
+        if (delta < -threshold) goToPage(currentPage + 1)
+        else if (delta > threshold) goToPage(currentPage - 1)
+        touchStartX.current = null
     }
 
     const currentProjects = pages[currentPage]
@@ -68,8 +72,8 @@ export default function ProjectsSection() {
                                     <button
                                         key={idx}
                                         onClick={() => goToPage(idx)}
-                                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                                            idx === currentPage ? "bg-accent w-3" : "bg-muted-foreground/40"
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                                            idx === currentPage ? "bg-accent w-3" : "bg-muted-foreground/40 w-1.5"
                                         }`}
                                         aria-label={`Page ${idx + 1}`}
                                     />
@@ -88,7 +92,11 @@ export default function ProjectsSection() {
                 </div>
 
                 {/* Projects Grid with Swipe */}
-                <div className="overflow-hidden">
+                <div
+                    className="overflow-hidden"
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                >
                     <AnimatePresence mode="wait" initial={false}>
                         <motion.div
                             key={currentPage}
@@ -96,11 +104,7 @@ export default function ProjectsSection() {
                             animate={{x: 0, opacity: 1}}
                             exit={{x: direction > 0 ? -200 : 200, opacity: 0}}
                             transition={{duration: 0.25, ease: "easeInOut"}}
-                            drag="x"
-                            dragConstraints={{left: 0, right: 0}}
-                            dragElastic={0.2}
-                            onDragEnd={handleDragEnd}
-                            className={`grid gap-3 ${currentProjects.length === 1 ? "grid-cols-1 max-w-sm" : "grid-cols-2"}`}
+                            className="grid grid-cols-2 gap-3"
                         >
                             {currentProjects.map((project) => {
                                 const isExpanded = expandedId === project.id
@@ -110,7 +114,7 @@ export default function ProjectsSection() {
                                         key={project.id}
                                         onClick={() => setExpandedId(isExpanded ? null : project.id)}
                                         className={`cursor-pointer bg-secondary/20 border border-border rounded-lg overflow-hidden transition-all duration-300 hover:border-accent/30 ${
-                                            isExpanded ? 'col-span-full bg-secondary/30' : ''
+                                            isExpanded ? 'col-span-2 bg-secondary/30' : ''
                                         }`}
                                     >
                                         {/* Compact View */}
