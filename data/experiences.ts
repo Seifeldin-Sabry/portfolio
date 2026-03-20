@@ -32,7 +32,7 @@ export const experiences: Experience[] = [
   },
   {
     id: "north-star",
-    role: "Founder",
+    role: "Core SWE",
     company: "North Star",
     companyLogo: "/assets/logos/nsagi.png",
     period: "May 2025 – February 2026",
