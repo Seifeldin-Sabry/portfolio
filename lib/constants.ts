@@ -14,7 +14,7 @@ export const BLOG_CONFIG = {
 // Site Configuration
 export const SITE_CONFIG = {
   EMAIL: "seif-dx@proton.me",
-  BASE_URL: process.env.NEXT_PUBLIC_FRONTEND_URL || "https://seif-dx.com",
+  BASE_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
   AUTHOR: "Seif-DX",
   TITLE: "Seif-DX Portfolio",
 } as const;

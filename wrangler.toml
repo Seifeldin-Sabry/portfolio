@@ -1,0 +1,6 @@
+name = "portfolio"
+compatibility_date = "2025-06-16"
+
+[assets]
+directory = "./out"
+not_found_handling = "404-page"

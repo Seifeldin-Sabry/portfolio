@@ -16,8 +16,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
-.env*
+# env files — encrypted .env IS committed (dotenvx); never commit keys or local overrides
+.env.keys
+.env*.local
 
 # vercel
 .vercel
@@ -110,3 +111,5 @@ fabric.properties
 /.idea/prettier.xml
 /.idea/vcs.xml
 /.idea/git_toolbox_prj.xml
+
+.omc

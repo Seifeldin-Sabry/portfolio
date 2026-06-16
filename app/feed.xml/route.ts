@@ -1,9 +1,11 @@
 import RSS from "rss"
 import { getSortedBlogPosts } from "@/lib/blogs"
 
+export const dynamic = "force-static"
+
 export async function GET() {
     const posts = getSortedBlogPosts()
-    const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://www.seifeldinismail.com"
+    const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL
 
     const feed = new RSS({
         title: "Seif's Blog",
