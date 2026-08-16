@@ -70,36 +70,34 @@ export default function ProfileSection() {
                 </div>
 
                 {/* CV Download */}
-                <div className="mb-5 rounded-xl border border-accent/25 bg-accent/[0.04] p-4 transition-colors duration-300 hover:border-accent/45 hover:bg-accent/[0.07]">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
-                                <FileText size={18} aria-hidden="true" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold">Keep a copy of my CV</p>
-                                <p className="text-xs text-muted-foreground">Software engineering, systems & product work · PDF</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2 sm:shrink-0">
-                            <a
-                                href="/assets/documents/seif-ismail-cv.pdf"
-                                download="Seif-Ismail-CV.pdf"
-                                className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,255,65,0.18)] active:translate-y-0"
-                            >
-                                <Download size={14} aria-hidden="true" />
-                                Download
-                            </a>
-                            <a
-                                href="/assets/documents/seif-ismail-cv.pdf"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
-                            >
-                                Preview
-                                <ArrowUpRight size={13} aria-hidden="true" />
-                            </a>
-                        </div>
+                <div className="mb-5 flex items-center gap-3 rounded-lg border border-border/70 bg-secondary/20 px-3 py-2.5 transition-colors duration-300 hover:border-accent/25">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background/60 text-accent">
+                        <FileText size={16} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">CV</p>
+                        <p className="hidden truncate text-xs text-muted-foreground sm:block">Software engineer & founder · PDF</p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                        <a
+                            href="/assets/documents/seif-ismail-cv.pdf"
+                            download="Seif-Ismail-CV.pdf"
+                            aria-label="Download CV"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-accent/35 text-accent transition-colors duration-300 hover:bg-accent/10 sm:h-auto sm:w-auto sm:gap-1.5 sm:px-2.5 sm:py-1.5 sm:text-xs sm:font-medium"
+                        >
+                            <Download size={14} aria-hidden="true" />
+                            <span className="sr-only sm:not-sr-only">Download</span>
+                        </a>
+                        <a
+                            href="/assets/documents/seif-ismail-cv.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Preview CV"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground sm:h-auto sm:w-auto sm:gap-1 sm:px-2.5 sm:py-1.5 sm:text-xs sm:font-medium"
+                        >
+                            <span className="sr-only sm:not-sr-only">Preview</span>
+                            <ArrowUpRight size={13} aria-hidden="true" />
+                        </a>
                     </div>
                 </div>
 
