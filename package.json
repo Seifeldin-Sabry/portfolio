@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "cv:build": "node scripts/render-cv.mjs",
+    "build": "pnpm cv:build && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -39,9 +40,12 @@
   },
   "devDependencies": {
     "@types/node": "^22",
+    "@types/pdfkit": "^0.17.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/rss": "^0.0.32",
+    "marked": "^18.0.9",
+    "pdfkit": "^0.19.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
