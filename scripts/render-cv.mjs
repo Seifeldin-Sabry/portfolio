@@ -24,7 +24,7 @@ for (const token of tokens) {
         if (token.depth === 1) {
             document.name = token.text
         } else if (token.depth === 2) {
-            currentSection = {title: token.text, roles: [], bullets: [], table: null}
+            currentSection = {title: token.text, roles: [], bullets: [], paragraphs: [], table: null}
             document.sections.push(currentSection)
             currentRole = null
         } else if (token.depth === 3) {
@@ -43,6 +43,8 @@ for (const token of tokens) {
             currentRole.stack = token.text.replace(/^Stack:\s*/i, "")
         } else if (currentRole && !currentRole.dates) {
             currentRole.dates = token.text
+        } else if (currentSection && !currentRole) {
+            currentSection.paragraphs.push(token.text)
         }
         continue
     }
@@ -99,55 +101,99 @@ function cleanInline(value) {
         .replace(/[`*_]/g, "")
 }
 
+function parseInlineLinks(value) {
+    const segments = []
+    const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g
+    let lastIndex = 0
+    let match
+
+    while ((match = linkPattern.exec(value))) {
+        if (match.index > lastIndex) {
+            segments.push({text: value.slice(lastIndex, match.index), href: null})
+        }
+        segments.push({text: match[1], href: match[2]})
+        lastIndex = match.index + match[0].length
+    }
+
+    if (lastIndex < value.length) {
+        segments.push({text: value.slice(lastIndex), href: null})
+    }
+
+    return segments.length > 0 ? segments : [{text: value, href: null}]
+}
+
+function writeContact(value) {
+    const segments = parseInlineLinks(value)
+    pdf.font("Helvetica").fontSize(8.8).fillColor(BLACK)
+    const totalWidth = segments.reduce((total, segment) => total + pdf.widthOfString(segment.text), 0)
+    let x = MARGIN_X + (CONTENT_WIDTH - totalWidth) / 2
+
+    for (const segment of segments) {
+        const width = pdf.widthOfString(segment.text)
+        pdf.text(segment.text, x, 91, {width, lineBreak: false, link: segment.href ?? undefined, underline: false})
+        x += width
+    }
+}
+
 function writeSectionHeading(title) {
     ensureSpace(24)
     const y = pdf.y
     const label = title.toUpperCase()
-    pdf.font("Times-Roman").fontSize(15).fillColor(BLUE).text(label, MARGIN_X, y, {lineBreak: false})
+    pdf.font("Times-Roman").fontSize(16).fillColor(BLUE).text(label, MARGIN_X, y, {lineBreak: false})
     const lineStart = MARGIN_X + pdf.widthOfString(label) + 8
     pdf.moveTo(lineStart, y + 10).lineTo(PAGE_WIDTH - MARGIN_X, y + 10).lineWidth(0.45).strokeColor("#222222").stroke()
-    pdf.y = y + 20
+    pdf.y = y + 21
 }
 
-function writeBullets(items, {fontSize = 8.5, gap = 1.5} = {}) {
+function writeBullets(items, {fontSize = 9, gap = 2.5} = {}) {
     for (const item of items) {
         const text = cleanInline(item)
         const bulletWidth = 10
         const textWidth = CONTENT_WIDTH - bulletWidth
-        const height = pdf.heightOfString(text, {width: textWidth, lineGap: 0.2})
+        pdf.font("Times-Roman").fontSize(fontSize).fillColor(BLACK)
+        const height = pdf.heightOfString(text, {width: textWidth, lineGap: 0.6})
         ensureSpace(height + gap)
         const y = pdf.y
-        pdf.font("Times-Roman").fontSize(fontSize).fillColor(BLACK).text("•", MARGIN_X, y, {lineBreak: false})
-        pdf.text(text, MARGIN_X + bulletWidth, y, {width: textWidth, lineGap: 0.2})
+        pdf.text("•", MARGIN_X, y, {lineBreak: false})
+        pdf.text(text, MARGIN_X + bulletWidth, y, {width: textWidth, lineGap: 0.6})
         pdf.y += gap
     }
+}
+
+function writeParagraph(value) {
+    const text = cleanInline(value)
+    pdf.font("Times-Roman").fontSize(9.6).fillColor(GREY)
+    const height = pdf.heightOfString(text, {width: CONTENT_WIDTH, lineGap: 0.8})
+    ensureSpace(height + 5)
+    pdf.text(text, MARGIN_X, pdf.y, {width: CONTENT_WIDTH, lineGap: 0.8})
+    pdf.y += 5
 }
 
 function writeRole(role) {
     const [title, company = ""] = role.title.split("|").map((part) => part.trim())
     const y = pdf.y
     const leftWidth = CONTENT_WIDTH - 118
-    pdf.font("Times-Bold").fontSize(10.5).fillColor(BLACK).text(title, MARGIN_X, y, {width: leftWidth, lineBreak: false})
+    pdf.font("Times-Bold").fontSize(11.2).fillColor(BLACK).text(title, MARGIN_X, y, {width: leftWidth, lineBreak: false})
     if (company) {
         const separatorX = MARGIN_X + pdf.widthOfString(title) + 7
         pdf.font("Times-Roman").text(`| ${company}`, separatorX, y, {lineBreak: false})
     }
-    pdf.font("Times-Roman").fontSize(9).text(role.dates, MARGIN_X, y, {width: CONTENT_WIDTH, align: "right", lineBreak: false})
-    pdf.y = y + Math.max(pdf.currentLineHeight(), 12) + 1
+    pdf.font("Times-Roman").fontSize(9.4).text(role.dates, MARGIN_X, y, {width: CONTENT_WIDTH, align: "right", lineBreak: false})
+    pdf.y = y + Math.max(pdf.currentLineHeight(), 13) + 2
 
     if (role.stack) {
-        pdf.font("Times-Roman").fontSize(8.5).fillColor(GREY).text(`Stack: ${cleanInline(role.stack)}`, MARGIN_X, pdf.y, {width: CONTENT_WIDTH, lineGap: 0.2})
-        pdf.y += 1
+        pdf.font("Times-Roman").fontSize(9).fillColor(GREY).text(`Stack: ${cleanInline(role.stack)}`, MARGIN_X, pdf.y, {width: CONTENT_WIDTH, lineGap: 0.5})
+        pdf.y += 2
     }
 
-    writeBullets(role.bullets)
+    writeBullets(role.bullets, {fontSize: 9, gap: 2.5})
 }
 
 function writeTable(table) {
     const tableX = MARGIN_X + 118
     const widths = [72, 128, 64]
     const tableWidth = widths.reduce((total, width) => total + width, 0)
-    const rowHeight = 18
+    const rowHeight = 19
     ensureSpace(rowHeight * (table.rows.length + 1) + 8)
     const startY = pdf.y
 
@@ -157,7 +203,7 @@ function writeTable(table) {
     function row(values, y, bold = false) {
         let x = tableX
         values.forEach((value, index) => {
-            pdf.font(bold ? "Times-Bold" : "Times-Roman").fontSize(8.5).fillColor(BLACK).text(cleanInline(value), x + 6, y + 4, {width: widths[index] - 12, align: "center", lineBreak: false})
+            pdf.font(bold ? "Times-Bold" : "Times-Roman").fontSize(9).fillColor(BLACK).text(cleanInline(value), x + 6, y + 4, {width: widths[index] - 12, align: "center", lineBreak: false})
             x += widths[index]
         })
     }
@@ -169,19 +215,22 @@ function writeTable(table) {
     pdf.y = startY + rowHeight * (table.rows.length + 1) + 6
 }
 
-pdf.font("Times-Roman").fillColor(BLACK).fontSize(26).text(document.name.toUpperCase(), MARGIN_X, 38, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
-pdf.font("Times-Roman").fontSize(11.5).text(document.role.toUpperCase(), MARGIN_X, 70, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
-pdf.font("Helvetica").fontSize(8.5).fillColor(BLACK).text(cleanInline(document.contact), MARGIN_X, 87, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
-pdf.moveTo(MARGIN_X, 105).lineTo(PAGE_WIDTH - MARGIN_X, 105).lineWidth(0.45).strokeColor("#222222").stroke()
-pdf.y = 116
+pdf.font("Times-Roman").fillColor(BLACK).fontSize(28).text(document.name.toUpperCase(), MARGIN_X, 36, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
+pdf.font("Times-Roman").fontSize(12.5).text(document.role.toUpperCase(), MARGIN_X, 70, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
+writeContact(document.contact)
+pdf.moveTo(MARGIN_X, 110).lineTo(PAGE_WIDTH - MARGIN_X, 110).lineWidth(0.45).strokeColor("#222222").stroke()
+pdf.y = 122
 
 for (const section of document.sections) {
     writeSectionHeading(section.title)
+    if (section.paragraphs.length > 0) {
+        section.paragraphs.forEach(writeParagraph)
+    }
     if (section.roles.length > 0) {
         section.roles.forEach(writeRole)
     }
     if (section.bullets.length > 0) {
-        writeBullets(section.bullets, {fontSize: 8.6, gap: 2})
+        writeBullets(section.bullets, {fontSize: 9, gap: 2.5})
     }
     if (section.table) {
         writeTable(section.table)

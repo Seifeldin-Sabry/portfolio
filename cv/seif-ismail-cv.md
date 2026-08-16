@@ -2,7 +2,11 @@
 
 Software Engineer
 
-seif-dx@proton.me · /seifeldin-sabry · /Seifeldin-Sabry · /Portfolio · +32 468 29 52 40
+[Email](mailto:seif-dx@proton.me) · [LinkedIn](https://www.linkedin.com/in/seif-sabry-b8a542202/) · [GitHub](https://github.com/Seifeldin-Sabry) · [Portfolio](https://seif-dx.com) · +32 468 29 52 40
+
+## About
+
+Outside of work, I like to travel, play tennis, and spend time in the gym. I also enjoy long walks with a 20 kg weighted vest as a simple way to build fitness.
 
 ## Professional Experience
 
