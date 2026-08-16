@@ -1,18 +1,18 @@
 # Seifeldin Sabry
 
-Software Engineer
+Software Engineer | Product-Minded Systems Builder
 
 [Email](mailto:seif-dx@proton.me) · [LinkedIn](https://www.linkedin.com/in/seif-sabry-b8a542202/) · [GitHub](https://github.com/Seifeldin-Sabry) · [Portfolio](https://seif-dx.com) · +32 468 29 52 40
 
 ## About
 
-Outside of work, I like to travel, play tennis, and spend time in the gym. I also enjoy long walks with a 20 kg weighted vest as a simple way to build fitness.
+Product-minded software engineer and founder focused on reliable platforms, thoughtful product systems, and practical automation. Outside of work, I like to travel, play tennis, and spend time in the gym. I also enjoy long walks with a 20 kg weighted vest as a simple way to build fitness, and I hold a driver's licence.
 
 ## Professional Experience
 
 ### Software Engineer | QFacts
 
-July 2025 – Present
+July 2025 - Present
 
 Stack: TypeScript, NestJS, React, PostgreSQL, Stripe, GCP, Pulumi
 
@@ -25,7 +25,7 @@ Stack: TypeScript, NestJS, React, PostgreSQL, Stripe, GCP, Pulumi
 
 ### Software Engineer | Etoile
 
-May 2025 – April 2026
+May 2025 - April 2026
 
 Stack: Python, PostgreSQL, Docker, GitHub Actions, TypeScript, Next.js
 
@@ -40,8 +40,12 @@ Stack: Python, PostgreSQL, Docker, GitHub Actions, TypeScript, Next.js
 - **Cloud and Delivery:** GCP, Cloud Run, Cloud SQL, Pub/Sub, Eventarc, GCS, Secret Manager, Pulumi, Docker, GitHub Actions
 - **Architecture:** Multi-tenancy, event-driven systems, idempotency, RBAC, state machines, CI/CD, integration testing
 
+## AI-Assisted Engineering
+
+I use Codex, Claude, and open-source models with coding harnesses and automated workflows, continuously experimenting with new ways to move from idea to tested implementation.
+
 ## Education
 
 | Degree | Institute | Year |
 | --- | --- | --- |
-| B.ASc | Karel de Grote Hogeschool | 2021–2024 |
+| B.ASc | Karel de Grote Hogeschool | 2021-2024 |
