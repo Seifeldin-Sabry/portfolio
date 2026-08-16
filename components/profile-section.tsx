@@ -1,5 +1,5 @@
 import Image from "next/image"
-import {Github, Linkedin, Mail, Calendar, Globe, Zap, Route, Atom, Wind, Database, Shield, FileText, Download, ArrowUpRight} from "lucide-react"
+import {Github, Linkedin, Mail, Calendar, Globe, Zap, Route, Atom, Wind, Database, Shield, FileText, Download, ArrowUpRight, ChevronDown} from "lucide-react"
 import {SITE_CONFIG, LINKS} from "@/lib/constants"
 
 const techStack = [
@@ -69,37 +69,57 @@ export default function ProfileSection() {
                     </span>
                 </div>
 
-                {/* CV Download */}
-                <div className="mb-5 flex items-center gap-3 rounded-lg border border-border/70 bg-secondary/20 px-3 py-2.5 transition-colors duration-300 hover:border-accent/25">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background/60 text-accent">
-                        <FileText size={16} aria-hidden="true" />
+                {/* Expandable CV Preview */}
+                <details className="group mb-5">
+                    <summary className="flex cursor-pointer list-none items-center gap-3 rounded-lg border border-border/70 bg-secondary/20 px-3 py-2.5 transition-colors duration-300 hover:border-accent/25 [&::-webkit-details-marker]:hidden">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background/60 text-accent">
+                            <FileText size={16} aria-hidden="true" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium">CV</p>
+                            <p className="hidden truncate text-xs text-muted-foreground sm:block">View my resume inline · PDF</p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
+                            <span className="hidden sm:inline">View</span>
+                            <ChevronDown size={15} className="transition-transform duration-300 group-open:rotate-180" aria-hidden="true" />
+                        </div>
+                    </summary>
+
+                    <div className="mt-2 overflow-hidden rounded-lg border border-border/70 bg-secondary/20">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
+                            <div className="flex items-center gap-2 text-xs">
+                                <span className="font-medium">CV preview</span>
+                                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">PDF</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <a
+                                    href="/assets/documents/seif-ismail-cv.pdf"
+                                    download="Seif-Ismail-CV.pdf"
+                                    className="inline-flex items-center gap-1.5 rounded-md border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors duration-300 hover:bg-accent/10"
+                                >
+                                    <Download size={13} aria-hidden="true" />
+                                    Download
+                                </a>
+                                <a
+                                    href="/assets/documents/seif-ismail-cv.pdf"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
+                                >
+                                    Open
+                                    <ArrowUpRight size={13} aria-hidden="true" />
+                                </a>
+                            </div>
+                        </div>
+                        <div className="bg-white p-1.5">
+                            <iframe
+                                src="/assets/documents/seif-ismail-cv.pdf#toolbar=0&navpanes=0&view=FitH"
+                                title="Seif Ismail CV preview"
+                                className="h-[70vh] max-h-[720px] min-h-[520px] w-full rounded-sm border border-black/10 bg-white"
+                            />
+                        </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">CV</p>
-                        <p className="hidden truncate text-xs text-muted-foreground sm:block">Software engineer & founder · PDF</p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-1.5">
-                        <a
-                            href="/assets/documents/seif-ismail-cv.pdf"
-                            download="Seif-Ismail-CV.pdf"
-                            aria-label="Download CV"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-accent/35 text-accent transition-colors duration-300 hover:bg-accent/10 sm:h-auto sm:w-auto sm:gap-1.5 sm:px-2.5 sm:py-1.5 sm:text-xs sm:font-medium"
-                        >
-                            <Download size={14} aria-hidden="true" />
-                            <span className="sr-only sm:not-sr-only">Download</span>
-                        </a>
-                        <a
-                            href="/assets/documents/seif-ismail-cv.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Preview CV"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground sm:h-auto sm:w-auto sm:gap-1 sm:px-2.5 sm:py-1.5 sm:text-xs sm:font-medium"
-                        >
-                            <span className="sr-only sm:not-sr-only">Preview</span>
-                            <ArrowUpRight size={13} aria-hidden="true" />
-                        </a>
-                    </div>
-                </div>
+                </details>
 
                 {/* Social Icons - Compact */}
                 <div className="flex items-center gap-2">
