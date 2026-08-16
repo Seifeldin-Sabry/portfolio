@@ -28,11 +28,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Build static site
-        run: pnpm dlx @dotenvx/dotenvx run -- pnpm build
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm build
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
 
       - name: Deploy to Cloudflare Workers
-        run: pnpm dlx @dotenvx/dotenvx run -- pnpm dlx wrangler deploy
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm dlx wrangler deploy
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
