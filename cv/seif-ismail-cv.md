@@ -1,12 +1,12 @@
 # Seifeldin Sabry
 
-Software Engineer | Product-Minded Systems Builder
+Software Engineer
 
 [Email](mailto:seif-dx@proton.me) · [LinkedIn](https://www.linkedin.com/in/seif-sabry-b8a542202/) · [GitHub](https://github.com/Seifeldin-Sabry) · [Portfolio](https://seif-dx.com) · +32 468 29 52 40
 
 ## About
 
-Product-minded software engineer and founder focused on reliable platforms, thoughtful product systems, and practical automation. Outside of work, I like to travel, play tennis, and spend time in the gym. I also enjoy long walks with a 20 kg weighted vest as a simple way to build fitness, and I hold a driver's licence.
+As a software engineer and founder, I build reliable products and the systems behind them - from type-safe monorepos and event-driven infrastructure to billing, onboarding, and automation that holds up in production. Outside of work, I like to travel, play tennis, spend time in the gym, and take long walks with a 20 kg weighted vest. I also hold a driver's licence.
 
 ## Professional Experience
 
