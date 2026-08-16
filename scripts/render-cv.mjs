@@ -139,34 +139,34 @@ function writeSectionHeading(title) {
     ensureSpace(24)
     const y = pdf.y
     const label = title.toUpperCase()
-    pdf.font("Times-Roman").fontSize(16).fillColor(BLUE).text(label, MARGIN_X, y, {lineBreak: false})
+    pdf.font("Times-Roman").fontSize(16.5).fillColor(BLUE).text(label, MARGIN_X, y, {lineBreak: false})
     const lineStart = MARGIN_X + pdf.widthOfString(label) + 8
     pdf.moveTo(lineStart, y + 10).lineTo(PAGE_WIDTH - MARGIN_X, y + 10).lineWidth(0.45).strokeColor("#222222").stroke()
-    pdf.y = y + 21
+    pdf.y = y + 22
 }
 
-function writeBullets(items, {fontSize = 9, gap = 2.5} = {}) {
+function writeBullets(items, {fontSize = 9.2, gap = 2.8} = {}) {
     for (const item of items) {
         const text = cleanInline(item)
         const bulletWidth = 10
         const textWidth = CONTENT_WIDTH - bulletWidth
         pdf.font("Times-Roman").fontSize(fontSize).fillColor(BLACK)
-        const height = pdf.heightOfString(text, {width: textWidth, lineGap: 0.6})
+        const height = pdf.heightOfString(text, {width: textWidth, lineGap: 0.8})
         ensureSpace(height + gap)
         const y = pdf.y
         pdf.text("•", MARGIN_X, y, {lineBreak: false})
-        pdf.text(text, MARGIN_X + bulletWidth, y, {width: textWidth, lineGap: 0.6})
+        pdf.text(text, MARGIN_X + bulletWidth, y, {width: textWidth, lineGap: 0.8})
         pdf.y += gap
     }
 }
 
 function writeParagraph(value) {
     const text = cleanInline(value)
-    pdf.font("Times-Roman").fontSize(9.6).fillColor(GREY)
-    const height = pdf.heightOfString(text, {width: CONTENT_WIDTH, lineGap: 0.8})
-    ensureSpace(height + 5)
-    pdf.text(text, MARGIN_X, pdf.y, {width: CONTENT_WIDTH, lineGap: 0.8})
-    pdf.y += 5
+    pdf.font("Times-Roman").fontSize(9.9).fillColor(GREY)
+    const height = pdf.heightOfString(text, {width: CONTENT_WIDTH, lineGap: 1})
+    ensureSpace(height + 6)
+    pdf.text(text, MARGIN_X, pdf.y, {width: CONTENT_WIDTH, lineGap: 1})
+    pdf.y += 6
 }
 
 function writeRole(role) {
@@ -186,14 +186,14 @@ function writeRole(role) {
         pdf.y += 2
     }
 
-    writeBullets(role.bullets, {fontSize: 9, gap: 2.5})
+    writeBullets(role.bullets, {fontSize: 9.2, gap: 2.8})
 }
 
 function writeTable(table) {
     const tableX = MARGIN_X + 118
     const widths = [72, 128, 64]
     const tableWidth = widths.reduce((total, width) => total + width, 0)
-    const rowHeight = 19
+    const rowHeight = 20
     ensureSpace(rowHeight * (table.rows.length + 1) + 8)
     const startY = pdf.y
 
@@ -203,7 +203,7 @@ function writeTable(table) {
     function row(values, y, bold = false) {
         let x = tableX
         values.forEach((value, index) => {
-            pdf.font(bold ? "Times-Bold" : "Times-Roman").fontSize(9).fillColor(BLACK).text(cleanInline(value), x + 6, y + 4, {width: widths[index] - 12, align: "center", lineBreak: false})
+            pdf.font(bold ? "Times-Bold" : "Times-Roman").fontSize(9.2).fillColor(BLACK).text(cleanInline(value), x + 6, y + 4, {width: widths[index] - 12, align: "center", lineBreak: false})
             x += widths[index]
         })
     }
@@ -215,11 +215,11 @@ function writeTable(table) {
     pdf.y = startY + rowHeight * (table.rows.length + 1) + 6
 }
 
-pdf.font("Times-Roman").fillColor(BLACK).fontSize(28).text(document.name.toUpperCase(), MARGIN_X, 36, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
-pdf.font("Times-Roman").fontSize(12.5).text(document.role.toUpperCase(), MARGIN_X, 70, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
+pdf.font("Times-Roman").fillColor(BLACK).fontSize(30).text(document.name.toUpperCase(), MARGIN_X, 34, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
+pdf.font("Times-Roman").fontSize(14).text(document.role.toUpperCase(), MARGIN_X, 70, {width: CONTENT_WIDTH, align: "center", lineBreak: false})
 writeContact(document.contact)
-pdf.moveTo(MARGIN_X, 110).lineTo(PAGE_WIDTH - MARGIN_X, 110).lineWidth(0.45).strokeColor("#222222").stroke()
-pdf.y = 122
+pdf.moveTo(MARGIN_X, 114).lineTo(PAGE_WIDTH - MARGIN_X, 114).lineWidth(0.45).strokeColor("#222222").stroke()
+pdf.y = 128
 
 for (const section of document.sections) {
     writeSectionHeading(section.title)
@@ -230,7 +230,7 @@ for (const section of document.sections) {
         section.roles.forEach(writeRole)
     }
     if (section.bullets.length > 0) {
-        writeBullets(section.bullets, {fontSize: 9, gap: 2.5})
+        writeBullets(section.bullets, {fontSize: 9.2, gap: 2.8})
     }
     if (section.table) {
         writeTable(section.table)
