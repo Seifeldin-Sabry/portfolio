@@ -1,5 +1,5 @@
 import Image from "next/image"
-import {Github, Linkedin, Mail, Calendar, Globe, Zap, Route, Atom, Wind, Database, Shield} from "lucide-react"
+import {Github, Linkedin, Mail, Calendar, Globe, Zap, Route, Atom, Wind, Database, Shield, FileText, Download, ArrowUpRight} from "lucide-react"
 import {SITE_CONFIG, LINKS} from "@/lib/constants"
 
 const techStack = [
@@ -67,6 +67,40 @@ export default function ProfileSection() {
                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                         Open to opportunities
                     </span>
+                </div>
+
+                {/* CV Download */}
+                <div className="mb-5 rounded-xl border border-accent/25 bg-accent/[0.04] p-4 transition-colors duration-300 hover:border-accent/45 hover:bg-accent/[0.07]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/20 bg-accent/10 text-accent">
+                                <FileText size={18} aria-hidden="true" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-semibold">Keep a copy of my CV</p>
+                                <p className="text-xs text-muted-foreground">Software engineering, systems & product work · PDF</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 sm:shrink-0">
+                            <a
+                                href="/assets/documents/seif-ismail-cv.pdf"
+                                download="Seif-Ismail-CV.pdf"
+                                className="inline-flex items-center gap-2 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,255,65,0.18)] active:translate-y-0"
+                            >
+                                <Download size={14} aria-hidden="true" />
+                                Download
+                            </a>
+                            <a
+                                href="/assets/documents/seif-ismail-cv.pdf"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
+                            >
+                                Preview
+                                <ArrowUpRight size={13} aria-hidden="true" />
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Social Icons - Compact */}
