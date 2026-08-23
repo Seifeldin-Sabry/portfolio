@@ -44,6 +44,16 @@ export default function ProfileSection() {
                     </div>
                 </div>
 
+                {/* Bio */}
+                <div className="space-y-3 mb-6">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                        AI-native software engineer based in Antwerp. I build reliable products and the systems behind them, from type-safe monorepos and event-driven infrastructure to billing, onboarding, and automation that holds up in production. Currently at QFacts, working on Qfacts.be, a GAMP 5 validated eQMS for pharma and biotech SMEs, and building Arkive on the side. B.ASc, Karel de Grote Hogeschool.
+                    </p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                        Architecture matters more than code writing now. System design, infrastructure, CI/CD, reliability, that&apos;s where the real decisions get made. I keep up with AI tooling by actually using it daily (Codex, Claude, open-source models with coding harnesses) and I&apos;m always testing where open-source models close the gap on frontier ones.
+                    </p>
+                </div>
+
                 {/* Tech Stack Grid */}
                 <div className="grid grid-cols-3 gap-2 mb-5">
                     {techStack.map((tech) => (
