@@ -2,7 +2,7 @@
 
 Software Engineer
 
-[Email](mailto:seif-dx@proton.me) · [LinkedIn](https://www.linkedin.com/in/seif-sabry-b8a542202/) · [GitHub](https://github.com/Seifeldin-Sabry) · [Portfolio](https://seif-dx.com) · +32 468 29 52 40
+[seif-dx@proton.me](mailto:seif-dx@proton.me) · +32 468 29 52 40 · [LinkedIn](https://www.linkedin.com/in/seifeldin-sabry-b8a542202/) · [GitHub](https://github.com/Seifeldin-Sabry) · [Portfolio](https://seif-dx.com)
 
 ## About
 

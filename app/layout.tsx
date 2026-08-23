@@ -27,7 +27,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning className="scroll-smooth">
         <head>
             <link rel="icon" href="/assets/icons/favico.png" sizes="any" />
-            <link rel="alternate" type="application/rss+xml" title="Seif Ismail's Blog RSS Feed" href="/feed.xml" />
+            <link rel="alternate" type="application/rss+xml" title="Seifeldin Sabry's Blog RSS Feed" href="/feed.xml" />
             <Script defer src="https://cloud.umami.is/script.js" data-website-id="58ea0ecd-d768-4e47-b26e-374a65a6d005" strategy="afterInteractive" />
         </head>
         <body className={inter.className}>

@@ -16,9 +16,9 @@ export async function GET() {
         language: "en",
         pubDate: new Date().toUTCString(),
         ttl: 60,
-        managingEditor: "ismailseifeldin54@gmail.com (Seif Ismail)",
-        webMaster: "ismailseifeldin54@gmail.com (Seif Ismail)",
-        copyright: "Copyright 2025 Seif Ismail. All rights reserved.",
+        managingEditor: "ismailseifeldin54@gmail.com (Seifeldin Sabry)",
+        webMaster: "ismailseifeldin54@gmail.com (Seifeldin Sabry)",
+        copyright: "Copyright 2025 Seifeldin Sabry. All rights reserved.",
         categories: ["Software Development", "Web Development", "DevOps", "Self-Hosting"],
         generator: "Next.js",
     })
@@ -31,7 +31,7 @@ export async function GET() {
             guid: `${baseUrl}/blog/${post.slug}`,
             date: post.date,
             categories: post.tags,
-            author: "Seif Ismail",
+            author: "Seifeldin Sabry",
         })
     })
 

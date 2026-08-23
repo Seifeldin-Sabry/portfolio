@@ -22,7 +22,7 @@ export default function ProfileSection() {
                         <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-border">
                             <Image
                                 src="/assets/images/seif.jpg"
-                                alt="Seif Ismail"
+                                alt="Seifeldin Sabry"
                                 fill
                                 className="object-cover"
                                 priority
@@ -93,15 +93,15 @@ export default function ProfileSection() {
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <a
-                                    href="/assets/documents/seif-ismail-cv.pdf"
-                                    download="Seif-Ismail-CV.pdf"
+                                    href="/assets/documents/seifeldin-swe-cv.pdf"
+                                    download="Seifeldin-SWE-CV.pdf"
                                     className="inline-flex items-center gap-1.5 rounded-md border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors duration-300 hover:bg-accent/10"
                                 >
                                     <Download size={13} aria-hidden="true" />
                                     Download
                                 </a>
                                 <a
-                                    href="/assets/documents/seif-ismail-cv.pdf"
+                                    href="/assets/documents/seifeldin-swe-cv.pdf"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
@@ -113,7 +113,7 @@ export default function ProfileSection() {
                         </div>
                         <div className="bg-white p-1.5">
                             <iframe
-                                src="/assets/documents/seif-ismail-cv.pdf#toolbar=0&navpanes=0&view=FitH"
+                                src="/assets/documents/seifeldin-swe-cv.pdf#toolbar=0&navpanes=0&view=FitH"
                                 title="Seif Ismail CV preview"
                                 className="h-[70vh] max-h-[720px] min-h-[520px] w-full rounded-sm border border-black/10 bg-white"
                             />
