@@ -4,8 +4,8 @@ import PDFDocument from "pdfkit"
 import {marked} from "marked"
 
 const root = process.cwd()
-const sourcePath = path.join(root, "cv", "seif-ismail-cv.md")
-const outputPath = path.join(root, "public", "assets", "documents", "seif-ismail-cv.pdf")
+const sourcePath = path.join(root, "cv", "seifeldin-swe-cv.md")
+const outputPath = path.join(root, "public", "assets", "documents", "seifeldin-swe-cv.pdf")
 const markdown = fs.readFileSync(sourcePath, "utf8")
 const tokens = marked.lexer(markdown)
 

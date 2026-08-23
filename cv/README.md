@@ -1,7 +1,7 @@
 # CV source
 
-Edit [`seif-ismail-cv.md`](./seif-ismail-cv.md) to update the CV. The PDF at
-`public/assets/documents/seif-ismail-cv.pdf` is generated from that Markdown
+Edit [`seifeldin-swe-cv.md`](./seifeldin-swe-cv.md) to update the CV. The PDF at
+`public/assets/documents/seifeldin-swe-cv.pdf` is generated from that Markdown
 source and should not be edited directly.
 
 Render the PDF locally with:

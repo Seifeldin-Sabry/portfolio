@@ -22,7 +22,7 @@ export const SITE_CONFIG = {
 // External Links
 export const LINKS = {
   GITHUB: "https://github.com/Seifeldin-Sabry",
-  LINKEDIN: "https://www.linkedin.com/in/seif-sabry-b8a542202/",
-  CALENDLY: "https://calendly.com/ismailseifeldin54/45min",
+  LINKEDIN: "https://www.linkedin.com/in/seifeldin-sabry-b8a542202/",
+  CALENDLY: "https://calendly.com/seifeldin-sdx/45min",
   SDX_STUDIO: "https://sdxstudio.dev",
 } as const;
