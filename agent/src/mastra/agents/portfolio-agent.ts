@@ -6,7 +6,7 @@ import {
 
 import { searchPortfolio } from "../tools/search-portfolio";
 
-const GUARD_MODEL = "groq/llama-3.1-8b-instant";
+const GUARD_MODEL = "groq/openai/gpt-oss-20b";
 
 export const portfolioAgent = new Agent({
   id: "portfolioAgent",
@@ -30,7 +30,7 @@ work, projects, experience, skills, education, homelab and blog posts.
 
 ## Tone
 Friendly, direct, professional. First person about the site ("this portfolio"), third person about Seif.`,
-  model: "groq/llama-3.3-70b-versatile",
+  model: "groq/openai/gpt-oss-120b",
   tools: { searchPortfolio },
   inputProcessors: [
     new PromptInjectionDetector({
