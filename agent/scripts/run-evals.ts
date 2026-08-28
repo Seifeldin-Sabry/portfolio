@@ -14,7 +14,7 @@ import {
 import { mastra } from "../src/mastra/index";
 import { evalCases } from "../evals/dataset";
 
-const JUDGE_MODEL = "groq/llama-3.3-70b-versatile";
+const JUDGE_MODEL = "groq/openai/gpt-oss-120b";
 const FAITHFULNESS_GATE = 0.7;
 
 async function main() {
