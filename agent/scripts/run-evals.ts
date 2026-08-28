@@ -27,13 +27,16 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 // window and retrying always succeeds eventually. Anything else rethrows.
 const RETRY_ATTEMPTS = 6;
 const RETRY_SLEEP_MS = 20_000;
-const isRateLimit = (err: unknown): boolean => {
+const isTransient = (err: unknown): boolean => {
   const seen = new Set<unknown>();
   let cur: any = err;
   while (cur && !seen.has(cur)) {
     seen.add(cur);
     const msg = `${cur.message ?? ""} ${cur.responseBody ?? ""}`;
     if (cur.statusCode === 429 || /rate.?limit/i.test(msg)) return true;
+    // Groq JSON mode occasionally emits schema-invalid output; a retry succeeds.
+    if (/does not match the expected schema|does not validate/i.test(msg))
+      return true;
     cur = cur.cause;
   }
   return false;
@@ -43,9 +46,9 @@ async function withRetry<T>(label: string, fn: () => Promise<T>): Promise<T> {
     try {
       return await fn();
     } catch (err) {
-      if (attempt >= RETRY_ATTEMPTS || !isRateLimit(err)) throw err;
+      if (attempt >= RETRY_ATTEMPTS || !isTransient(err)) throw err;
       console.log(
-        `${label}: rate limited (attempt ${attempt}/${RETRY_ATTEMPTS}), sleeping ${RETRY_SLEEP_MS / 1000}s`,
+        `${label}: transient upstream error (attempt ${attempt}/${RETRY_ATTEMPTS}), sleeping ${RETRY_SLEEP_MS / 1000}s`,
       );
       await sleep(RETRY_SLEEP_MS);
     }
@@ -101,16 +104,23 @@ async function main() {
     ];
 
     for (const { name, scorer } of scorers) {
-      const run = await withRetry(
-        name,
-        (): Promise<any> =>
-          scorer.run({
-            input: c.question,
-            output: answer,
-          } as any),
-      );
-      const score = typeof run.score === "number" ? run.score : null;
-      const reason = (run as any).reason ?? null;
+      // Judge flakiness that survives retries must not kill the suite:
+      // record a null score for this case and keep gating on the rest.
+      let run: any = null;
+      try {
+        run = await withRetry(
+          name,
+          (): Promise<any> =>
+            scorer.run({
+              input: c.question,
+              output: answer,
+            } as any),
+        );
+      } catch (err) {
+        console.error(`${name} judge failed for "${c.question}":`, err);
+      }
+      const score = typeof run?.score === "number" ? run.score : null;
+      const reason = run?.reason ?? null;
       if (name === "faithfulness" && score !== null) faithScores.push(score);
 
       await sql`

@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react"
 import {useChat} from "@ai-sdk/react"
 import {DefaultChatTransport} from "ai"
 import {Bot, Send, Sparkles, X} from "lucide-react"
+import {Streamdown} from "streamdown"
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
 
@@ -84,14 +85,27 @@ export default function AiChat() {
                         {messages.map((m) => (
                             <div
                                 key={m.id}
-                                className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm ${
+                                className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
                                     m.role === "user"
-                                        ? "ml-auto bg-accent/15 text-foreground"
+                                        ? "ml-auto whitespace-pre-wrap bg-accent/15 text-foreground"
                                         : "bg-secondary/30"
                                 }`}
                             >
                                 {m.parts.map((part, i) => {
-                                    if (part.type === "text") return <span key={i}>{part.text}</span>
+                                    if (part.type === "text") {
+                                        if (m.role === "user") return <span key={i}>{part.text}</span>
+                                        return (
+                                            <Streamdown
+                                                key={i}
+                                                className="space-y-2 [&_a]:text-accent [&_a]:underline"
+                                            >
+                                                {part.text}
+                                            </Streamdown>
+                                        )
+                                    }
+                                    if (part.type === "tool-showContactForm") {
+                                        return <ContactForm key={i}/>
+                                    }
                                     if (part.type.startsWith("tool-")) {
                                         return (
                                             <span key={i} className="block text-[10px] font-mono text-muted-foreground">
@@ -109,7 +123,7 @@ export default function AiChat() {
                         )}
                         {error && (
                             <p className="text-xs text-red-400">
-                                Assistant unavailable right now — email seif-dx@proton.me instead.
+                                Couldn&apos;t process that — try rephrasing, or email seif-dx@proton.me directly.
                             </p>
                         )}
                     </div>
@@ -140,5 +154,80 @@ export default function AiChat() {
                 </div>
             )}
         </>
+    )
+}
+
+/**
+ * Inline "input step" rendered when the agent calls showContactForm.
+ * Details post straight to the agent's /contact endpoint (Resend) —
+ * they never pass through the LLM, so PII guardrails stay out of the way.
+ */
+function ContactForm() {
+    const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle")
+    const [fields, setFields] = useState({name: "", email: "", message: ""})
+
+    if (state === "sent") {
+        return (
+            <div className="mt-2 rounded-lg border border-border bg-secondary/20 px-3 py-2 text-xs text-muted-foreground">
+                ✓ Sent — Seif will reply to {fields.email}.
+            </div>
+        )
+    }
+
+    return (
+        <form
+            onSubmit={async (e) => {
+                e.preventDefault()
+                setState("sending")
+                try {
+                    const res = await fetch(`${AGENT_URL}/contact`, {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(fields),
+                    })
+                    const data = await res.json().catch(() => null)
+                    setState(res.ok && data?.sent ? "sent" : "error")
+                } catch {
+                    setState("error")
+                }
+            }}
+            className="mt-2 space-y-2 rounded-lg border border-border bg-secondary/20 p-3"
+        >
+            <p className="text-xs font-medium">Send Seif a message — straight to his inbox.</p>
+            <input
+                required
+                placeholder="Your name"
+                value={fields.name}
+                onChange={(e) => setFields({...fields, name: e.target.value})}
+                className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
+            />
+            <input
+                required
+                type="email"
+                placeholder="Your email"
+                value={fields.email}
+                onChange={(e) => setFields({...fields, email: e.target.value})}
+                className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
+            />
+            <textarea
+                required
+                minLength={10}
+                rows={3}
+                placeholder="Your message"
+                value={fields.message}
+                onChange={(e) => setFields({...fields, message: e.target.value})}
+                className="w-full resize-none rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
+            />
+            <button
+                type="submit"
+                disabled={state === "sending"}
+                className="w-full rounded bg-accent px-2 py-1.5 text-xs font-medium text-accent-foreground disabled:opacity-50"
+            >
+                {state === "sending" ? "Sending…" : "Send to Seif"}
+            </button>
+            {state === "error" && (
+                <p className="text-[10px] text-red-400">Sending failed — email seif-dx@proton.me instead.</p>
+            )}
+        </form>
     )
 }

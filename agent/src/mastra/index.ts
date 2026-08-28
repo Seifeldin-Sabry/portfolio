@@ -4,10 +4,27 @@ import { CloudflareDeployer } from "@mastra/deployer-cloudflare";
 import { LangfuseExporter } from "@mastra/langfuse";
 import { Observability } from "@mastra/observability";
 import { handleChatStream } from "@mastra/ai-sdk";
-import { createUIMessageStreamResponse } from "ai";
+import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import { neon } from "@neondatabase/serverless";
 
 import { portfolioAgent } from "./agents/portfolio-agent";
+import { deliverContactEmail } from "./tools/send-email";
+
+/**
+ * Guard models occasionally emit schema-invalid JSON, which surfaces as a
+ * thrown error before the reply stream starts. Answer with a friendly
+ * assistant message instead of a 500 the UI can't explain.
+ */
+const staticAssistantResponse = (text: string) =>
+  createUIMessageStreamResponse({
+    stream: createUIMessageStream({
+      execute: async ({ writer }) => {
+        writer.write({ type: "text-start", id: "fallback" });
+        writer.write({ type: "text-delta", id: "fallback", delta: text });
+        writer.write({ type: "text-end", id: "fallback" });
+      },
+    }),
+  });
 
 const ALLOWED_ORIGINS = [
   "https://seif-dx.com",
@@ -69,24 +86,61 @@ export const mastra = new Mastra({
           const visitorId = [...new Uint8Array(digest.slice(0, 8))]
             .map((b) => b.toString(16).padStart(2, "0"))
             .join("");
-          const stream = await handleChatStream({
-            mastra: mastraInstance,
-            agentId: "portfolioAgent",
-            version: "v7",
-            params,
-            defaultOptions: {
-              tracingOptions: {
-                metadata: {
-                  traceName: "portfolio-chat",
-                  sessionId:
-                    typeof params.id === "string" ? params.id : undefined,
-                  userId: `anon:${visitorId}`,
-                  source: "portfolio-web",
+          try {
+            const stream = await handleChatStream({
+              mastra: mastraInstance,
+              agentId: "portfolioAgent",
+              version: "v7",
+              params,
+              defaultOptions: {
+                tracingOptions: {
+                  metadata: {
+                    traceName: "portfolio-chat",
+                    sessionId:
+                      typeof params.id === "string" ? params.id : undefined,
+                    userId: `anon:${visitorId}`,
+                    source: "portfolio-web",
+                  },
                 },
               },
-            },
+            });
+            return createUIMessageStreamResponse({ stream });
+          } catch (err) {
+            console.error("chat stream failed", err);
+            return staticAssistantResponse(
+              "Hmm, I couldn't process that message — my safety filters glitched. Try rephrasing, or say \"I want to contact Seif\" and I'll show you a form that goes straight to his inbox.",
+            );
+          }
+        },
+      }),
+      // Contact form endpoint — visitor details go straight to Resend,
+      // never through the LLM, so PII guardrails can stay strict.
+      registerApiRoute("/contact", {
+        method: "POST",
+        handler: async (c) => {
+          const body = await c.req.json().catch(() => null);
+          const name = typeof body?.name === "string" ? body.name.trim() : "";
+          const email =
+            typeof body?.email === "string" ? body.email.trim() : "";
+          const message =
+            typeof body?.message === "string" ? body.message.trim() : "";
+          if (
+            !name ||
+            name.length > 200 ||
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+            message.length < 10 ||
+            message.length > 2000
+          ) {
+            return new Response(
+              JSON.stringify({ sent: false, detail: "Invalid input" }),
+              { status: 400, headers: { "Content-Type": "application/json" } },
+            );
+          }
+          const result = await deliverContactEmail({ name, email, message });
+          return new Response(JSON.stringify(result), {
+            status: result.sent ? 200 : 502,
+            headers: { "Content-Type": "application/json" },
           });
-          return createUIMessageStreamResponse({ stream });
         },
       }),
       registerApiRoute("/evals", {

@@ -24,39 +24,51 @@ export const sendEmail = createTool({
     sent: z.boolean(),
     detail: z.string(),
   }),
-  execute: async ({ name, email, message }) => {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      return {
-        sent: false,
-        detail: `Email sending is not configured right now. Ask the visitor to email ${CONTACT_EMAIL} directly instead.`,
-      };
-    }
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Portfolio Agent <onboarding@resend.dev>",
-        to: [CONTACT_EMAIL],
-        reply_to: [email],
-        subject: `Portfolio contact from ${name}`,
-        text: `From: ${name} <${email}>\nVia: portfolio AI assistant\n\n${message}`,
-      }),
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      console.error(`sendEmail failed: ${res.status} ${body}`);
-      return {
-        sent: false,
-        detail: `Sending failed. Ask the visitor to email ${CONTACT_EMAIL} directly instead.`,
-      };
-    }
-    return {
-      sent: true,
-      detail: `Message delivered to Seif. He can reply directly to ${email}.`,
-    };
-  },
+  execute: async ({ name, email, message }) =>
+    deliverContactEmail({ name, email, message }),
 });
+
+/** Shared delivery path for the sendEmail tool and the /contact API route. */
+export async function deliverContactEmail({
+  name,
+  email,
+  message,
+}: {
+  name: string;
+  email: string;
+  message: string;
+}): Promise<{ sent: boolean; detail: string }> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return {
+      sent: false,
+      detail: `Email sending is not configured right now. Email ${CONTACT_EMAIL} directly instead.`,
+    };
+  }
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Portfolio Agent <onboarding@resend.dev>",
+      to: [CONTACT_EMAIL],
+      reply_to: [email],
+      subject: `Portfolio contact from ${name}`,
+      text: `From: ${name} <${email}>\nVia: portfolio AI assistant\n\n${message}`,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`deliverContactEmail failed: ${res.status} ${body}`);
+    return {
+      sent: false,
+      detail: `Sending failed. Email ${CONTACT_EMAIL} directly instead.`,
+    };
+  }
+  return {
+    sent: true,
+    detail: `Message delivered to Seif. He can reply directly to ${email}.`,
+  };
+}

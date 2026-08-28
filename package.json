@@ -36,6 +36,7 @@
     "remark-gfm": "^4.0.1",
     "rss": "^1.2.2",
     "shiki": "^3.4.0",
+    "streamdown": "^2.6.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.25.76"

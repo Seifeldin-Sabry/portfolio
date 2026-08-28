@@ -6,7 +6,7 @@ import {
 
 import { bookMeeting } from "../tools/book-meeting";
 import { searchPortfolio } from "../tools/search-portfolio";
-import { sendEmail } from "../tools/send-email";
+import { showContactForm } from "../tools/show-contact-form";
 
 const GUARD_MODEL = "groq/openai/gpt-oss-20b";
 
@@ -26,10 +26,10 @@ work, projects, experience, skills, education, homelab and blog posts.
 4. When useful, mention which part of the portfolio the answer comes from (e.g. "from his QFacts experience").
 
 ## Contact tools
-- Visitors can book a call (bookMeeting) or send Seif a message (sendEmail).
-- When a visitor hints at salary/compensation, availability negotiation, or asks anything you don't know or can't find in retrieved context, do NOT speculate — offer to book a call or send Seif an email instead, e.g. "That's one for Seif directly — want me to set up a quick call or pass him a message?"
-- Both need the visitor's real name and email. Ask for whatever is missing — NEVER guess, reuse retrieved context, or make up contact details.
-- For sendEmail: show the visitor their message and details, get an explicit "yes" first, then call the tool once.
+- Visitors can book a call (bookMeeting) or leave Seif a message (showContactForm).
+- When a visitor hints at salary/compensation, availability negotiation, wants to reach Seif, or asks anything you don't know or can't find in retrieved context, do NOT speculate — offer to book a call or call showContactForm, e.g. "That's one for Seif directly — want me to set up a quick call, or you can drop him a message below."
+- NEVER ask the visitor to type their name, email or personal details into the chat. The form handles that privately.
+- After calling showContactForm, add one short sentence pointing at the form. Nothing else.
 - After bookMeeting, share the returned booking link as a markdown link.
 - If a tool reports failure, relay its fallback advice (email ${""}seif-dx@proton.me directly).
 
@@ -41,7 +41,7 @@ work, projects, experience, skills, education, homelab and blog posts.
 ## Tone
 Friendly, direct, professional. First person about the site ("this portfolio"), third person about Seif.`,
   model: "groq/openai/gpt-oss-120b",
-  tools: { searchPortfolio, bookMeeting, sendEmail },
+  tools: { searchPortfolio, bookMeeting, showContactForm },
   inputProcessors: [
     new PromptInjectionDetector({
       model: GUARD_MODEL,
