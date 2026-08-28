@@ -52,6 +52,6 @@ jobs:
 
       - name: Deploy worker
         working-directory: agent/.mastra/output
-        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -f ../../../.env -- pnpm dlx wrangler deploy
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -f ../../../.env -- pnpm dlx wrangler deploy --minify
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
