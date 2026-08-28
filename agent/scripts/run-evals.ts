@@ -14,8 +14,14 @@ import {
 import { mastra } from "../src/mastra/index";
 import { evalCases } from "../evals/dataset";
 
-const JUDGE_MODEL = "groq/openai/gpt-oss-120b";
+// 20b on purpose: judges get their own per-model TPM bucket on Groq free tier,
+// so scoring never competes with the agent's gpt-oss-120b token budget.
+const JUDGE_MODEL = "groq/openai/gpt-oss-20b";
 const FAITHFULNESS_GATE = 0.7;
+
+// Free-tier TPM is per minute; pace cases so agent+judge calls stay under it.
+const CASE_PACING_MS = 4000;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
   const sql = neon(process.env.POSTGRES_CONNECTION_STRING!);
@@ -78,6 +84,8 @@ async function main() {
       `;
       console.log(`${name} | ${score?.toFixed(2) ?? "n/a"} | ${c.question}`);
     }
+
+    await sleep(CASE_PACING_MS);
   }
 
   const avgFaith =
