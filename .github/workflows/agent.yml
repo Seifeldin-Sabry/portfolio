@@ -43,8 +43,8 @@ jobs:
         working-directory: agent/.mastra/output
         run: |
           pnpm dlx @dotenvx/dotenvx@1.71.3 run -f ../../../.env -- sh -c '
-            printf "{\"POSTGRES_CONNECTION_STRING\":\"%s\",\"GROQ_API_KEY\":\"%s\",\"LANGFUSE_PUBLIC_KEY\":\"%s\",\"LANGFUSE_SECRET_KEY\":\"%s\",\"LANGFUSE_BASE_URL\":\"%s\",\"CLOUDFLARE_ACCOUNT_ID\":\"%s\",\"CLOUDFLARE_API_TOKEN\":\"%s\"}" \
-              "$POSTGRES_CONNECTION_STRING" "$GROQ_API_KEY" "$LANGFUSE_PUBLIC_KEY" "$LANGFUSE_SECRET_KEY" "$LANGFUSE_BASE_URL" "$CLOUDFLARE_ACCOUNT_ID" "$CLOUDFLARE_API_TOKEN" > /tmp/secrets.json
+            printf "{\"POSTGRES_CONNECTION_STRING\":\"%s\",\"GROQ_API_KEY\":\"%s\",\"LANGFUSE_PUBLIC_KEY\":\"%s\",\"LANGFUSE_SECRET_KEY\":\"%s\",\"LANGFUSE_BASE_URL\":\"%s\",\"CLOUDFLARE_ACCOUNT_ID\":\"%s\",\"CLOUDFLARE_API_TOKEN\":\"%s\",\"RESEND_API_KEY\":\"%s\"}" \
+              "$POSTGRES_CONNECTION_STRING" "$GROQ_API_KEY" "$LANGFUSE_PUBLIC_KEY" "$LANGFUSE_SECRET_KEY" "$LANGFUSE_BASE_URL" "$CLOUDFLARE_ACCOUNT_ID" "$CLOUDFLARE_API_TOKEN" "$RESEND_API_KEY" > /tmp/secrets.json
             pnpm dlx wrangler secret bulk /tmp/secrets.json
           '
         env:

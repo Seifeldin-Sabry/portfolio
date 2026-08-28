@@ -10,7 +10,7 @@ const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
 const SUGGESTIONS = [
     "What does Seif do at QFacts?",
     "Tell me about his homelab",
-    "How is this AI assistant built?",
+    "Book a call with Seif",
 ]
 
 export default function AiChat() {
