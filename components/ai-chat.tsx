@@ -109,7 +109,7 @@ export default function AiChat() {
                         )}
                         {error && (
                             <p className="text-xs text-red-400">
-                                Assistant unavailable right now — email seif-dx@proton.me instead.
+                                Assistant unavailable right now — email seif-sdx@proton.me instead.
                             </p>
                         )}
                     </div>
