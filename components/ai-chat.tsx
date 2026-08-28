@@ -6,6 +6,8 @@ import {DefaultChatTransport} from "ai"
 import {Bot, Send, Sparkles, X} from "lucide-react"
 import {Streamdown} from "streamdown"
 
+import {LINKS} from "@/lib/constants"
+
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
 
 const SUGGESTIONS = [
@@ -103,8 +105,12 @@ export default function AiChat() {
                                             </Streamdown>
                                         )
                                     }
-                                    if (part.type === "tool-showContactForm") {
-                                        return <ContactForm key={i}/>
+                                    if (part.type === "tool-draftEmail") {
+                                        const input = (part as {input?: {subject?: string; body?: string}}).input
+                                        return <DraftEmailCard key={i} subject={input?.subject ?? ""} body={input?.body ?? ""}/>
+                                    }
+                                    if (part.type === "tool-bookMeeting") {
+                                        return <BookingForm key={i}/>
                                     }
                                     if (part.type.startsWith("tool-")) {
                                         return (
@@ -158,13 +164,14 @@ export default function AiChat() {
 }
 
 /**
- * Inline "input step" rendered when the agent calls showContactForm.
+ * Human-in-the-loop approval card rendered when the agent calls draftEmail.
+ * The agent writes the draft; the visitor adds name/email and approves.
  * Details post straight to the agent's /contact endpoint (Resend) —
  * they never pass through the LLM, so PII guardrails stay out of the way.
  */
-function ContactForm() {
+function DraftEmailCard({subject, body}: {subject: string; body: string}) {
     const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle")
-    const [fields, setFields] = useState({name: "", email: "", message: ""})
+    const [fields, setFields] = useState({name: "", email: ""})
 
     if (state === "sent") {
         return (
@@ -183,7 +190,7 @@ function ContactForm() {
                     const res = await fetch(`${AGENT_URL}/contact`, {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify(fields),
+                        body: JSON.stringify({...fields, subject, message: body}),
                     })
                     const data = await res.json().catch(() => null)
                     setState(res.ok && data?.sent ? "sent" : "error")
@@ -193,7 +200,78 @@ function ContactForm() {
             }}
             className="mt-2 space-y-2 rounded-lg border border-border bg-secondary/20 p-3"
         >
-            <p className="text-xs font-medium">Send Seif a message — straight to his inbox.</p>
+            <p className="text-xs font-medium">Draft email to Seif — review &amp; approve.</p>
+            <div className="rounded border border-border bg-background px-2 py-1.5">
+                <p className="text-xs font-medium">{subject || "…"}</p>
+                <p className="mt-1 whitespace-pre-wrap text-xs text-muted-foreground">{body || "…"}</p>
+            </div>
+            <input
+                required
+                placeholder="Your name"
+                value={fields.name}
+                onChange={(e) => setFields({...fields, name: e.target.value})}
+                className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
+            />
+            <input
+                required
+                type="email"
+                placeholder="Your email — Seif replies here"
+                value={fields.email}
+                onChange={(e) => setFields({...fields, email: e.target.value})}
+                className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
+            />
+            <button
+                type="submit"
+                disabled={state === "sending" || body.trim().length < 10}
+                className="w-full rounded bg-accent px-2 py-1.5 text-xs font-medium text-accent-foreground disabled:opacity-50"
+            >
+                {state === "sending" ? "Sending…" : "Approve & send"}
+            </button>
+            <p className="text-[10px] text-muted-foreground">Want changes? Just tell me in the chat.</p>
+            {state === "error" && (
+                <p className="text-[10px] text-red-400">Sending failed — email seif-dx@proton.me instead.</p>
+            )}
+        </form>
+    )
+}
+
+/**
+ * Input step rendered when the agent calls bookMeeting: collects name/email
+ * client-side, then opens a prefilled 30-minute Calendly page.
+ */
+function BookingForm() {
+    const [opened, setOpened] = useState(false)
+    const [fields, setFields] = useState({name: "", email: ""})
+
+    const bookingUrl = () => {
+        const url = new URL(LINKS.CALENDLY)
+        if (fields.name) url.searchParams.set("name", fields.name)
+        if (fields.email) url.searchParams.set("email", fields.email)
+        return url.toString()
+    }
+
+    if (opened) {
+        return (
+            <div className="mt-2 rounded-lg border border-border bg-secondary/20 px-3 py-2 text-xs text-muted-foreground">
+                ✓ Calendly opened — pick any 30-minute slot.{" "}
+                <a href={bookingUrl()} target="_blank" rel="noopener noreferrer" className="text-accent underline">
+                    Reopen it
+                </a>{" "}
+                if it didn&apos;t appear.
+            </div>
+        )
+    }
+
+    return (
+        <form
+            onSubmit={(e) => {
+                e.preventDefault()
+                window.open(bookingUrl(), "_blank", "noopener,noreferrer")
+                setOpened(true)
+            }}
+            className="mt-2 space-y-2 rounded-lg border border-border bg-secondary/20 p-3"
+        >
+            <p className="text-xs font-medium">Book a 30-minute call with Seif.</p>
             <input
                 required
                 placeholder="Your name"
@@ -209,25 +287,12 @@ function ContactForm() {
                 onChange={(e) => setFields({...fields, email: e.target.value})}
                 className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
             />
-            <textarea
-                required
-                minLength={10}
-                rows={3}
-                placeholder="Your message"
-                value={fields.message}
-                onChange={(e) => setFields({...fields, message: e.target.value})}
-                className="w-full resize-none rounded border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-accent"
-            />
             <button
                 type="submit"
-                disabled={state === "sending"}
-                className="w-full rounded bg-accent px-2 py-1.5 text-xs font-medium text-accent-foreground disabled:opacity-50"
+                className="w-full rounded bg-accent px-2 py-1.5 text-xs font-medium text-accent-foreground"
             >
-                {state === "sending" ? "Sending…" : "Send to Seif"}
+                Pick a time slot
             </button>
-            {state === "error" && (
-                <p className="text-[10px] text-red-400">Sending failed — email seif-dx@proton.me instead.</p>
-            )}
         </form>
     )
 }

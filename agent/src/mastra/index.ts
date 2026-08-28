@@ -124,6 +124,10 @@ export const mastra = new Mastra({
             typeof body?.email === "string" ? body.email.trim() : "";
           const message =
             typeof body?.message === "string" ? body.message.trim() : "";
+          const subject =
+            typeof body?.subject === "string"
+              ? body.subject.trim().slice(0, 200)
+              : undefined;
           if (
             !name ||
             name.length > 200 ||
@@ -136,7 +140,12 @@ export const mastra = new Mastra({
               { status: 400, headers: { "Content-Type": "application/json" } },
             );
           }
-          const result = await deliverContactEmail({ name, email, message });
+          const result = await deliverContactEmail({
+            name,
+            email,
+            message,
+            subject,
+          });
           return new Response(JSON.stringify(result), {
             status: result.sent ? 200 : 502,
             headers: { "Content-Type": "application/json" },

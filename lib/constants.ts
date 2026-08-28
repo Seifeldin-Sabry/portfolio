@@ -23,6 +23,6 @@ export const SITE_CONFIG = {
 export const LINKS = {
   GITHUB: "https://github.com/Seifeldin-Sabry",
   LINKEDIN: "https://www.linkedin.com/in/seifeldin-sabry-b8a542202/",
-  CALENDLY: "https://calendly.com/seifeldin-sdx/45min",
+  CALENDLY: "https://calendly.com/seifeldin-sdx/30min",
   SDX_STUDIO: "https://sdxstudio.dev",
 } as const;

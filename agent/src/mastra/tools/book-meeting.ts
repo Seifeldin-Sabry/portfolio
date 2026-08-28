@@ -1,37 +1,29 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 
-const CALENDLY_URL = "https://calendly.com/seifeldin-sdx/45min";
-
 /**
- * Booking is a prefilled Calendly link rather than a Calendly API call:
- * no secret to leak, no availability sync to maintain, and the visitor
- * still lands on a form with their details already filled in.
+ * Renders an inline booking form in the chat UI (the frontend watches for
+ * this tool call). The visitor fills in name/email there and the frontend
+ * opens a prefilled Calendly link (30 min) — personal details never pass
+ * through the LLM, so PII guardrails never conflict with booking.
  */
 export const bookMeeting = createTool({
   id: "bookMeeting",
   description:
-    "Book a call with Seif. Requires the visitor's name and email; returns a Calendly link prefilled with their details. Ask for name and email before calling this tool — never guess them.",
+    "Show the visitor an inline booking form to schedule a 30-minute call with Seif. Call this when the visitor wants to book a call, talk, or meet. Do NOT ask the visitor to type their name or email into the chat — the form collects them.",
   inputSchema: z.object({
-    name: z.string().min(1).describe("The visitor's full name, as they gave it"),
-    email: z.string().email().describe("The visitor's email address"),
-    topic: z
+    reason: z
       .string()
       .optional()
-      .describe("Optional: what the visitor wants to discuss"),
+      .describe("Optional: short reason the call is being booked"),
   }),
   outputSchema: z.object({
-    bookingUrl: z.string(),
-    note: z.string(),
+    shown: z.boolean(),
+    detail: z.string(),
   }),
-  execute: async ({ name, email, topic }) => {
-    const url = new URL(CALENDLY_URL);
-    url.searchParams.set("name", name);
-    url.searchParams.set("email", email);
-    if (topic) url.searchParams.set("a1", topic);
-    return {
-      bookingUrl: url.toString(),
-      note: "Share this link with the visitor; their name and email are prefilled. They pick a time slot themselves.",
-    };
-  },
+  execute: async () => ({
+    shown: true,
+    detail:
+      "Booking form displayed. Tell the visitor to drop their details in the form below — it opens a prefilled Calendly page where they pick a 30-minute slot.",
+  }),
 });

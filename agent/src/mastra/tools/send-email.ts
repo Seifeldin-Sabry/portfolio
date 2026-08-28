@@ -1,42 +1,21 @@
-import { createTool } from "@mastra/core/tools";
-import { z } from "zod";
-
 const CONTACT_EMAIL = "seif-dx@proton.me";
 
 /**
- * Sends the visitor's message to Seif via Resend. Uses the shared
+ * Delivery path for the /contact API route (approved drafts from the
+ * draftEmail flow and direct form submissions). Uses the shared Resend
  * onboarding sender (works without domain verification); reply_to is the
  * visitor so Seif can answer them directly from his inbox.
  */
-export const sendEmail = createTool({
-  id: "sendEmail",
-  description:
-    "Send an email to Seif on the visitor's behalf (project inquiries, job opportunities, questions). Requires the visitor's name, email and message. Ask for anything missing and confirm the message with the visitor before calling this tool — never invent their details.",
-  inputSchema: z.object({
-    name: z.string().min(1).describe("The visitor's full name, as they gave it"),
-    email: z.string().email().describe("The visitor's email address, for replies"),
-    message: z
-      .string()
-      .min(10)
-      .describe("The message to send, confirmed by the visitor"),
-  }),
-  outputSchema: z.object({
-    sent: z.boolean(),
-    detail: z.string(),
-  }),
-  execute: async ({ name, email, message }) =>
-    deliverContactEmail({ name, email, message }),
-});
-
-/** Shared delivery path for the sendEmail tool and the /contact API route. */
 export async function deliverContactEmail({
   name,
   email,
   message,
+  subject,
 }: {
   name: string;
   email: string;
   message: string;
+  subject?: string;
 }): Promise<{ sent: boolean; detail: string }> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -55,7 +34,7 @@ export async function deliverContactEmail({
       from: "Portfolio Agent <onboarding@resend.dev>",
       to: [CONTACT_EMAIL],
       reply_to: [email],
-      subject: `Portfolio contact from ${name}`,
+      subject: subject?.trim() || `Portfolio contact from ${name}`,
       text: `From: ${name} <${email}>\nVia: portfolio AI assistant\n\n${message}`,
     }),
   });

@@ -5,8 +5,8 @@ import {
 } from "@mastra/core/processors";
 
 import { bookMeeting } from "../tools/book-meeting";
+import { draftEmail } from "../tools/draft-email";
 import { searchPortfolio } from "../tools/search-portfolio";
-import { showContactForm } from "../tools/show-contact-form";
 
 const GUARD_MODEL = "groq/openai/gpt-oss-20b";
 
@@ -21,16 +21,15 @@ work, projects, experience, skills, education, homelab and blog posts.
 
 ## Grounding rules (strict)
 1. ALWAYS call the searchPortfolio tool before answering anything about Seif. Never answer from memory.
-2. Only state facts present in the retrieved context. If the context does not contain the answer, say so plainly and suggest emailing seif-dx@proton.me or booking a call at https://calendly.com/seifeldin-sdx/45min.
+2. Only state facts present in the retrieved context. If the context does not contain the answer, say so plainly and suggest emailing seif-dx@proton.me or booking a call at https://calendly.com/seifeldin-sdx/30min.
 3. Never invent projects, employers, dates, technologies or metrics.
 4. When useful, mention which part of the portfolio the answer comes from (e.g. "from his QFacts experience").
 
 ## Contact tools
-- Visitors can book a call (bookMeeting) or leave Seif a message (showContactForm).
-- When a visitor hints at salary/compensation, availability negotiation, wants to reach Seif, or asks anything you don't know or can't find in retrieved context, do NOT speculate — offer to book a call or call showContactForm, e.g. "That's one for Seif directly — want me to set up a quick call, or you can drop him a message below."
-- NEVER ask the visitor to type their name, email or personal details into the chat. The form handles that privately.
-- After calling showContactForm, add one short sentence pointing at the form. Nothing else.
-- After bookMeeting, share the returned booking link as a markdown link.
+- bookMeeting: shows an inline booking form for a 30-minute call. Call it when the visitor wants to book a call, talk, or meet Seif.
+- draftEmail: drafts an email to Seif on the visitor's behalf and shows it for approval. When a visitor wants to send Seif a message — or hints at salary/compensation, availability, or asks something only Seif can answer — compose a short professional email from what they said and call draftEmail. If you don't know yet what they want to say, ask what the message should be (never their name or email).
+- Human-in-the-loop: after draftEmail, add one short sentence like "Draft's below — approve to send, or tell me what to change." If the visitor requests changes, revise and call draftEmail again with the updated draft.
+- NEVER ask the visitor to type their name, email or personal details into the chat. The forms collect those privately.
 - If a tool reports failure, relay its fallback advice (email ${""}seif-dx@proton.me directly).
 
 ## Scope guardrails
@@ -41,20 +40,24 @@ work, projects, experience, skills, education, homelab and blog posts.
 ## Tone
 Friendly, direct, professional. First person about the site ("this portfolio"), third person about Seif.`,
   model: "groq/openai/gpt-oss-120b",
-  tools: { searchPortfolio, bookMeeting, showContactForm },
+  tools: { searchPortfolio, bookMeeting, draftEmail },
   inputProcessors: [
     new PromptInjectionDetector({
       model: GUARD_MODEL,
-      threshold: 0.8,
-      strategy: "block",
+      threshold: 0.9,
+      // "warn" logs the detection (visible in Langfuse) without aborting the
+      // stream: legitimate visitors say instruction-shaped things ("draft an
+      // email, tell him …") which a blocking detector turns into hard errors.
+      // Scope guardrails in the instructions still refuse hijack attempts.
+      strategy: "warn",
       detectionTypes: ["injection", "jailbreak", "system-override"],
     }),
     new PIIDetector({
       model: GUARD_MODEL,
       threshold: 0.6,
       strategy: "redact",
-      // "email" intentionally NOT detected: contact tools (bookMeeting,
-      // sendEmail) need visitors to hand over their own email address.
+      // "email" intentionally NOT detected: visitors may state their own
+      // email when asking to contact Seif — the draftEmail flow needs it.
       detectionTypes: ["phone", "credit-card", "ssn", "api-key"],
       redactionMethod: "mask",
     }),
