@@ -1,11 +1,11 @@
 "use client"
 
 import {useState} from "react"
-import {homelabServices, categoryColors} from "@/data/homelab"
+import {categoryColors, type HomelabService} from "@/lib/content-types"
 import {Badge} from "@/components/ui/badge"
 import {ChevronDown} from "lucide-react"
 
-export default function HomelabSection() {
+export default function HomelabSection({homelabServices}: {homelabServices: HomelabService[]}) {
     const [isOpen, setIsOpen] = useState(false)
     const [expandedId, setExpandedId] = useState<string | null>(null)
 

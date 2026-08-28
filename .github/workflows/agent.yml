@@ -1,0 +1,57 @@
+name: Deploy Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agent/**"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/agent.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-agent-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: pnpm/action-setup@v6.0.10
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --filter agent typecheck
+
+      - name: Build Mastra worker
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent build
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
+      - name: Push worker secrets
+        working-directory: agent/.mastra/output
+        run: |
+          pnpm dlx @dotenvx/dotenvx@1.71.3 run -f ../../../.env -- sh -c '
+            printf "{\"POSTGRES_CONNECTION_STRING\":\"%s\",\"GROQ_API_KEY\":\"%s\",\"LANGFUSE_PUBLIC_KEY\":\"%s\",\"LANGFUSE_SECRET_KEY\":\"%s\",\"LANGFUSE_BASE_URL\":\"%s\",\"CLOUDFLARE_ACCOUNT_ID\":\"%s\",\"CLOUDFLARE_API_TOKEN\":\"%s\"}" \
+              "$POSTGRES_CONNECTION_STRING" "$GROQ_API_KEY" "$LANGFUSE_PUBLIC_KEY" "$LANGFUSE_SECRET_KEY" "$LANGFUSE_BASE_URL" "$CLOUDFLARE_ACCOUNT_ID" "$CLOUDFLARE_API_TOKEN" > /tmp/secrets.json
+            pnpm dlx wrangler secret bulk /tmp/secrets.json
+          '
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
+      - name: Deploy worker
+        working-directory: agent/.mastra/output
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -f ../../../.env -- pnpm dlx wrangler deploy
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}

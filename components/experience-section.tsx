@@ -2,12 +2,14 @@
 
 import {useState} from "react"
 import Image from "next/image"
-import {experiences} from "@/data/experiences"
-import {education} from "@/data/education"
+import {type Education, type Experience} from "@/lib/content-types"
 import {Badge} from "@/components/ui/badge"
 import {ChevronDown} from "lucide-react"
 
-export default function ExperienceSection() {
+export default function ExperienceSection({experiences, education}: {
+    experiences: Experience[]
+    education: Education[]
+}) {
     const [isExpanded, setIsExpanded] = useState(false)
 
     return (

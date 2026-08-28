@@ -4,6 +4,7 @@ import {Inter} from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
 import Footer from "@/components/footer"
+import AiChat from "@/components/ai-chat"
 import {ThemeProvider} from "@/components/theme-provider"
 const inter = Inter({subsets: ["latin"]})
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
                 <div className="flex flex-col min-h-screen bg-background">
                     <main className="flex-grow">{children}</main>
+                    <AiChat />
                     <Footer />
                 </div>
         </ThemeProvider>
