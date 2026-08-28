@@ -1,7 +1,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 
-const CONTACT_EMAIL = "seif-sdx@proton.me";
+const CONTACT_EMAIL = "seif-dx@proton.me";
 
 /**
  * Sends the visitor's message to Seif via Resend. Uses the shared
