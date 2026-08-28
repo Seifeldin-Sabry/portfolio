@@ -1,0 +1,48 @@
+name: Embed & Eval
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "data/blogs/**"
+      - "cv/**"
+      - "agent/scripts/**"
+      - "agent/evals/**"
+      - ".github/workflows/embed-and-eval.yml"
+  schedule:
+    - cron: "17 3 * * 1" # weekly, monday 03:17 UTC — drift check
+  workflow_dispatch:
+
+concurrency:
+  group: embed-eval-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  embed-and-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: pnpm/action-setup@v6.0.10
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Embed changed content (hash-diff, no-op when clean)
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent embed
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
+      - name: Run eval suite (regression gate)
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent evals
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+          GIT_SHA: ${{ github.sha }}

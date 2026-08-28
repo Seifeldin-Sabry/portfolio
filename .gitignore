@@ -113,3 +113,8 @@ fabric.properties
 /.idea/git_toolbox_prj.xml
 
 .omc
+# mastra build output
+agent/.mastra/
+agent/dist/
+
+node_modules/

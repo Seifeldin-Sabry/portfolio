@@ -1,23 +1,24 @@
 "use client"
 
 import {useState, useRef} from "react"
-import {projects} from "@/data/projects"
+import {type Project} from "@/lib/content-types"
 import {Badge} from "@/components/ui/badge"
 import {Github, ExternalLink, ChevronLeft, ChevronRight} from "lucide-react"
 import {motion, AnimatePresence} from "framer-motion"
 
 const orderedIds = ["arkive", "qfacts", "portfolio"]
-const orderedProjects = orderedIds
-    .map((id) => projects.find((p) => p.id === id))
-    .filter(Boolean) as typeof projects
-
 const PROJECTS_PER_PAGE = 2
-const pages: (typeof projects)[] = []
-for (let i = 0; i < orderedProjects.length; i += PROJECTS_PER_PAGE) {
-    pages.push(orderedProjects.slice(i, i + PROJECTS_PER_PAGE))
-}
 
-export default function ProjectsSection() {
+export default function ProjectsSection({projects}: {projects: Project[]}) {
+    const orderedProjects = orderedIds
+        .map((id) => projects.find((p) => p.id === id))
+        .filter(Boolean) as Project[]
+
+    const pages: Project[][] = []
+    for (let i = 0; i < orderedProjects.length; i += PROJECTS_PER_PAGE) {
+        pages.push(orderedProjects.slice(i, i + PROJECTS_PER_PAGE))
+    }
+
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [currentPage, setCurrentPage] = useState(0)
     const [direction, setDirection] = useState(0)

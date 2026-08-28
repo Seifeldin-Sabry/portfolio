@@ -5,6 +5,7 @@ import HomelabSection from "@/components/homelab-section"
 import ExperienceSection from "@/components/experience-section"
 import BlogSection from "@/components/blog-section"
 import {getSortedBlogPosts} from "@/lib/blogs"
+import {getEducation, getExperiences, getHomelabServices, getProjects} from "@/lib/content"
 
 export default function Home() {
     const allPosts = getSortedBlogPosts()
@@ -13,9 +14,9 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <ProfileSection/>
             <SkillsSection/>
-            <ProjectsSection/>
-            <HomelabSection/>
-            <ExperienceSection/>
+            <ProjectsSection projects={getProjects()}/>
+            <HomelabSection homelabServices={getHomelabServices()}/>
+            <ExperienceSection experiences={getExperiences()} education={getEducation()}/>
             <BlogSection posts={allPosts}/>
         </div>
     )

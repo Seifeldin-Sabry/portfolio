@@ -1,0 +1,31 @@
+{
+  "name": "agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "typecheck": "tsc --noEmit",
+    "embed": "tsx scripts/embed.ts",
+    "evals": "tsx scripts/run-evals.ts"
+  },
+  "dependencies": {
+    "@mastra/ai-sdk": "^1.10.0",
+    "@mastra/core": "^1.63.1",
+    "@mastra/deployer-cloudflare": "^1.2.21",
+    "@mastra/evals": "^1.9.0",
+    "@mastra/langfuse": "^1.5.3",
+    "@mastra/observability": "^1.17.4",
+    "@mastra/rag": "^2.6.0",
+    "@neondatabase/serverless": "^1.0.1",
+    "ai": "^7.0.83",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "mastra": "^1.27.1",
+    "tsx": "^4.23.12",
+    "typescript": "^5"
+  }
+}
