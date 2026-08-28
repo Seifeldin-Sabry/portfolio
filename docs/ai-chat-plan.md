@@ -78,14 +78,14 @@ content/
 ## 5. Agent + guardrails (the showcase)
 
 `portfolio-agent.ts`:
-- Model: `groq/llama-3.3-70b-versatile` (or current best free Groq model at build time).
+- Model: `groq/openai/gpt-oss-120b` (or current best free Groq model at build time).
 - Tool: `createVectorQueryTool({ vectorStore: pgVector, indexName: 'portfolio_chunks', model: workersai.textEmbedding('@cf/baai/bge-base-en-v1.5') })` — runtime uses native `env.AI` binding (zero-latency, no API key; declare `[ai] binding = "AI"` via deployer config).
 - Instructions: answer only from retrieved portfolio context; cite sections; refuse off-topic; never invent facts about Seif.
 
 `inputProcessors` (ordered, cheap → expensive):
 1. `RegexFilterProcessor({ presets: ['pii'], strategy: 'block', phase: 'input' })` — free regex layer.
-2. `PromptInjectionDetector({ model: 'groq/llama-3.1-8b-instant', detectionTypes: ['injection','jailbreak','system-override'], threshold: 0.8, strategy: 'block', includeScores: true })`.
-3. `PIIDetector({ model: 'groq/llama-3.1-8b-instant', strategy: 'redact', redactionMethod: 'mask' })` — visitor PII never reaches main model or traces.
+2. `PromptInjectionDetector({ model: 'groq/openai/gpt-oss-20b', detectionTypes: ['injection','jailbreak','system-override'], threshold: 0.8, strategy: 'block', includeScores: true })`.
+3. `PIIDetector({ model: 'groq/openai/gpt-oss-20b', strategy: 'redact', redactionMethod: 'mask' })` — visitor PII never reaches main model or traces.
 
 `outputProcessors`:
 - Custom `Processor.processToolResult` — scan retrieved chunks, `abort()` on injection patterns (defends against poisoned content).
@@ -105,7 +105,7 @@ Server hardening: CORS allowlist (portfolio origin), per-IP rate limit (Workers 
 
 - `evals/eval-set.json`: ~20–30 golden questions across categories: factual (projects/experience), retrieval-dependent, off-topic refusal, injection attempts, PII probes.
 - `runEvals` from `@mastra/core/evals` with prebuilt scorers from `@mastra/evals/scorers/prebuilt`:
-  - `createAnswerRelevancyScorer`, `createFaithfulnessScorer`, `createHallucinationScorer` — judge model `groq/llama-3.3-70b-versatile`.
+  - `createAnswerRelevancyScorer`, `createFaithfulnessScorer`, `createHallucinationScorer` — judge model `groq/openai/gpt-oss-120b`.
   - Custom scorer: refusal-correctness (did guardrail block what it should, pass what it shouldn't).
 - Results → insert `eval_runs` rows (git sha) + visible in Langfuse traces.
 - Regression gate: fail CI if mean score of any scorer drops below threshold (e.g. 0.75).

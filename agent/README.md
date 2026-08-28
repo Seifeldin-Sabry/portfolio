@@ -10,7 +10,7 @@ content/*.md ─┐
 data/blogs/*  ├─ CI (embed.ts): sha256 diff → chunk → Workers AI bge-base-en-v1.5 (768d)
 cv/*.md ──────┘        → pgvector (Neon: portfolio_chunks / content_hashes)
 
-visitor → /chat → portfolioAgent (groq/llama-3.3-70b-versatile)
+visitor → /chat → portfolioAgent (groq/openai/gpt-oss-120b)
                     ├─ inputProcessors: PromptInjectionDetector (block), PIIDetector (redact)
                     ├─ tool: searchPortfolio (embed query → cosine top-6, min score 0.55)
                     └─ traces → Langfuse
