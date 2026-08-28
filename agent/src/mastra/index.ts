@@ -54,6 +54,9 @@ export const mastra = new Mastra({
       registerApiRoute("/chat", {
         method: "POST",
         handler: async (c) => {
+          // Server-injected instance — module-scope `mastra` closure breaks
+          // under the deployer bundle (method-less object at runtime).
+          const mastraInstance = c.get("mastra") as unknown as typeof mastra;
           const params = await c.req.json();
           // Langfuse best practices: session.id groups one conversation
           // (useChat chat id), user.id is a stable anonymous visitor hash —
@@ -67,7 +70,7 @@ export const mastra = new Mastra({
             .map((b) => b.toString(16).padStart(2, "0"))
             .join("");
           const stream = await handleChatStream({
-            mastra,
+            mastra: mastraInstance,
             agentId: "portfolioAgent",
             version: "v7",
             params,
