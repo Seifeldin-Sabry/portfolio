@@ -33,6 +33,12 @@ CI (run-evals.ts): golden QA → agent → answer-relevancy + faithfulness (LLM 
 | `GROQ_API_KEY` | .env (encrypted), worker secret | agent + guard + judge LLMs |
 | `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` | .env, worker secret | Workers AI embeddings (REST) + deploy |
 | `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_BASE_URL` | .env, worker secret | tracing (optional — agent runs without) |
+
+Langfuse traces carry `session.id` (one conversation, from the useChat id),
+`user.id` (`anon:<sha256(ip)[:16]>` — raw IP never exported), `environment`
+(`production` / `development` / `ci` for eval runs) and trace name
+`portfolio-chat` / `eval-run`. PII is redacted by the agent's `PIIDetector`
+input processor *before* any span is exported.
 | `NEXT_PUBLIC_AGENT_URL` | .env | frontend → worker URL (set after first deploy) |
 
 Add secrets with `pnpm dlx @dotenvx/dotenvx set KEY value` (encrypts against

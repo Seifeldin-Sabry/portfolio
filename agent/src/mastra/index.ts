@@ -20,6 +20,9 @@ const langfuseEnabled =
 
 export const mastra = new Mastra({
   agents: { portfolioAgent },
+  // Tags every observability signal; per-call tracingOptions.metadata.environment overrides (CI).
+  environment:
+    process.env.NODE_ENV === "development" ? "development" : "production",
   deployer: new CloudflareDeployer({
     name: "portfolio-agent",
   }),
@@ -52,11 +55,33 @@ export const mastra = new Mastra({
         method: "POST",
         handler: async (c) => {
           const params = await c.req.json();
+          // Langfuse best practices: session.id groups one conversation
+          // (useChat chat id), user.id is a stable anonymous visitor hash —
+          // raw IP never leaves the worker.
+          const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+          const digest = await crypto.subtle.digest(
+            "SHA-256",
+            new TextEncoder().encode(ip),
+          );
+          const visitorId = [...new Uint8Array(digest.slice(0, 8))]
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
           const stream = await handleChatStream({
             mastra,
             agentId: "portfolioAgent",
             version: "v7",
             params,
+            defaultOptions: {
+              tracingOptions: {
+                metadata: {
+                  traceName: "portfolio-chat",
+                  sessionId:
+                    typeof params.id === "string" ? params.id : undefined,
+                  userId: `anon:${visitorId}`,
+                  source: "portfolio-web",
+                },
+              },
+            },
           });
           return createUIMessageStreamResponse({ stream });
         },

@@ -27,7 +27,19 @@ async function main() {
   const faithScores: number[] = [];
 
   for (const c of evalCases) {
-    const res = await agent.generate(c.question);
+    // Tag eval traffic so Langfuse separates it from production visitors:
+    // environment=ci, one session per eval run (git sha).
+    const res = await agent.generate(c.question, {
+      tracingOptions: {
+        metadata: {
+          environment: "ci",
+          traceName: "eval-run",
+          sessionId: `eval:${gitSha}`,
+          userId: "ci",
+          source: "ci",
+        },
+      },
+    });
     const answer = res.text;
 
     // context = what the agent's retrieval tool returned during the run
