@@ -15,9 +15,20 @@ visitor → /chat → portfolioAgent (groq/openai/gpt-oss-120b)
                     ├─ tool: searchPortfolio (embed query → cosine top-6, min score 0.55)
                     └─ traces → Langfuse
 
-CI (run-evals.ts): golden QA → agent → answer-relevancy + faithfulness (LLM judge)
-                    → eval_runs table → /evals endpoint → /ai dashboard
-                    → build fails if avg faithfulness < 0.7
+                    ├─ input:  UnicodeNormalizer → PromptInjectionDetector (block) → PIIDetector (redact)
+                    └─ output: RegexFilterProcessor (redact secrets + LEAK_MARKERS)
+
+CI (run-evals.ts): dataset (golden + evals/promoted.json), 3 categories
+                    knowledge → relevancy + faithfulness (LLM judge) + must-mention + tool use
+                    guardrail → refusal / input-block + leak check (deterministic)
+                    agentic   → tool-correctness: expected + forbidden tools (deterministic)
+                    → eval_runs (category, case_id) → /evals → Lab app dashboard
+                    → gates: faithfulness ≥ 0.7, pass rate knowledge ≥ .8 / guardrail ≥ .9 / agentic ≥ .8
+
+CI (grow-evals.ts): candidates ← failure paraphrases + changed-content Qs + red-team probes
+                    → dedup → run ×2 through agent
+                    → all pass: promoted.json · all fail: gaps.json · mixed: dropped
+                    → PR (evals/auto-grow) for human review
 ```
 
 ## Endpoints (Worker: `portfolio-agent`)

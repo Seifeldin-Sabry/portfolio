@@ -45,6 +45,13 @@ const config: Config = {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
+                window: {
+                    bg: "hsl(var(--window-bg))",
+                    chrome: "hsl(var(--window-chrome))",
+                    titlebar: "hsl(var(--titlebar))",
+                    border: "hsl(var(--chrome-border))",
+                },
+                wallpaper: "hsl(var(--wallpaper))",
                 chart: {
                     "1": "hsl(var(--chart-1))",
                     "2": "hsl(var(--chart-2))",
@@ -69,7 +76,8 @@ const config: Config = {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
+                sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+                mono: ['var(--font-jetbrains-mono)', 'Fira Code', 'Consolas', 'monospace'],
             },
             keyframes: {
                 "accordion-down": {

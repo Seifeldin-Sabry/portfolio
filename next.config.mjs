@@ -6,6 +6,7 @@ const nextConfig = {
     },
     images: {
         unoptimized: true,
+        remotePatterns: [{protocol: "https", hostname: "picsum.photos"}],
     },
     experimental: {
         webpackBuildWorker: true,

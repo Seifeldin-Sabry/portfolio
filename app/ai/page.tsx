@@ -15,13 +15,13 @@ const STACK = [
     },
     {
         title: "Guardrails",
-        body: "Input processors screen every message: LLM-based prompt-injection detection (block) and PII detection (redact) before the agent ever sees the text.",
-        chips: ["PromptInjectionDetector", "PIIDetector"],
+        body: "Input: unicode normalization, LLM prompt-injection detection (block) and PII detection (redact). Output: deterministic regex filter redacts secrets and any leaked system internals.",
+        chips: ["PromptInjectionDetector", "PIIDetector", "RegexFilter"],
     },
     {
-        title: "Evals in CI",
-        body: "A golden QA set runs through the real agent on every content change. Answer relevancy + faithfulness are judged by an LLM; the build fails if faithfulness drops below 0.7.",
-        chips: ["@mastra/evals", "GitHub Actions", "regression gate"],
+        title: "Self-improving evals",
+        body: "Knowledge, guardrail and agentic tool-use cases run through the real agent in CI, each category with its own gate. Failures, content diffs and red-team synthesis feed candidates; only cases stable across repeated runs are promoted, via PR.",
+        chips: ["@mastra/evals", "tool-correctness", "growth loop"],
     },
     {
         title: "Observability",

@@ -7,7 +7,9 @@
     "build": "mastra build",
     "typecheck": "tsc --noEmit",
     "embed": "tsx scripts/embed.ts",
-    "evals": "tsx scripts/run-evals.ts"
+    "evals": "tsx scripts/run-evals.ts",
+    "evals:grow": "tsx scripts/grow-evals.ts",
+    "evals:check": "tsx evals/scorers.ts"
   },
   "dependencies": {
     "@mastra/ai-sdk": "^1.10.0",
