@@ -14,16 +14,25 @@ products and the systems behind them — from type-safe monorepos and
 event-driven infrastructure to billing, onboarding, and automation that holds
 up in production.
 
-He is the founder of SDX Studio (started March 2026), where he is building
-Arkive, while continuing to work as a software engineer at QFacts.
+He is the founder of SDX Studio (started March 2026), a GTM engineering
+business: a done-for-you outbound agency for MSSPs (managed security service
+providers), run from Claude Code. Alongside that he works as a software engineer at QFacts — where he owns the
+platform end to end and shipped the in-product AI agent, the mobile companion
+and the company's new marketing site and CMS.
+
+## How Seif works
+
+Seif takes pride in his work, in clear communication and in the trust he builds
+with the people he works with. He focuses on delivering quality outcomes for
+the business and picks up new skills wherever he can.
 
 ## AI-Assisted Engineering
 
-Seif uses Codex, Claude, and open-source models with coding harnesses and
-automated workflows, continuously experimenting with new ways to move from
-idea to tested implementation. This portfolio's own AI assistant is built with
-Mastra (agents, RAG, guardrails), Langfuse observability, automated evals in
-CI, pgvector on Neon Postgres, and runs on Cloudflare Workers.
+Seif uses T3 Code to combine different coding agents (Claude, Codex and
+open-source models), and runs automated schedules so his software processes
+keep improving themselves. This portfolio's own AI assistant is built with
+Mastra (agents, RAG, guardrails), Langfuse observability, self-improving evals
+in CI, pgvector on Neon Postgres, and runs on Cloudflare Workers.
 
 ## Contact & Hiring
 

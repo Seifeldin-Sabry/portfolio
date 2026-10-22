@@ -7,6 +7,7 @@ const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
 interface SummaryRow {
     git_sha: string
     run_at: string
+    category: string | null
     scorer: string
     avg_score: number | string
     n: number | string
@@ -15,6 +16,7 @@ interface SummaryRow {
 interface LatestRow {
     git_sha: string
     run_at: string
+    category: string | null
     scorer: string
     question: string
     score: number | null
@@ -23,9 +25,13 @@ interface LatestRow {
 
 function scoreColor(score: number | null): string {
     if (score === null) return "text-muted-foreground"
-    if (score >= 0.8) return "text-green-400"
+    if (score >= 0.8) return "text-accent"
     if (score >= 0.6) return "text-amber-400"
     return "text-red-400"
+}
+
+function label(row: {category: string | null; scorer: string}): string {
+    return row.category ? `${row.category} · ${row.scorer}` : row.scorer
 }
 
 export default function EvalDashboard() {
@@ -57,6 +63,9 @@ export default function EvalDashboard() {
 
     const latestSha = latest[0]?.git_sha
     const latestSummary = summary.filter((s) => s.git_sha === latestSha)
+    // Newer runs record a per-case "pass" verdict; older runs only have judge scores.
+    const hasVerdicts = latest.some((r) => r.scorer === "pass")
+    const perQuestion = hasVerdicts ? latest.filter((r) => r.scorer === "pass") : latest
 
     return (
         <div className="space-y-6">
@@ -64,10 +73,10 @@ export default function EvalDashboard() {
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {latestSummary.map((s) => (
                     <div
-                        key={s.scorer}
+                        key={`${s.category}-${s.scorer}`}
                         className="rounded-lg border border-border bg-secondary/20 p-4"
                     >
-                        <p className="text-xs font-mono text-muted-foreground">{s.scorer}</p>
+                        <p className="text-xs font-mono text-muted-foreground">{label(s)}</p>
                         <p className={`mt-1 text-3xl font-semibold ${scoreColor(Number(s.avg_score))}`}>
                             {Number(s.avg_score).toFixed(2)}
                         </p>
@@ -99,7 +108,7 @@ export default function EvalDashboard() {
                             {summary.slice(0, 20).map((s, i) => (
                                 <tr key={i} className="border-t border-border">
                                     <td className="px-3 py-1.5 font-mono">{s.git_sha.slice(0, 7)}</td>
-                                    <td className="px-3 py-1.5 font-mono">{s.scorer}</td>
+                                    <td className="px-3 py-1.5 font-mono">{label(s)}</td>
                                     <td className={`px-3 py-1.5 font-mono ${scoreColor(Number(s.avg_score))}`}>
                                         {Number(s.avg_score).toFixed(2)}
                                     </td>
@@ -113,11 +122,11 @@ export default function EvalDashboard() {
             )}
 
             {/* Latest per-question */}
-            {latest.length > 0 && (
+            {perQuestion.length > 0 && (
                 <div>
                     <h3 className="mb-2 text-sm font-medium">Latest run — per question</h3>
                     <div className="space-y-2">
-                        {latest.map((row, i) => (
+                        {perQuestion.map((row, i) => (
                             <div key={i} className="rounded-lg border border-border bg-secondary/10 p-3">
                                 <div className="flex items-start justify-between gap-3">
                                     <p className="text-xs">{row.question}</p>
@@ -125,7 +134,7 @@ export default function EvalDashboard() {
                                         {row.score === null ? "—" : row.score.toFixed(2)}
                                     </span>
                                 </div>
-                                <p className="mt-1 text-[10px] font-mono text-muted-foreground">{row.scorer}</p>
+                                <p className="mt-1 text-[10px] font-mono text-muted-foreground">{label(row)}</p>
                                 {row.reason && (
                                     <p className="mt-1 text-[11px] text-muted-foreground line-clamp-2">{row.reason}</p>
                                 )}

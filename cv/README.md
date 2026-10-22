@@ -1,14 +1,6 @@
 # CV source
 
-Edit [`seifeldin-swe-cv.md`](./seifeldin-swe-cv.md) to update the CV. The PDF at
-`public/assets/documents/seifeldin-swe-cv.pdf` is generated from that Markdown
-source and should not be edited directly.
-
-Render the PDF locally with:
-
-```bash
-pnpm cv:build
-```
-
-`pnpm build` also renders the CV before building the portfolio, so deployments
-always publish the latest Markdown version.
+The published CV is `public/assets/documents/seifeldin-sabry-cv.pdf` (authored
+outside this repo). [`seifeldin-sabry-cv.md`](./seifeldin-sabry-cv.md) is a
+plain-text copy that feeds the assistant's RAG index — keep it in sync when the
+PDF changes. Phone number intentionally omitted so the assistant never shares it.

@@ -39,7 +39,7 @@ export default function ProfileSection() {
                             <span className="text-xs font-mono text-accent bg-accent/10 px-1.5 py-0.5 rounded">Live</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            Founder @ <span className="text-foreground font-medium">SDX Studio</span> · Building <span className="text-foreground font-medium">Arkive</span> & <span className="text-foreground font-medium">Qfacts</span>
+                            Founder @ <span className="text-foreground font-medium">SDX Studio</span> · Building <span className="text-foreground font-medium">Qfacts</span>
                         </p>
                     </div>
                 </div>
@@ -47,7 +47,7 @@ export default function ProfileSection() {
                 {/* Bio */}
                 <div className="space-y-3 mb-6">
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                        AI-native software engineer based in Antwerp. I build reliable products and the systems behind them, from type-safe monorepos and event-driven infrastructure to billing, onboarding, and automation that holds up in production. Currently at QFacts, working on Qfacts.be, a GAMP 5 validated eQMS for pharma and biotech SMEs, and building Arkive on the side. B.ASc, Karel de Grote Hogeschool.
+                        AI-native software engineer based in Antwerp. I build reliable products and the systems behind them, from type-safe monorepos and event-driven infrastructure to billing, onboarding, and automation that holds up in production. Currently at QFacts, working on Qfacts.be, a GAMP 5 validated eQMS for pharma and biotech SMEs. B.ASc, Karel de Grote Hogeschool.
                     </p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                         Architecture matters more than code writing now. System design, infrastructure, CI/CD, reliability, that&apos;s where the real decisions get made. I keep up with AI tooling by actually using it daily (Codex, Claude, open-source models with coding harnesses) and I&apos;m always testing where open-source models close the gap on frontier ones.
@@ -103,15 +103,15 @@ export default function ProfileSection() {
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <a
-                                    href="/assets/documents/seifeldin-swe-cv.pdf"
-                                    download="Seifeldin-SWE-CV.pdf"
+                                    href="/assets/documents/seifeldin-sabry-cv.pdf"
+                                    download="Seifeldin-Sabry-CV.pdf"
                                     className="inline-flex items-center gap-1.5 rounded-md border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors duration-300 hover:bg-accent/10"
                                 >
                                     <Download size={13} aria-hidden="true" />
                                     Download
                                 </a>
                                 <a
-                                    href="/assets/documents/seifeldin-swe-cv.pdf"
+                                    href="/assets/documents/seifeldin-sabry-cv.pdf"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
@@ -123,7 +123,7 @@ export default function ProfileSection() {
                         </div>
                         <div className="bg-white p-1.5">
                             <iframe
-                                src="/assets/documents/seifeldin-swe-cv.pdf#toolbar=0&navpanes=0&view=FitH"
+                                src="/assets/documents/seifeldin-sabry-cv.pdf#toolbar=0&navpanes=0&view=FitH"
                                 title="Seif Ismail CV preview"
                                 className="h-[70vh] max-h-[720px] min-h-[520px] w-full rounded-sm border border-black/10 bg-white"
                             />

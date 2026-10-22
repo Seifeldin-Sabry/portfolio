@@ -150,19 +150,20 @@ export const mastra = new Mastra({
           const summary = await sql`
             SELECT git_sha,
                    date_trunc('minute', min(run_at)) AS run_at,
+                   category,
                    scorer,
                    round(avg(score)::numeric, 3) AS avg_score,
-                   count(*) AS n
+                   count(score) AS n
             FROM eval_runs
-            GROUP BY git_sha, scorer
+            GROUP BY git_sha, category, scorer
             ORDER BY min(run_at) DESC
             LIMIT 60
           `;
           const latest = await sql`
-            SELECT git_sha, run_at, scorer, question, score, reason
+            SELECT git_sha, run_at, category, scorer, question, score, reason
             FROM eval_runs
             WHERE git_sha = (SELECT git_sha FROM eval_runs ORDER BY run_at DESC LIMIT 1)
-            ORDER BY scorer, question
+            ORDER BY category, scorer, question
           `;
           return new Response(JSON.stringify({ summary, latest }), {
             headers: { "Content-Type": "application/json" },

@@ -2,6 +2,8 @@ import { Agent } from "@mastra/core/agent";
 import {
   PIIDetector,
   PromptInjectionDetector,
+  RegexFilterProcessor,
+  UnicodeNormalizer,
 } from "@mastra/core/processors";
 
 import { bookMeeting } from "../tools/book-meeting";
@@ -9,6 +11,19 @@ import { searchPortfolio } from "../tools/search-portfolio";
 import { showContactForm } from "../tools/show-contact-form";
 
 const GUARD_MODEL = "groq/openai/gpt-oss-20b";
+
+/**
+ * Fragments that only appear in this agent's instructions/tool wiring. If one
+ * shows up in a reply, the model is leaking internals — redact it. Exported so
+ * the eval suite scores leaks against the same list the guardrail enforces.
+ */
+export const LEAK_MARKERS = [
+  /grounding rules/gi,
+  /scope guardrails/gi,
+  /\b(searchPortfolio|showContactForm|bookMeeting|sendEmail)\b/g,
+  /\binputProcessors?\b/gi,
+  /\b(GROQ|LANGFUSE|RESEND|POSTGRES)_[A-Z_]+\b/g,
+];
 
 export const portfolioAgent = new Agent({
   id: "portfolioAgent",
@@ -43,6 +58,9 @@ Friendly, direct, professional. First person about the site ("this portfolio"), 
   model: "groq/openai/gpt-oss-120b",
   tools: { searchPortfolio, bookMeeting, showContactForm },
   inputProcessors: [
+    // Strip zero-width/control chars first so obfuscated injections reach the
+    // LLM detector in plain form.
+    new UnicodeNormalizer({ stripControlChars: true }),
     new PromptInjectionDetector({
       model: GUARD_MODEL,
       threshold: 0.8,
@@ -57,6 +75,19 @@ Friendly, direct, professional. First person about the site ("this portfolio"), 
       // sendEmail) need visitors to hand over their own email address.
       detectionTypes: ["phone", "credit-card", "ssn", "api-key"],
       redactionMethod: "mask",
+    }),
+  ],
+  // Deterministic (zero-LLM-cost) output guard: secrets + internal leaks.
+  outputProcessors: [
+    new RegexFilterProcessor({
+      phase: "output",
+      strategy: "redact",
+      presets: ["secrets"],
+      rules: LEAK_MARKERS.map((pattern, i) => ({
+        name: `internal-leak-${i}`,
+        pattern,
+        replacement: "[internal]",
+      })),
     }),
   ],
 });

@@ -25,4 +25,23 @@ export const LINKS = {
   LINKEDIN: "https://www.linkedin.com/in/seifeldin-sabry-b8a542202/",
   CALENDLY: "https://calendly.com/seifeldin-sdx",
   SDX_STUDIO: "https://sdxstudio.dev",
+  BUY_ME_A_COFFEE: "https://buymeacoffee.com/seifdx",
+} as const;
+
+// UI system constants (single source of truth for the shell layers)
+// Windows stack from WINDOW upward (z grows on every focus), so shell layers sit far above.
+export const Z_INDEX = {
+  WIDGETS: 1,
+  WINDOW: 10,
+  MENUBAR: 100_000,
+  DOCK: 100_000,
+  OVERLAY: 100_010,
+  BOOT: 200_000,
+} as const;
+
+// Shape lock: windows/cards 12px, controls pill, inputs 8px
+export const SHAPE = {
+  WINDOW: "rounded-xl",
+  CONTROL: "rounded-full",
+  INPUT: "rounded-lg",
 } as const;

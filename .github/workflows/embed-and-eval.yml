@@ -19,13 +19,16 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write # grow-evals opens a PR with promoted cases
+  pull-requests: write
 
 jobs:
   embed-and-eval:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0 # grow-evals diffs content against the previous push
 
       - uses: pnpm/action-setup@v6.0.10
 
@@ -46,3 +49,29 @@ jobs:
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
           GIT_SHA: ${{ github.sha }}
+
+      - name: Scorer self-check
+        run: pnpm --filter agent evals:check
+
+      # Runs even when the gate failed: failures are the loop's best input.
+      - name: Grow eval dataset (failures, content diffs, red-team)
+        if: always()
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent evals:grow
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+          BASE_REF: ${{ github.event.before || 'HEAD~1' }}
+
+      - name: Open PR with promoted cases / gaps
+        if: always()
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: evals/auto-grow
+          add-paths: |
+            agent/evals/promoted.json
+            agent/evals/gaps.json
+          commit-message: "evals: promote stable cases from growth loop"
+          title: "evals: growth loop — promoted cases & gaps"
+          body: |
+            Automated by `agent/scripts/grow-evals.ts`.
+            - `promoted.json`: candidates that passed every stability run; merging adds them to the CI gate.
+            - `gaps.json`: candidates that failed every run — real weaknesses to fix in the agent, not in the dataset.

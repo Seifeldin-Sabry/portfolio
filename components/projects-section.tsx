@@ -6,7 +6,7 @@ import {Badge} from "@/components/ui/badge"
 import {Github, ExternalLink, ChevronLeft, ChevronRight} from "lucide-react"
 import {motion, AnimatePresence} from "framer-motion"
 
-const orderedIds = ["arkive", "qfacts", "portfolio"]
+const orderedIds = ["qfacts", "portfolio"]
 const PROJECTS_PER_PAGE = 2
 
 export default function ProjectsSection({projects}: {projects: Project[]}) {

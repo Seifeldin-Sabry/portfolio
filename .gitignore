@@ -118,3 +118,7 @@ agent/.mastra/
 agent/dist/
 
 node_modules/
+
+# eval loop scratch (CI artifacts)
+agent/evals/.last-run.json
+.playwright-mcp/
