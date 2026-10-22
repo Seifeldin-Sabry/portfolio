@@ -10,7 +10,7 @@ const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
 
 const SUGGESTIONS = [
     "What does Seif do at QFacts?",
-    "Tell me about his homelab",
+    "What is SDX Studio?",
     "Book a call with Seif",
 ]
 
@@ -68,7 +68,7 @@ export default function AiChat() {
                         {messages.length === 0 && (
                             <div className="space-y-2">
                                 <p className="text-xs text-muted-foreground">
-                                    Grounded in the portfolio content — projects, experience, homelab, blog.
+                                    Grounded in the portfolio content — projects, experience, blog.
                                 </p>
                                 {SUGGESTIONS.map((s) => (
                                     <button

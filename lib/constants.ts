@@ -24,7 +24,7 @@ export const LINKS = {
   GITHUB: "https://github.com/Seifeldin-Sabry",
   LINKEDIN: "https://www.linkedin.com/in/seifeldin-sabry-b8a542202/",
   CALENDLY: "https://calendly.com/seifeldin-sdx",
-  SDX_STUDIO: "https://sdxstudio.dev",
+  SDX_STUDIO: "https://sdxstudio.co",
   BUY_ME_A_COFFEE: "https://buymeacoffee.com/seifdx",
 } as const;
 

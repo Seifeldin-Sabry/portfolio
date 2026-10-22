@@ -122,6 +122,7 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
                 {label: "Terminal Commands", action: () => open("terminal")},
                 {separator: true},
                 {label: "Email Seif", action: () => openUrl(`mailto:${SITE_CONFIG.EMAIL}`)},
+                {label: "SDX Studio", action: () => openUrl(LINKS.SDX_STUDIO)},
                 {label: "GitHub", action: () => openUrl(LINKS.GITHUB)},
                 {label: "LinkedIn", action: () => openUrl(LINKS.LINKEDIN)},
             ],

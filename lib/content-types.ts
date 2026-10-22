@@ -40,20 +40,3 @@ export interface Education {
     info: string
     courseWork: string[]
 }
-
-export interface HomelabService {
-    id: string
-    title: string
-    description: string
-    icon: string
-    technologies: string[]
-    features: string[]
-    category: "infrastructure" | "media" | "security" | "backup"
-}
-
-export const categoryColors: Record<HomelabService["category"], string> = {
-    infrastructure: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    media: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    security: "bg-teal-500/10 text-teal-300 border-teal-500/20",
-    backup: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-}

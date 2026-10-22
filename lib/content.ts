@@ -10,7 +10,6 @@ import matter from "gray-matter";
 import type {
   Education,
   Experience,
-  HomelabService,
   Project,
 } from "./content-types";
 
@@ -127,21 +126,6 @@ export function getEducation(): Education[] {
       end: data.end ?? end ?? "",
       info: data.info ?? intro,
       courseWork: bullets(sections["Coursework"]) ?? [],
-    };
-  });
-}
-
-export function getHomelabServices(): HomelabService[] {
-  return readDir("homelab").map(({ data, body }) => {
-    const { intro, sections } = splitSections(body);
-    return {
-      id: data.id,
-      title: data.title,
-      description: intro,
-      icon: data.icon,
-      category: data.category,
-      technologies: data.technologies ?? [],
-      features: bullets(sections["Features"]) ?? [],
     };
   });
 }

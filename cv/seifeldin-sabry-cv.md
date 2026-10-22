@@ -24,11 +24,6 @@ TypeScript engineer who owns production systems end to end: NestJS and Node.js b
 - Made the product easier to learn and usable on the shop floor by leading the UI modernisation and mobile companion: one list, filter and export pattern on every page, clearer detail pages and phone layouts.
 - Shipped 1.4.0 to production safely by running the release-candidate and UAT hotfix cycle.
 
-### Etoile — Software Engineer, concurrent role (May 2025 – Apr 2026, Remote)
-
-- Took an AI-native event platform to production by designing and building its backend: modular APIs, secure authentication and role-based access for multiple organisations, with storage, notifications and analytics integrated.
-- Made releases repeatable and reviewable by setting up CI/CD from scratch with automated tests and quality gates.
-
 ## Technical Skills
 
 - Languages: TypeScript, JavaScript, Python, SQL, Bash, Java

@@ -1,13 +1,12 @@
 import type {LucideIcon} from "lucide-react"
-import {BookOpen, Bot, Briefcase, Calculator, FlaskConical, Gamepad2, LayoutGrid, Server, StickyNote, SquareTerminal, User} from "lucide-react"
-import type {Education, Experience, HomelabService, Project} from "@/lib/content-types"
+import {BookOpen, Bot, Briefcase, Calculator, FlaskConical, Gamepad2, LayoutGrid, StickyNote, SquareTerminal, User} from "lucide-react"
+import type {Education, Experience, Project} from "@/lib/content-types"
 import type {BlogPost} from "@/lib/blogs"
 
-export type AppId = "about" | "projects" | "homelab" | "experience" | "blog" | "assistant" | "lab" | "notes" | "terminal" | "calculator" | "games"
+export type AppId = "about" | "projects" | "experience" | "blog" | "assistant" | "lab" | "notes" | "terminal" | "calculator" | "games"
 
 export interface ContentProps {
     projects: Project[]
-    homelabServices: HomelabService[]
     experiences: Experience[]
     education: Education[]
     posts: BlogPost[]
@@ -25,7 +24,6 @@ export interface AppMeta {
 export const APP_META: Record<AppId, AppMeta> = {
     about: {id: "about", label: "About", icon: User, defaultSize: {w: 540, h: 660}, tint: "bg-gradient-to-b from-sky-400 to-blue-600"},
     projects: {id: "projects", label: "Projects", icon: LayoutGrid, defaultSize: {w: 620, h: 580}, tint: "bg-gradient-to-b from-violet-400 to-indigo-600"},
-    homelab: {id: "homelab", label: "Homelab", icon: Server, defaultSize: {w: 580, h: 560}, tint: "bg-gradient-to-b from-slate-400 to-slate-700"},
     experience: {id: "experience", label: "Experience", icon: Briefcase, defaultSize: {w: 560, h: 600}, tint: "bg-gradient-to-b from-amber-300 to-orange-500"},
     blog: {id: "blog", label: "Writing", icon: BookOpen, defaultSize: {w: 560, h: 560}, tint: "bg-gradient-to-b from-rose-300 to-rose-600"},
     assistant: {id: "assistant", label: "Assistant", icon: Bot, defaultSize: {w: 440, h: 620}, tint: "bg-gradient-to-b from-orange-300 to-amber-600"},
@@ -36,4 +34,4 @@ export const APP_META: Record<AppId, AppMeta> = {
     games: {id: "games", label: "Games", icon: Gamepad2, defaultSize: {w: 460, h: 520}, tint: "bg-gradient-to-b from-pink-400 to-fuchsia-600"},
 }
 
-export const DOCK_APPS: AppId[] = ["about", "projects", "homelab", "experience", "blog", "notes", "terminal", "calculator", "games", "assistant", "lab"]
+export const DOCK_APPS: AppId[] = ["about", "projects", "experience", "blog", "notes", "terminal", "calculator", "games", "assistant", "lab"]

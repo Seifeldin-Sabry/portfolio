@@ -66,7 +66,9 @@ export default function AboutApp() {
                         </div>
                         <p className="mt-0.5 text-sm text-muted-foreground">
                             Engineer @ <span className="font-medium text-foreground">Qfacts</span> · Founder @{" "}
-                            <span className="font-medium text-foreground">SDX Studio</span> (GTM engineering)
+                            <a href={LINKS.SDX_STUDIO} target="_blank" rel="noopener noreferrer" className="font-medium text-foreground underline decoration-foreground/30 underline-offset-2 hover:text-accent">
+                                SDX Studio
+                            </a> (GTM engineering)
                         </p>
                     </div>
                 </div>

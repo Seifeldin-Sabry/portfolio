@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useState, type ReactNode} from "react"
+import {memo, useEffect, useState, type ReactNode} from "react"
 import {motion, useReducedMotion} from "framer-motion"
 import {Coffee, FileText} from "lucide-react"
 import type {AppId} from "@/components/apps/registry"
@@ -17,8 +17,8 @@ export const SHIPPED = [
     {title: "Stripe billing", detail: "trials · tiered seats · dunning"},
 ]
 
-/** Desktop widgets: sit on the wallpaper, under every window. */
-export default function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
+/** Desktop widgets: sit on the wallpaper, under every window. Memoized: window changes don't touch them. */
+export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
     const reduce = useReducedMotion()
 
     return (
@@ -61,7 +61,10 @@ export default function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
                     <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
                         Engineer @ Qfacts
                         <br/>
-                        Founder @ SDX Studio
+                        Founder @{" "}
+                    <a href={LINKS.SDX_STUDIO} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-accent">
+                        SDX Studio
+                    </a>
                     </p>
                 </Widget>
 
@@ -84,7 +87,7 @@ export default function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
             </motion.aside>
         </div>
     )
-}
+})
 
 function Widget({children, wide, onClick, label}: {children: ReactNode; wide?: boolean; onClick?: () => void; label?: string}) {
     const className = `${wide ? "col-span-2" : "aspect-square"} rounded-[22px] border border-foreground/[0.08] bg-window-chrome/55 p-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-2xl`

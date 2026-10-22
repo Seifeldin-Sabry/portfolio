@@ -36,6 +36,7 @@ export type WindowAction =
 const MENU_BAR_H = 32
 const DOCK_AREA_H = 96
 const STORAGE_KEY = "seif-os-layout"
+const PERSIST_DEBOUNCE_MS = 400
 /** Widgets only show from this width (matches `min-[1400px]` in widgets.tsx). */
 export const WIDGETS_MIN_VW = 1400
 const WIDGET_COLUMN_W = 400
@@ -275,20 +276,24 @@ export function WindowManagerProvider({children}: {children: ReactNode}) {
         return () => window.removeEventListener("resize", fit)
     }, [])
 
-    // Best-effort layout persistence; failures (private mode, quota) are ignored.
+    // Best-effort layout persistence, debounced so the synchronous localStorage
+    // write never lands in the same frame as an open/focus animation.
     useEffect(() => {
-        try {
-            const persistable: Partial<Record<AppId, Partial<WindowState>>> = {}
-            for (const win of Object.values(state.windows)) {
-                if (!win) continue
-                const rect = win.maximized && win.restoreRect ? win.restoreRect : {x: win.x, y: win.y, w: win.w, h: win.h}
-                persistable[win.id] = {...rect, maximized: win.maximized}
+        const id = setTimeout(() => {
+            try {
+                const persistable: Partial<Record<AppId, Partial<WindowState>>> = {}
+                for (const win of Object.values(state.windows)) {
+                    if (!win) continue
+                    const rect = win.maximized && win.restoreRect ? win.restoreRect : {x: win.x, y: win.y, w: win.w, h: win.h}
+                    persistable[win.id] = {...rect, maximized: win.maximized}
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable))
+            } catch {
+                /* noop */
             }
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable))
-        } catch {
-            /* noop */
-        }
-    }, [state])
+        }, PERSIST_DEBOUNCE_MS)
+        return () => clearTimeout(id)
+    }, [state.windows])
 
     const value = useMemo(() => ({state, dispatch}), [state])
     return <WindowManagerContext.Provider value={value}>{children}</WindowManagerContext.Provider>
