@@ -1,6 +1,6 @@
 "use client"
 
-import {useCallback, useState, type ReactNode} from "react"
+import {memo, startTransition, useCallback, useEffect, useState, type ReactNode} from "react"
 import {AnimatePresence, motion} from "framer-motion"
 import {ChevronLeft} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId, type ContentProps} from "@/components/apps/registry"
@@ -55,6 +55,19 @@ function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) => void
 const WALLPAPER =
     "radial-gradient(ellipse 70% 55% at 18% 12%, hsl(28 45% 22% / 0.55), transparent 70%), radial-gradient(ellipse 60% 60% at 85% 90%, hsl(15 35% 18% / 0.6), transparent 70%)"
 
+/**
+ * App bodies only depend on (id, content, onOpen), all stable, so memo keeps
+ * every open app from re-rendering when another window opens, focuses or moves.
+ */
+const AppContent = memo(function AppContent({id, content, onOpen}: {id: AppId; content: ContentProps; onOpen: (id: AppId) => void}) {
+    // Mount the app body in a transition: the empty window frame paints and starts
+    // its open animation immediately, while React renders the body in interruptible
+    // slices instead of one long commit that drops animation frames.
+    const [ready, setReady] = useState(false)
+    useEffect(() => startTransition(() => setReady(true)), [])
+    return ready ? renderApp(id, content, onOpen) : null
+})
+
 export default function Desktop(content: ContentProps) {
     const isDesktop = useDesktopOS()
     const [booted, setBooted] = useState(false)
@@ -100,7 +113,7 @@ function DesktopSurface({content}: {content: ContentProps}) {
                         onMove={(x, y) => dispatch({type: "move", id: win.id, x, y})}
                         onResize={(w, h) => dispatch({type: "resize", id: win.id, w, h})}
                     >
-                        {renderApp(win.id, content, open)}
+                        <AppContent id={win.id} content={content} onOpen={open}/>
                     </AppWindow>
                 ))}
             </AnimatePresence>
