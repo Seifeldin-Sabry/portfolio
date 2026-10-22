@@ -1,7 +1,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 
-const CALENDLY_URL = "https://calendly.com/seifeldin-sdx";
+const CALENDLY_URL = "https://calendly.com/seif-sdxstudio/quick-chat";
 
 /**
  * Booking is a prefilled Calendly link rather than a Calendly API call:
@@ -11,7 +11,7 @@ const CALENDLY_URL = "https://calendly.com/seifeldin-sdx";
 export const bookMeeting = createTool({
   id: "bookMeeting",
   description:
-    "Book a 30-minute call with Seif. Requires the visitor's name and email; returns a Calendly link prefilled with their details. Ask for name and email before calling this tool — never guess them.",
+    "Book a quick chat with Seif. Requires the visitor's name and email; returns a Calendly link prefilled with their details. Ask for name and email before calling this tool — never guess them.",
   inputSchema: z.object({
     name: z.string().min(1).describe("The visitor's full name, as they gave it"),
     email: z.string().email().describe("The visitor's email address"),

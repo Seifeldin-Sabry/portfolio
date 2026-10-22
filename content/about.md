@@ -3,7 +3,7 @@ title: "About Seifeldin Sabry"
 email: "seif-dx@proton.me"
 github: "https://github.com/Seifeldin-Sabry"
 linkedin: "https://www.linkedin.com/in/seifeldin-sabry-b8a542202/"
-calendly: "https://calendly.com/seifeldin-sdx"
+calendly: "https://calendly.com/seif-sdxstudio/quick-chat"
 website: "https://seif-dx.com"
 ---
 
@@ -39,7 +39,7 @@ in CI, pgvector on Neon Postgres, and runs on Cloudflare Workers.
 - Email: seif-dx@proton.me
 - GitHub: https://github.com/Seifeldin-Sabry
 - LinkedIn: https://www.linkedin.com/in/seifeldin-sabry-b8a542202/
-- Book a 30-minute call: https://calendly.com/seifeldin-sdx
+- Book a quick chat: https://calendly.com/seif-sdxstudio/quick-chat
 
 ## Outside of Work
 

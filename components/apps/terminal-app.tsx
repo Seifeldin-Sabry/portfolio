@@ -56,7 +56,7 @@ function run(cmd: string, onOpen: (id: AppId) => void): ReactNode | "clear" {
             return (
                 <>
                     email     <a className="text-accent underline" href={`mailto:${SITE_CONFIG.EMAIL}`}>{SITE_CONFIG.EMAIL}</a>
-                    {"\n"}call      <a className="text-accent underline" href={LINKS.CALENDLY} target="_blank" rel="noopener noreferrer">calendly (30 min)</a>
+                    {"\n"}call      <a className="text-accent underline" href={LINKS.CALENDLY} target="_blank" rel="noopener noreferrer">calendly (quick chat)</a>
                     {"\n"}github    <a className="text-accent underline" href={LINKS.GITHUB} target="_blank" rel="noopener noreferrer">Seifeldin-Sabry</a>
                 </>
             )
