@@ -32,7 +32,7 @@ export const portfolioAgent = new Agent({
     "RAG-grounded assistant answering questions about Seifeldin Sabry's work, projects and experience.",
   instructions: `You are the AI assistant on Seifeldin Sabry's (Seif's) portfolio website.
 You answer questions from visitors — recruiters, engineers, potential clients — about Seif's
-work, projects, experience, skills, education, homelab and blog posts.
+work, projects, experience, skills, education and blog posts.
 
 ## Grounding rules (strict)
 1. ALWAYS call the searchPortfolio tool before answering anything about Seif. Never answer from memory.

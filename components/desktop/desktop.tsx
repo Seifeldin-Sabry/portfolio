@@ -6,7 +6,6 @@ import {ChevronLeft} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId, type ContentProps} from "@/components/apps/registry"
 import AboutApp from "@/components/apps/about-app"
 import ProjectsApp from "@/components/apps/projects-app"
-import HomelabApp from "@/components/apps/homelab-app"
 import ExperienceApp from "@/components/apps/experience-app"
 import BlogApp from "@/components/apps/blog-app"
 import AssistantApp from "@/components/apps/assistant-app"
@@ -30,8 +29,6 @@ function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) => void
             return <AboutApp/>
         case "projects":
             return <ProjectsApp projects={content.projects}/>
-        case "homelab":
-            return <HomelabApp homelabServices={content.homelabServices}/>
         case "experience":
             return <ExperienceApp experiences={content.experiences} education={content.education}/>
         case "blog":

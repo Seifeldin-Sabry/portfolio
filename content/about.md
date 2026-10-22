@@ -16,7 +16,7 @@ up in production.
 
 He is the founder of SDX Studio (started March 2026), a GTM engineering
 business: a done-for-you outbound agency for MSSPs (managed security service
-providers), run from Claude Code. Alongside that he works as a software engineer at QFacts — where he owns the
+providers), run from Claude Code (https://sdxstudio.co). Alongside that he works as a software engineer at QFacts — where he owns the
 platform end to end and shipped the in-product AI agent, the mobile companion
 and the company's new marketing site and CMS.
 

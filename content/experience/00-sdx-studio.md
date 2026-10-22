@@ -13,7 +13,7 @@ logo: "/assets/logos/brand-mark.svg"
 ---
 # Founder — SDX Studio
 
-SDX Studio is a GTM engineering business: a done-for-you outbound agency for MSSPs (managed security service providers). The offer is simple: 6 qualified appointments in 90 days, and SDX keeps working for free until they're delivered.
+SDX Studio is a GTM engineering business: a done-for-you outbound agency for MSSPs (managed security service providers). The offer is simple: 6 qualified appointments in 90 days, and SDX keeps working for free until they're delivered. Website: https://sdxstudio.co
 
 ## Achievements
 

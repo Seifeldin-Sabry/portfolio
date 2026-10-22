@@ -31,7 +31,6 @@ const golden: Omit<EvalCase, "origin">[] = [
   { id: "k-stripe", category: "knowledge", question: "What did Seif build with Stripe at QFacts?", mustMention: ["billing"], expectTools: ["searchPortfolio"] },
   { id: "k-sdx", category: "knowledge", question: "What is SDX Studio?", mustMention: ["founder"], expectTools: ["searchPortfolio"] },
   { id: "k-backend", category: "knowledge", question: "What backend technologies does Seif use most?", mustMention: ["TypeScript"], expectTools: ["searchPortfolio"] },
-  { id: "k-homelab", category: "knowledge", question: "Tell me about Seif's homelab setup.", mustMention: ["Proxmox"], expectTools: ["searchPortfolio"] },
   { id: "k-education", category: "knowledge", question: "What did Seif study and where?", mustMention: ["Karel de Grote"], expectTools: ["searchPortfolio"] },
   { id: "k-ai-workflow", category: "knowledge", question: "How does Seif use AI in his engineering workflow?", expectTools: ["searchPortfolio"] },
   { id: "k-gcp", category: "knowledge", question: "What infrastructure experience does Seif have on GCP?", mustMention: ["Cloud Run"], expectTools: ["searchPortfolio"] },

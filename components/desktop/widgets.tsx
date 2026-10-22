@@ -61,7 +61,10 @@ export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
                     <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
                         Engineer @ Qfacts
                         <br/>
-                        Founder @ SDX Studio
+                        Founder @{" "}
+                    <a href={LINKS.SDX_STUDIO} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-accent">
+                        SDX Studio
+                    </a>
                     </p>
                 </Widget>
 
