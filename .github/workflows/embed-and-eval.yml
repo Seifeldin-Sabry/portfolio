@@ -39,6 +39,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Smoke-test live models (guard reply format, judge reachability)
+        id: smoke
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent smoke
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
@@ -61,7 +62,7 @@ jobs:
       # Weekly/manual only: each candidate costs two full agent runs, and the
       # agent shares its daily Groq token budget with real visitors.
       - name: Grow eval dataset (failures, content diffs, red-team)
-        if: always() && github.event_name != 'push'
+        if: always() && steps.smoke.outcome == 'success' && github.event_name != 'push'
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent evals:grow
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
@@ -71,7 +72,7 @@ jobs:
       # so publish a branch on top of current main with ONLY the dataset files,
       # and link a one-click PR from the run summary.
       - name: Publish grown cases for review
-        if: always() && github.event_name != 'push'
+        if: always() && steps.smoke.outcome == 'success' && github.event_name != 'push'
         run: |
           files=$(ls agent/evals/promoted.json agent/evals/gaps.json 2>/dev/null || true)
           [ -n "$files" ] || { echo "Growth loop produced no new cases." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
