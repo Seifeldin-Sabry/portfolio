@@ -66,6 +66,9 @@ function useBest(key: string): [number, (score: number) => void] {
 
 const SNAKE_SIZE = 16
 const SNAKE_TICK_MS = 170
+/** Board geometry: 336px box with 4px padding (p-1) around the 328px grid. */
+const SNAKE_PAD = 4
+const SNAKE_CELL = (336 - SNAKE_PAD * 2) / SNAKE_SIZE
 type Point = {x: number; y: number}
 const DIRS: Record<string, Point> = {
     ArrowUp: {x: 0, y: -1}, w: {x: 0, y: -1},
@@ -140,26 +143,32 @@ function AppleSnake() {
                     if (d) (e.preventDefault(), (queued.current = d))
                     if (e.key === " " && status !== "playing") (e.preventDefault(), start())
                 }}
-                className="relative grid gap-px rounded-lg bg-foreground/5 p-1 outline-none ring-accent/50 focus:ring-2"
-                style={{gridTemplateColumns: `repeat(${SNAKE_SIZE}, 1fr)`, gridTemplateRows: `repeat(${SNAKE_SIZE}, 1fr)`, width: 336, height: 336}}
+                className="relative overflow-hidden rounded-lg bg-foreground/5 p-1 outline-none ring-accent/50 focus:ring-2"
+                style={{width: 336, height: 336}}
                 aria-label="Apple Snake board. Use arrow keys."
             >
-                {Array.from({length: SNAKE_SIZE * SNAKE_SIZE}, (_, i) => {
-                    const x = i % SNAKE_SIZE
-                    const y = Math.floor(i / SNAKE_SIZE)
-                    const segment = snake.findIndex((s) => s.x === x && s.y === y)
-                    const isApple = apple.x === x && apple.y === y
-                    return (
-                        <div
-                            key={i}
-                            className={`flex min-h-0 items-center justify-center overflow-hidden rounded-[4px] text-[11px] leading-none ${
-                                segment === 0 ? "bg-accent" : segment > 0 ? "bg-accent/60" : (x + y) % 2 ? "bg-foreground/[0.03]" : ""
-                            }`}
-                        >
-                            {isApple ? "🍎" : ""}
-                        </div>
-                    )
-                })}
+                {/* Checkerboard is pure CSS: the tick re-renders only the ~15
+                    snake segments instead of all 256 grid cells. */}
+                <div
+                    className="absolute inset-1 rounded-[4px]"
+                    style={{
+                        backgroundImage: "repeating-conic-gradient(hsl(var(--foreground) / 0.03) 0% 25%, transparent 0% 50%)",
+                        backgroundSize: `${SNAKE_CELL * 2}px ${SNAKE_CELL * 2}px`,
+                    }}
+                />
+                {snake.map((s, i) => (
+                    <div
+                        key={i}
+                        className={`absolute rounded-[4px] ${i === 0 ? "bg-accent" : "bg-accent/60"}`}
+                        style={{left: SNAKE_PAD + s.x * SNAKE_CELL, top: SNAKE_PAD + s.y * SNAKE_CELL, width: SNAKE_CELL, height: SNAKE_CELL}}
+                    />
+                ))}
+                <div
+                    className="absolute flex items-center justify-center text-[11px] leading-none"
+                    style={{left: SNAKE_PAD + apple.x * SNAKE_CELL, top: SNAKE_PAD + apple.y * SNAKE_CELL, width: SNAKE_CELL, height: SNAKE_CELL}}
+                >
+                    🍎
+                </div>
                 {status !== "playing" && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-lg bg-background/70 backdrop-blur-sm">
                         <p className="text-sm font-semibold">{status === "over" ? `Game over · ${score} apples` : "Apple Snake"}</p>

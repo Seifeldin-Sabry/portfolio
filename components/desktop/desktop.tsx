@@ -1,19 +1,10 @@
 "use client"
 
-import {memo, startTransition, useCallback, useEffect, useState, type ReactNode} from "react"
+import {memo, useCallback, useState, type ReactNode} from "react"
 import {AnimatePresence, motion} from "framer-motion"
 import {ChevronLeft} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId, type ContentProps} from "@/components/apps/registry"
-import AboutApp from "@/components/apps/about-app"
-import ProjectsApp from "@/components/apps/projects-app"
-import ExperienceApp from "@/components/apps/experience-app"
-import BlogApp from "@/components/apps/blog-app"
-import AssistantApp from "@/components/apps/assistant-app"
-import LabApp from "@/components/apps/lab-app"
-import NotesApp from "@/components/apps/notes-app"
-import TerminalApp from "@/components/apps/terminal-app"
-import CalculatorApp from "@/components/apps/calculator-app"
-import GamesApp from "@/components/apps/games-app"
+import AppHost from "@/components/apps/app-host"
 import NotificationCenter, {BootToast} from "@/components/desktop/notification-center"
 import Widgets from "@/components/desktop/widgets"
 import AppWindow from "@/components/desktop/window"
@@ -23,31 +14,6 @@ import {useWindowManager, WindowManagerProvider} from "@/components/desktop/wind
 import BootScreen from "@/components/shell/boot-screen"
 import {useDesktopOS} from "@/components/shell/device"
 
-function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) => void): ReactNode {
-    switch (id) {
-        case "about":
-            return <AboutApp/>
-        case "projects":
-            return <ProjectsApp projects={content.projects}/>
-        case "experience":
-            return <ExperienceApp experiences={content.experiences} education={content.education}/>
-        case "blog":
-            return <BlogApp posts={content.posts}/>
-        case "assistant":
-            return <AssistantApp/>
-        case "lab":
-            return <LabApp/>
-        case "notes":
-            return <NotesApp/>
-        case "terminal":
-            return <TerminalApp onOpen={onOpen}/>
-        case "calculator":
-            return <CalculatorApp/>
-        case "games":
-            return <GamesApp/>
-    }
-}
-
 // Warm, low-key wallpaper: two soft glows over the graphite base.
 const WALLPAPER =
     "radial-gradient(ellipse 70% 55% at 18% 12%, hsl(28 45% 22% / 0.55), transparent 70%), radial-gradient(ellipse 60% 60% at 85% 90%, hsl(15 35% 18% / 0.6), transparent 70%)"
@@ -55,16 +21,8 @@ const WALLPAPER =
 /**
  * App bodies only depend on (id, content, onOpen), all stable, so memo keeps
  * every open app from re-rendering when another window opens, focuses or moves.
+ * (See components/apps/app-host.tsx.)
  */
-const AppContent = memo(function AppContent({id, content, onOpen}: {id: AppId; content: ContentProps; onOpen: (id: AppId) => void}) {
-    // Mount the app body in a transition: the empty window frame paints and starts
-    // its open animation immediately, while React renders the body in interruptible
-    // slices instead of one long commit that drops animation frames.
-    const [ready, setReady] = useState(false)
-    useEffect(() => startTransition(() => setReady(true)), [])
-    return ready ? renderApp(id, content, onOpen) : null
-})
-
 export default function Desktop(content: ContentProps) {
     const isDesktop = useDesktopOS()
     const [booted, setBooted] = useState(false)
@@ -92,39 +50,25 @@ function DesktopSurface({content}: {content: ContentProps}) {
     const [notificationsOpen, setNotificationsOpen] = useState(false)
     const windows = Object.values(state.windows).filter((w) => w !== undefined)
     const open = useCallback((id: AppId) => dispatch({type: "open", id}), [dispatch])
+    const launch = useCallback((id: AppId) => dispatch({type: "launch", id}), [dispatch])
+    const closeAll = useCallback(() => dispatch({type: "close-all"}), [dispatch])
+    const toggleNotifications = useCallback(() => setNotificationsOpen((o) => !o), [])
 
     return (
         <>
             <Widgets onOpen={open}/>
-            <MenuBar onToggleNotifications={() => setNotificationsOpen((o) => !o)}/>
+            <MenuBar onToggleNotifications={toggleNotifications}/>
             <AnimatePresence>
                 {windows.map((win) => (
-                    <AppWindow
-                        key={win.id}
-                        state={win}
-                        active={state.activeId === win.id}
-                        onFocus={() => dispatch({type: "focus", id: win.id})}
-                        onClose={() => dispatch({type: "close", id: win.id})}
-                        onMinimize={() => dispatch({type: "minimize", id: win.id})}
-                        onToggleMaximize={() => dispatch({type: "toggle-maximize", id: win.id})}
-                        onMove={(x, y) => dispatch({type: "move", id: win.id, x, y})}
-                        onResize={(w, h) => dispatch({type: "resize", id: win.id, w, h})}
-                    >
-                        <AppContent id={win.id} content={content} onOpen={open}/>
-                    </AppWindow>
+                    <AppWindow key={win.id} win={win} active={state.activeId === win.id} content={content} onOpen={open}/>
                 ))}
             </AnimatePresence>
             <Dock
                 openIds={windows.map((w) => w.id)}
                 activeId={state.activeId}
                 minimizedIds={windows.filter((w) => w.minimized).map((w) => w.id)}
-                onLaunch={(id) => {
-                    const win = state.windows[id]
-                    // Clicking the active app's dock icon minimizes it, like macOS.
-                    if (win && !win.minimized && state.activeId === id) dispatch({type: "minimize", id})
-                    else open(id)
-                }}
-                onCloseAll={() => dispatch({type: "close-all"})}
+                onLaunch={launch}
+                onCloseAll={closeAll}
             />
             <BootToast onOpen={open}/>
             <NotificationCenter open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onOpen={open}/>
@@ -161,10 +105,10 @@ function MobileSurface({content}: {content: ContentProps}) {
                 {openId && (
                     <motion.div
                         key={openId}
-                        initial={{opacity: 0, y: 24}}
+                        initial={{opacity: 0, y: 16}}
                         animate={{opacity: 1, y: 0}}
-                        exit={{opacity: 0, y: 24}}
-                        transition={{type: "spring", stiffness: 320, damping: 32}}
+                        exit={{opacity: 0, y: 16}}
+                        transition={{duration: 0.22, ease: [0.16, 1, 0.3, 1]}}
                         className="fixed inset-0 flex flex-col bg-window-bg"
                     >
                         <div className="flex h-12 shrink-0 items-center gap-2 border-b border-window-border bg-window-titlebar px-2">
@@ -177,7 +121,9 @@ function MobileSurface({content}: {content: ContentProps}) {
                             </button>
                             <span className="ml-auto mr-3 font-mono text-xs">{APP_META[openId].label}</span>
                         </div>
-                        <div className="relative flex-1 overflow-hidden">{renderApp(openId, content, setOpenId)}</div>
+                        <div className="relative flex-1 overflow-hidden">
+                            <AppHost id={openId} content={content} onOpen={setOpenId}/>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
