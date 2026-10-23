@@ -15,5 +15,8 @@ export const APP_PAGES: Record<AppId, {title: string; description: string}> = {
     notes: {title: "Notes", description: "What Seif is working on now, and the engineering principles behind it."},
     terminal: {title: "Terminal", description: "A tiny terminal. Type help."},
     calculator: {title: "Calculator", description: "A calculator, because every desktop needs one."},
+    services: {title: "Hire Seif", description: "Outbound for MSSPs via SDX Studio, platform audits, Stripe billing done right, and AI assistants with guardrails."},
+    tools: {title: "Free tools: outbound ROI & Stripe billing check", description: "What are 6 qualified meetings worth to your MSSP? Is your Stripe billing safe? Two-minute answers."},
+    mail: {title: "Email Seif", description: "Write to Seif directly. It goes straight to his inbox."},
     games: {title: "Games", description: "Apple Snake, Minesweeper and an unbeatable Tic-tac-toe."},
 }

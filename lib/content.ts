@@ -11,6 +11,7 @@ import type {
   Education,
   Experience,
   Project,
+  Service,
 } from "./content-types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
@@ -126,6 +127,23 @@ export function getEducation(): Education[] {
       end: data.end ?? end ?? "",
       info: data.info ?? intro,
       courseWork: bullets(sections["Coursework"]) ?? [],
+    };
+  });
+}
+
+export function getServices(): Service[] {
+  return readDir("services").map(({ data, body }) => {
+    const { intro, sections } = splitSections(body);
+    return {
+      id: data.id,
+      title: data.title,
+      audience: data.audience,
+      via: data.via,
+      description: intro,
+      includes: bullets(sections["Includes"]) ?? [],
+      link: data.link,
+      tool: data.tool,
+      demo: data.demo,
     };
   });
 }

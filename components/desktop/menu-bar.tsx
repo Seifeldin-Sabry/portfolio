@@ -5,7 +5,7 @@ import Image from "next/image"
 import {BatteryMedium, Search, SlidersHorizontal, Wifi} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId} from "@/components/apps/registry"
 import {useWindowManager} from "@/components/desktop/window-manager"
-import {bookingUrl, LINKS, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
+import {bookingUrl, LINKS, PERSONA_KEY, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 const LAYOUT_KEY = "seif-os-layout"
@@ -63,6 +63,17 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
                 {label: "Book a Call…", action: () => openUrl(bookingUrl("menu-bar"))},
                 {label: "Buy Me a Coffee…", action: () => openUrl(LINKS.BUY_ME_A_COFFEE)},
                 {separator: true},
+                {
+                    label: "Switch User…",
+                    action: () => {
+                        try {
+                            localStorage.removeItem(PERSONA_KEY)
+                        } catch {
+                            /* private mode */
+                        }
+                        window.location.assign("/")
+                    },
+                },
                 {
                     label: "Reset Window Layout",
                     action: () => {
