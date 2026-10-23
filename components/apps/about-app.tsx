@@ -3,7 +3,7 @@
 import {useState} from "react"
 import Image from "next/image"
 import {ArrowUpRight, Calendar, Download, FileText, Github, Globe, Linkedin, Mail} from "lucide-react"
-import {LINKS, SITE_CONFIG} from "@/lib/constants"
+import {bookingUrl, LINKS, SITE_CONFIG} from "@/lib/constants"
 
 const techStack = [
     {name: "ElysiaJS", color: "text-yellow-400"},
@@ -18,18 +18,18 @@ const skillCategories = [
     {
         title: "AI-First Dev",
         color: "border-accent/30 bg-accent/10 text-accent",
-        items: ["Opencode", "Claude Code", "Plugins", "Skills"],
+        items: ["Claude Code", "Command Code", "T3 Code", "Skills"],
         highlight: "0 hand-written lines in 2026",
     },
     {
         title: "Dev Tools",
         color: "border-blue-400/30 bg-blue-400/10 text-blue-400",
-        items: ["WebStorm", "Git", "Brew", "Ghostty", "Drizzle", "Docker"],
+        items: ["cmux", "Git", "Docker", "Drizzle"],
     },
     {
         title: "Languages",
         color: "border-yellow-400/30 bg-yellow-400/10 text-yellow-400",
-        items: ["TypeScript", "Java", "Python"],
+        items: ["TypeScript", "Python"],
     },
     {
         title: "Frameworks",
@@ -44,7 +44,7 @@ const skillCategories = [
     {
         title: "AI Tools",
         color: "border-pink-400/30 bg-pink-400/10 text-pink-400",
-        items: ["Claude Code", "Opencode", "AI SDK", "HuggingFace"],
+        items: ["Mastra", "AI SDK", "Langfuse", "HuggingFace"],
     },
 ]
 
@@ -200,7 +200,7 @@ export default function AboutApp() {
                     <SocialLink href={`mailto:${SITE_CONFIG.EMAIL}`} label="Email">
                         <Mail size={16}/>
                     </SocialLink>
-                    <SocialLink href={LINKS.CALENDLY} label="Book a call">
+                    <SocialLink href={bookingUrl("about")} label="Book a call">
                         <Calendar size={16}/>
                     </SocialLink>
                 </div>

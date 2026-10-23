@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, useState, type ReactNode} from "react"
 import {APP_META, type AppId} from "@/components/apps/registry"
-import {LINKS, SITE_CONFIG} from "@/lib/constants"
+import {bookingUrl, LINKS, SITE_CONFIG} from "@/lib/constants"
 
 interface Line {
     kind: "in" | "out"
@@ -31,6 +31,7 @@ function run(cmd: string, onOpen: (id: AppId) => void): ReactNode | "clear" {
   neofetch      system info
   ls            list apps
   open <app>    open an app (e.g. open projects)
+  share <app>   copy a link to an app (e.g. share lab)
   shipped       recent work at Qfacts
   contact       ways to reach me
   clear         clear the screen`
@@ -40,6 +41,13 @@ function run(cmd: string, onOpen: (id: AppId) => void): ReactNode | "clear" {
             return NEOFETCH
         case "ls":
             return APP_IDS.map((id) => `${id}/`).join("  ")
+        case "share": {
+            const id = (args[0]?.toLowerCase() ?? "about") as AppId
+            if (!APP_IDS.includes(id)) return `share: unknown app "${args[0]}". try: ls`
+            const url = `${window.location.origin}/apps/${id}`
+            void navigator.clipboard?.writeText(url)
+            return `copied ${url}`
+        }
         case "open": {
             const id = args[0]?.toLowerCase() as AppId | undefined
             if (!id || !APP_IDS.includes(id)) return `open: unknown app "${args[0] ?? ""}". try: ls`
@@ -56,7 +64,7 @@ function run(cmd: string, onOpen: (id: AppId) => void): ReactNode | "clear" {
             return (
                 <>
                     email     <a className="text-accent underline" href={`mailto:${SITE_CONFIG.EMAIL}`}>{SITE_CONFIG.EMAIL}</a>
-                    {"\n"}call      <a className="text-accent underline" href={LINKS.CALENDLY} target="_blank" rel="noopener noreferrer">calendly (quick chat)</a>
+                    {"\n"}call      <a className="text-accent underline" href={bookingUrl("terminal")} target="_blank" rel="noopener noreferrer">calendly (quick chat)</a>
                     {"\n"}github    <a className="text-accent underline" href={LINKS.GITHUB} target="_blank" rel="noopener noreferrer">Seifeldin-Sabry</a>
                 </>
             )

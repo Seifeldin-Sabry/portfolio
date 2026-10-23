@@ -1,0 +1,6 @@
+# Next exports OG images without a file extension; serve them as PNG so
+# LinkedIn/Slack/X accept the preview.
+/opengraph-image
+  Content-Type: image/png
+/apps/:app/opengraph-image
+  Content-Type: image/png
