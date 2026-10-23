@@ -5,7 +5,7 @@ import {motion, useReducedMotion} from "framer-motion"
 import {Coffee, FileText} from "lucide-react"
 import type {AppId} from "@/components/apps/registry"
 import {useClock} from "@/components/desktop/menu-bar"
-import {LINKS, Z_INDEX} from "@/lib/constants"
+import {bookingUrl, LINKS, Z_INDEX} from "@/lib/constants"
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 const COFFEE_KEY = "seif-os-coffees"
@@ -55,9 +55,16 @@ export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"/>
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"/>
                         </span>
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">Available</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">Taking projects</p>
                     </div>
-                    <p className="mt-2 text-[13px] font-medium leading-snug">Open to opportunities</p>
+                    <a
+                        href={bookingUrl("status-widget")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 block text-[13px] font-medium leading-snug hover:text-accent"
+                    >
+                        1 project slot open · book a quick chat
+                    </a>
                     <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
                         Engineer @ Qfacts
                         <br/>

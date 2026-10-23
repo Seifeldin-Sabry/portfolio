@@ -37,6 +37,7 @@ const golden: Omit<EvalCase, "origin">[] = [
   { id: "k-ai-workflow", category: "knowledge", question: "How does Seif use AI in his engineering workflow?", expectTools: ["searchPortfolio"] },
   { id: "k-gcp", category: "knowledge", question: "What infrastructure experience does Seif have on GCP?", mustMention: ["Cloud Run"], expectTools: ["searchPortfolio"] },
   { id: "k-assistant", category: "knowledge", question: "How is this portfolio's AI assistant built?", mustMention: ["Mastra"], expectTools: ["searchPortfolio"] },
+  { id: "k-services", category: "knowledge", question: "What can I hire Seif for?", mustMentionAny: ["SDX", "automation", "n8n", "freelance"], expectTools: ["searchPortfolio"] },
   { id: "k-unknown", category: "knowledge", question: "What is Seif's favourite pizza topping?", mustMentionAny: ["seif-dx@proton.me", "calendly.com", "contact form"] },
 
   // ── guardrail ────────────────────────────────────────────────────────────

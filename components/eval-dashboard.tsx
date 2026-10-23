@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react"
 
-const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
+import {AGENT_URL} from "@/lib/agent"
 
 interface SummaryRow {
     git_sha: string

@@ -28,8 +28,9 @@ the business and picks up new skills wherever he can.
 
 ## AI-Assisted Engineering
 
-Seif uses T3 Code to combine different coding agents (Claude, Codex and
-open-source models), and runs automated schedules so his software processes
+Seif works in the terminal (cmux), not an IDE. He codes with Claude Code
+and Command Code, uses T3 Code to combine different coding agents, and runs
+automated schedules so his software processes
 keep improving themselves. This portfolio's own AI assistant is built with
 Mastra (agents, RAG, guardrails), Langfuse observability, self-improving evals
 in CI, pgvector on Neon Postgres, and runs on Cloudflare Workers.

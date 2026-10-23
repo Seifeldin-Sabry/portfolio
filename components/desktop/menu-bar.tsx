@@ -5,7 +5,7 @@ import Image from "next/image"
 import {BatteryMedium, Search, SlidersHorizontal, Wifi} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId} from "@/components/apps/registry"
 import {useWindowManager} from "@/components/desktop/window-manager"
-import {LINKS, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
+import {bookingUrl, LINKS, PERSONA_KEY, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 const LAYOUT_KEY = "seif-os-layout"
@@ -20,6 +20,9 @@ interface Menu {
     bold?: boolean
     items: MenuItem[]
 }
+
+/** Copies the shareable deep link (/apps/<id>) for an app to the clipboard. */
+export const copyAppLink = (id: AppId) => void navigator.clipboard?.writeText(`${window.location.origin}/apps/${id}`)
 
 const openUrl = (url: string) => window.open(url, url.startsWith("mailto:") ? "_self" : "_blank", "noopener,noreferrer")
 
@@ -57,9 +60,20 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
                 {label: "How the Assistant Works…", action: () => open("lab")},
                 {separator: true},
                 {label: "Download CV", action: () => openUrl(CV_URL)},
-                {label: "Book a Call…", action: () => openUrl(LINKS.CALENDLY)},
+                {label: "Book a Call…", action: () => openUrl(bookingUrl("menu-bar"))},
                 {label: "Buy Me a Coffee…", action: () => openUrl(LINKS.BUY_ME_A_COFFEE)},
                 {separator: true},
+                {
+                    label: "Switch User…",
+                    action: () => {
+                        try {
+                            localStorage.removeItem(PERSONA_KEY)
+                        } catch {
+                            /* private mode */
+                        }
+                        window.location.assign("/")
+                    },
+                },
                 {
                     label: "Reset Window Layout",
                     action: () => {
@@ -79,6 +93,7 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             label: active ? APP_META[active].label : "Finder",
             items: [
                 {label: `About ${active ? APP_META[active].label : "Finder"}`, action: () => open("about")},
+                {label: "Copy Link to This Window", disabled: !active, action: () => active && copyAppLink(active)},
                 {separator: true},
                 {label: "Hide", shortcut: "⌘H", disabled: !active, action: () => active && dispatch({type: "minimize", id: active})},
                 {label: "Quit", shortcut: "⌘Q", disabled: !active, action: () => active && dispatch({type: "close", id: active})},
@@ -113,6 +128,16 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             items: openWindows.length
                 ? openWindows.map((w) => ({label: APP_META[w.id].label, checked: w.id === active, action: () => open(w.id)}))
                 : [{label: "No Open Windows", disabled: true, action: () => undefined}],
+        },
+        {
+            id: "hire",
+            label: "Hire",
+            items: [
+                {label: "Book a Quick Chat…", action: () => openUrl(bookingUrl("hire-menu"))},
+                {label: "Email Seif", action: () => openUrl(`mailto:${SITE_CONFIG.EMAIL}?subject=Project%20enquiry`)},
+                {separator: true},
+                {label: "Outbound for MSSPs · SDX Studio", action: () => openUrl(LINKS.SDX_STUDIO)},
+            ],
         },
         {
             id: "help",

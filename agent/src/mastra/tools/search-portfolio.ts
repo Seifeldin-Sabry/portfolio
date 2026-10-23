@@ -10,7 +10,7 @@ const MIN_SCORE = 0.55;
 export const searchPortfolio = createTool({
   id: "searchPortfolio",
   description:
-    "Semantic search over Seif's portfolio: projects, work experience, education, blog posts, CV and about page. ALWAYS call this before answering any question about Seif.",
+    "Semantic search over Seif's portfolio: services (what he can be hired for), projects, work experience, education, blog posts, CV and about page. ALWAYS call this before answering any question about Seif.",
   inputSchema: z.object({
     query: z
       .string()

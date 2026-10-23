@@ -6,11 +6,11 @@ import {DefaultChatTransport} from "ai"
 import {Send} from "lucide-react"
 import {Streamdown} from "streamdown"
 
-const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "http://localhost:4111"
+import {AGENT_URL, sendToSeif} from "@/lib/agent"
 
 const SUGGESTIONS = [
     "What does Seif do at QFacts?",
-    "What is SDX Studio?",
+    "What can I hire Seif for?",
     "Book a call with Seif",
 ]
 
@@ -157,17 +157,7 @@ function ContactForm() {
             onSubmit={async (e) => {
                 e.preventDefault()
                 setState("sending")
-                try {
-                    const res = await fetch(`${AGENT_URL}/contact`, {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify(fields),
-                    })
-                    const data = await res.json().catch(() => null)
-                    setState(res.ok && data?.sent ? "sent" : "error")
-                } catch {
-                    setState("error")
-                }
+                setState((await sendToSeif(fields)) ? "sent" : "error")
             }}
             className="mt-2 space-y-2 rounded-lg border border-border bg-secondary/20 p-3"
         >

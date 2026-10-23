@@ -40,3 +40,19 @@ export interface Education {
     info: string
     courseWork: string[]
 }
+
+export interface Service {
+    id: string
+    title: string
+    audience: string
+    /** who delivers it: SDX Studio or Seif directly */
+    via: string
+    description: string
+    includes: string[]
+    /** external site for the offer */
+    link?: string
+    /** Tools-app tab that sizes this offer for the visitor */
+    tool?: "outbound" | "stripe"
+    /** app that demonstrates it live */
+    demo?: string
+}
