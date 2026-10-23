@@ -1,7 +1,6 @@
 import type {ContentProps} from "@/components/apps/registry"
 import {getSortedBlogPosts} from "@/lib/blogs"
 import {getCaseStudies, getEducation, getExperiences, getProjects, getServices} from "@/lib/content"
-import {getChangelog} from "@/lib/changelog"
 
 /** Everything the desktop renders, loaded at build time from the markdown content. */
 export function getDesktopContent(): ContentProps {
@@ -12,6 +11,5 @@ export function getDesktopContent(): ContentProps {
         posts: getSortedBlogPosts(),
         services: getServices(),
         caseStudies: getCaseStudies(),
-        changelog: getChangelog(),
     }
 }

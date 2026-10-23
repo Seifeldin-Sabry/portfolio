@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-export function parseDate(dateString: string, dateFormat): string {
+export function parseDate(dateString: string, dateFormat: string): string {
     const parsedDate = parse(dateString, "dd-MM-yyyy", new Date());
     return format(parsedDate, dateFormat);
 }

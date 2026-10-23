@@ -2,10 +2,10 @@
 
 import {useEffect, useRef, useState} from "react"
 import Image from "next/image"
-import {BatteryMedium, Search, SlidersHorizontal, Wifi} from "lucide-react"
+import {BatteryMedium, Wifi} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId} from "@/components/apps/registry"
 import {useWindowManager} from "@/components/desktop/window-manager"
-import {bookingUrl, LINKS, PERSONA_KEY, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
+import {bookingUrl, LINKS, SITE_CONFIG, Z_INDEX} from "@/lib/constants"
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 const LAYOUT_KEY = "seif-os-layout"
@@ -26,7 +26,7 @@ export const copyAppLink = (id: AppId) => void navigator.clipboard?.writeText(`$
 
 const openUrl = (url: string) => window.open(url, url.startsWith("mailto:") ? "_self" : "_blank", "noopener,noreferrer")
 
-export default function MenuBar({onToggleNotifications}: {onToggleNotifications: () => void}) {
+export default function MenuBar() {
     const {state, dispatch} = useWindowManager()
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const barRef = useRef<HTMLElement>(null)
@@ -57,23 +57,12 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             label: <Image src="/assets/logos/brand-mark.svg" alt="Seif OS menu" width={15} height={15}/>,
             items: [
                 {label: "About This Site", action: () => open("about")},
-                {label: "How the Assistant Works…", action: () => open("lab")},
+                {label: "How the Assistant Is Built…", action: () => open("assistant")},
                 {separator: true},
                 {label: "Download CV", action: () => openUrl(CV_URL)},
                 {label: "Book a Call…", action: () => openUrl(bookingUrl("menu-bar"))},
                 {label: "Buy Me a Coffee…", action: () => openUrl(LINKS.BUY_ME_A_COFFEE)},
                 {separator: true},
-                {
-                    label: "Switch User…",
-                    action: () => {
-                        try {
-                            localStorage.removeItem(PERSONA_KEY)
-                        } catch {
-                            /* private mode */
-                        }
-                        window.location.assign("/")
-                    },
-                },
                 {
                     label: "Reset Window Layout",
                     action: () => {
@@ -100,24 +89,6 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             ],
         },
         {
-            id: "file",
-            label: "File",
-            items: [
-                {label: "New Note", shortcut: "⌘N", action: () => open("notes")},
-                {label: "New Terminal", action: () => open("terminal")},
-                {separator: true},
-                {label: "Close Window", shortcut: "⌘W", disabled: !active, action: () => active && dispatch({type: "close", id: active})},
-            ],
-        },
-        {
-            id: "view",
-            label: "View",
-            items: [
-                {label: "Enter Full Screen", disabled: !active, action: () => active && dispatch({type: "toggle-maximize", id: active})},
-                {label: "Minimize", shortcut: "⌘M", disabled: !active, action: () => active && dispatch({type: "minimize", id: active})},
-            ],
-        },
-        {
             id: "go",
             label: "Go",
             items: DOCK_APPS.map((id) => ({label: APP_META[id].label, action: () => open(id)})),
@@ -133,23 +104,11 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             id: "hire",
             label: "Hire",
             items: [
+                {label: "Services", action: () => open("services")},
                 {label: "Book a Quick Chat…", action: () => openUrl(bookingUrl("hire-menu"))},
                 {label: "Email Seif", action: () => openUrl(`mailto:${SITE_CONFIG.EMAIL}?subject=Project%20enquiry`)},
                 {separator: true},
                 {label: "Outbound for MSSPs · SDX Studio", action: () => openUrl(LINKS.SDX_STUDIO)},
-            ],
-        },
-        {
-            id: "help",
-            label: "Help",
-            items: [
-                {label: "Ask the Assistant", action: () => open("assistant")},
-                {label: "Terminal Commands", action: () => open("terminal")},
-                {separator: true},
-                {label: "Email Seif", action: () => openUrl(`mailto:${SITE_CONFIG.EMAIL}`)},
-                {label: "SDX Studio", action: () => openUrl(LINKS.SDX_STUDIO)},
-                {label: "GitHub", action: () => openUrl(LINKS.GITHUB)},
-                {label: "LinkedIn", action: () => openUrl(LINKS.LINKEDIN)},
             ],
         },
     ]
@@ -207,35 +166,24 @@ export default function MenuBar({onToggleNotifications}: {onToggleNotifications:
             </nav>
 
             <div className="ml-auto flex h-full items-center gap-0.5 text-foreground/85">
-                <StatusIcon label="Battery"><BatteryMedium size={17} strokeWidth={1.6}/></StatusIcon>
-                <StatusIcon label="Wi-Fi"><Wifi size={14} strokeWidth={2}/></StatusIcon>
-                <StatusIcon label="Search" onClick={() => open("terminal")}><Search size={13} strokeWidth={2.2}/></StatusIcon>
-                <StatusIcon label="Control Centre" onClick={onToggleNotifications}><SlidersHorizontal size={13} strokeWidth={2.2}/></StatusIcon>
-                <button
-                    onClick={onToggleNotifications}
-                    className="flex h-6 items-center rounded-md px-2 tabular-nums hover:bg-foreground/10"
-                    aria-label="Open notification centre"
-                >
+                <StatusIcon><BatteryMedium size={17} strokeWidth={1.6}/></StatusIcon>
+                <StatusIcon><Wifi size={14} strokeWidth={2}/></StatusIcon>
+                <span className="flex h-6 items-center px-2 tabular-nums">
                     {now
                         ? `${now.toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short"})}  ${now.toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"})}`
                         : ""}
-                </button>
+                </span>
             </div>
         </header>
     )
 }
 
-function StatusIcon({label, onClick, children}: {label: string; onClick?: () => void; children: React.ReactNode}) {
+/** Decorative menu-bar status glyph (battery, Wi-Fi), like macOS. */
+function StatusIcon({children}: {children: React.ReactNode}) {
     return (
-        <button
-            onClick={onClick}
-            aria-label={label}
-            title={label}
-            tabIndex={onClick ? 0 : -1}
-            className={`flex h-6 w-7 items-center justify-center rounded-md ${onClick ? "hover:bg-foreground/10" : "cursor-default"}`}
-        >
+        <span aria-hidden className="flex h-6 w-7 items-center justify-center">
             {children}
-        </button>
+        </span>
     )
 }
 

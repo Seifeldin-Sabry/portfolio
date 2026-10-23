@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 50 # Changelog app reads recent git history at build time
 
       - uses: pnpm/action-setup@v6.0.10
 

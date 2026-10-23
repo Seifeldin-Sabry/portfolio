@@ -3,7 +3,7 @@ id: "software-engineering"
 title: "Freelance software engineering"
 audience: "SaaS teams and founders"
 via: "Seif, freelance"
-demo: "lab"
+demo: "assistant"
 ---
 # Freelance software engineering
 

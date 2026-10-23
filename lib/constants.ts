@@ -28,9 +28,6 @@ export const LINKS = {
   BUY_ME_A_COFFEE: "https://buymeacoffee.com/seifdx",
 } as const;
 
-/** localStorage key for the persona picked on the login screen. */
-export const PERSONA_KEY = "seif-os-persona";
-
 /**
  * Canonical origin for metadata/OG/sitemap. The env var wins when it's a real
  * URL; locally it can still be dotenvx-encrypted ("encrypted:…"), so fall back.

@@ -1,6 +1,7 @@
 "use client"
 
 import {useCallback, useEffect, useRef, useState} from "react"
+import Tabs from "@/components/apps/tabs"
 
 type GameId = "minesweeper" | "snake" | "tictactoe"
 
@@ -11,28 +12,16 @@ const GAMES: {id: GameId; label: string}[] = [
 ]
 
 export default function GamesApp() {
-    const [game, setGame] = useState<GameId>("snake")
     return (
-        <div className="flex h-full flex-col">
-            <div className="flex shrink-0 justify-center gap-1 border-b border-window-border p-2">
-                {GAMES.map((g) => (
-                    <button
-                        key={g.id}
-                        onClick={() => setGame(g.id)}
-                        className={`rounded-md px-3 py-1 text-xs font-medium ${
-                            game === g.id ? "bg-foreground/15 text-foreground" : "text-muted-foreground hover:text-foreground"
-                        }`}
-                    >
-                        {g.label}
-                    </button>
-                ))}
-            </div>
-            <div className="flex flex-1 items-center justify-center overflow-auto p-4">
-                {game === "snake" && <AppleSnake/>}
-                {game === "minesweeper" && <Minesweeper/>}
-                {game === "tictactoe" && <TicTacToe/>}
-            </div>
-        </div>
+        <Tabs tabs={GAMES}>
+            {(game) => (
+                <div className="flex h-full items-center justify-center overflow-auto p-4">
+                    {game === "snake" && <AppleSnake/>}
+                    {game === "minesweeper" && <Minesweeper/>}
+                    {game === "tictactoe" && <TicTacToe/>}
+                </div>
+            )}
+        </Tabs>
     )
 }
 

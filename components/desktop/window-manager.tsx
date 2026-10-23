@@ -31,7 +31,6 @@ export type WindowAction =
     | {type: "focus"; id: AppId}
     | {type: "move"; id: AppId; x: number; y: number}
     | {type: "resize"; id: AppId; w: number; h: number}
-    | {type: "close-all"}
     | {type: "fit-viewport"}
 
 const MENU_BAR_H = 32
@@ -71,8 +70,8 @@ function defaultRect(id: AppId, index: number): {x: number; y: number; w: number
     const height = Math.round(Math.min(h * scale, usableHeight(vh)))
     // Asymmetric first impression: identity left, work right; later windows cascade.
     // Projects stops short of the widget column on the right (WIDGET_COLUMN_W).
-    const anchorX = id === "about" ? 72 : id === "projects" ? vw - width - reserved : (vw - width) / 2 + index * 36
-    const anchorY = id === "about" ? MENU_BAR_H + 40 : id === "projects" ? MENU_BAR_H + 88 : MENU_BAR_H + 56 + index * 28
+    const anchorX = id === "about" ? 72 : id === "work" ? vw - width - reserved : (vw - width) / 2 + index * 36
+    const anchorY = id === "about" ? MENU_BAR_H + 40 : id === "work" ? MENU_BAR_H + 88 : MENU_BAR_H + 56 + index * 28
     return {x: clampX(anchorX, width), y: clampY(anchorY), w: width, h: height}
 }
 
@@ -86,7 +85,7 @@ function initState(): WindowManagerState {
     } catch {
         stored = null
     }
-    for (const [i, id] of (["about", "projects"] as AppId[]).entries()) {
+    for (const [i, id] of (["about", "work"] as AppId[]).entries()) {
         const rect = defaultRect(id, i)
         const saved = stored?.[id]
         const base =
@@ -102,7 +101,7 @@ function initState(): WindowManagerState {
             restoreRect: null,
         }
     }
-    return {windows, topZ, activeId: "projects"}
+    return {windows, topZ, activeId: "work"}
 }
 
 function reducer(state: WindowManagerState, action: WindowAction): WindowManagerState {
@@ -136,8 +135,6 @@ function reducer(state: WindowManagerState, action: WindowAction): WindowManager
                 },
             }
         }
-        case "close-all":
-            return {...state, windows: {}, activeId: null}
         case "launch": {
             // Dock semantics: clicking the active app's icon minimizes it (macOS),
             // anything else opens or restores. Lives in the reducer so the dock

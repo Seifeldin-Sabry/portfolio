@@ -5,14 +5,11 @@ import {AnimatePresence, motion} from "framer-motion"
 import {ChevronLeft} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId, type ContentProps} from "@/components/apps/registry"
 import AppHost from "@/components/apps/app-host"
-import NotificationCenter, {BootToast} from "@/components/desktop/notification-center"
 import Widgets from "@/components/desktop/widgets"
 import AppWindow from "@/components/desktop/window"
 import Dock from "@/components/desktop/dock"
 import MenuBar from "@/components/desktop/menu-bar"
 import {useWindowManager, WindowManagerProvider} from "@/components/desktop/window-manager"
-import LoginScreen, {type Persona} from "@/components/desktop/login-screen"
-import {PERSONA_KEY} from "@/lib/constants"
 import BootScreen from "@/components/shell/boot-screen"
 import {useDesktopOS} from "@/components/shell/device"
 
@@ -66,42 +63,14 @@ function DesktopSurface({content, initialApp}: {content: ContentProps; initialAp
     }, [initialApp, dispatch])
     useSyncAppUrl(state.activeId)
 
-    // First desktop visit without a deep link: ask who's visiting.
-    const [showLogin, setShowLogin] = useState(false)
-    useEffect(() => {
-        try {
-            if (!initialApp && !localStorage.getItem(PERSONA_KEY)) setShowLogin(true)
-        } catch {
-            /* private mode: skip the picker */
-        }
-    }, [initialApp])
-    const choosePersona = useCallback(
-        (persona: Persona | null) => {
-            setShowLogin(false)
-            try {
-                localStorage.setItem(PERSONA_KEY, persona?.id ?? "browsing")
-            } catch {
-                /* private mode */
-            }
-            // Umami (already on the site) records who visits, no extra tracker.
-            ;(window as {umami?: {track: (event: string, data: object) => void}}).umami?.track("persona", {id: persona?.id ?? "browsing"})
-            if (!persona) return
-            dispatch({type: "close-all"})
-            for (const id of persona.apps) dispatch({type: "open", id})
-        },
-        [dispatch],
-    )
-    const [notificationsOpen, setNotificationsOpen] = useState(false)
     const windows = Object.values(state.windows).filter((w) => w !== undefined)
     const open = useCallback((id: AppId) => dispatch({type: "open", id}), [dispatch])
     const launch = useCallback((id: AppId) => dispatch({type: "launch", id}), [dispatch])
-    const closeAll = useCallback(() => dispatch({type: "close-all"}), [dispatch])
-    const toggleNotifications = useCallback(() => setNotificationsOpen((o) => !o), [])
 
     return (
         <>
-            <Widgets onOpen={open}/>
-            <MenuBar onToggleNotifications={toggleNotifications}/>
+            <Widgets/>
+            <MenuBar/>
             <AnimatePresence>
                 {windows.map((win) => (
                     <AppWindow key={win.id} win={win} active={state.activeId === win.id} content={content} onOpen={open}/>
@@ -112,11 +81,7 @@ function DesktopSurface({content, initialApp}: {content: ContentProps; initialAp
                 activeId={state.activeId}
                 minimizedIds={windows.filter((w) => w.minimized).map((w) => w.id)}
                 onLaunch={launch}
-                onCloseAll={closeAll}
             />
-            <AnimatePresence>{showLogin && <LoginScreen key="login" onChoose={choosePersona}/>}</AnimatePresence>
-            {!showLogin && <BootToast onOpen={open}/>}
-            <NotificationCenter open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onOpen={open}/>
         </>
     )
 }
