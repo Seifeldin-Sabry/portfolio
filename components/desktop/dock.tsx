@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useRef, useState, type ReactNode} from "react"
+import {memo, useLayoutEffect, useRef, useState, type ReactNode} from "react"
 import {motion, useAnimationControls, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue} from "framer-motion"
 import {FileText, Trash2} from "lucide-react"
 import {DOCK_APPS, type AppId, APP_META} from "@/components/apps/registry"
@@ -17,21 +17,33 @@ interface DockProps {
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 /** Magnification reach in px either side of the pointer, like macOS. */
 const DOCK_RADIUS = 150
-const MAGNIFY = 1.55
+/** Scale-only magnification: slots keep their layout, icons grow over the gap. */
+const MAGNIFY = 1.3
 
 /** Base icon size follows the viewport so the dock fits laptops and large monitors alike. */
 function useBaseSize(): number {
     const [size, setSize] = useState(50)
-    useEffect(() => {
-        const fit = () => setSize(Math.round(Math.min(58, Math.max(40, window.innerHeight * 0.055, window.innerWidth * 0.028))))
-        fit()
+    useLayoutEffect(() => {
+        let id: ReturnType<typeof setTimeout> | null = null
+        const fit = () => {
+            if (id) clearTimeout(id)
+            // Debounced: resize fires continuously while dragging the window edge.
+            id = setTimeout(
+                () => setSize(Math.round(Math.min(58, Math.max(40, window.innerHeight * 0.055, window.innerWidth * 0.028)))),
+                120,
+            )
+        }
+        setSize(Math.round(Math.min(58, Math.max(40, window.innerHeight * 0.055, window.innerWidth * 0.028))))
         window.addEventListener("resize", fit)
-        return () => window.removeEventListener("resize", fit)
+        return () => {
+            if (id) clearTimeout(id)
+            window.removeEventListener("resize", fit)
+        }
     }, [])
     return size
 }
 
-export default function Dock({openIds, activeId, minimizedIds, onLaunch, onCloseAll}: DockProps) {
+function Dock({openIds, activeId, minimizedIds, onLaunch, onCloseAll}: DockProps) {
     const mouseX = useMotionValue(Infinity)
     const reduce = useReducedMotion()
     const base = useBaseSize()
@@ -41,7 +53,7 @@ export default function Dock({openIds, activeId, minimizedIds, onLaunch, onClose
             <div
                 onPointerMove={(e) => !reduce && mouseX.set(e.clientX)}
                 onPointerLeave={() => mouseX.set(Infinity)}
-                className="pointer-events-auto flex items-end gap-1.5 rounded-[22px] border border-foreground/15 bg-foreground/[0.07] px-2 pb-1.5 pt-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl"
+                className="pointer-events-auto flex items-end gap-2 rounded-[22px] border border-foreground/15 bg-foreground/[0.07] px-2 pb-1.5 pt-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl"
                 role="toolbar"
                 aria-label="Dock"
             >
@@ -77,6 +89,23 @@ export default function Dock({openIds, activeId, minimizedIds, onLaunch, onClose
     )
 }
 
+export default memo(Dock, dockEqual)
+
+/** Window state churn (focus, move, resize) must not re-render the dock. */
+function dockEqual(prev: DockProps, next: DockProps): boolean {
+    return (
+        prev.activeId === next.activeId &&
+        prev.onLaunch === next.onLaunch &&
+        prev.onCloseAll === next.onCloseAll &&
+        sameMembers(prev.openIds, next.openIds) &&
+        sameMembers(prev.minimizedIds, next.minimizedIds)
+    )
+}
+
+function sameMembers(a: AppId[], b: AppId[]): boolean {
+    return a.length === b.length && a.every((id, i) => id === b[i])
+}
+
 function AppIcon({id}: {id: AppId}) {
     const Icon = APP_META[id].icon
     return (
@@ -110,15 +139,19 @@ function DockItem({
     const ref = useRef<HTMLButtonElement>(null)
     const reduce = useReducedMotion()
     const bounce = useAnimationControls()
+    const [center, setCenter] = useState<number | null>(null)
 
-    // Distance from the pointer to this icon's live centre (re-measured each move,
-    // since magnified neighbours shift it).
-    const distance = useTransform(mouseX, (x) => {
+    // Icon centres are static (magnification scales around "bottom center", so
+    // the horizontal centre is scale-invariant): measure once per size change,
+    // never inside the pointer-move transform (that forced a reflow per event).
+    useLayoutEffect(() => {
         const rect = ref.current?.getBoundingClientRect()
-        return rect ? x - (rect.left + rect.width / 2) : Infinity
-    })
-    const rawSize = useTransform(distance, [-DOCK_RADIUS, 0, DOCK_RADIUS], [base, base * MAGNIFY, base], {clamp: true})
-    const size = useSpring(rawSize, {stiffness: 320, damping: 24, mass: 0.3})
+        if (rect) setCenter(rect.left + rect.width / 2)
+    }, [base])
+
+    const distance = useTransform(mouseX, (x) => (center === null ? Infinity : x - center))
+    const rawScale = useTransform(distance, [-DOCK_RADIUS, 0, DOCK_RADIUS], [1, MAGNIFY, 1], {clamp: true})
+    const scale = useSpring(rawScale, {stiffness: 320, damping: 24, mass: 0.3})
 
     const click = () => {
         if (launching && !reduce) void bounce.start({y: [0, -base * 0.45, 0, -base * 0.2, 0], transition: {duration: 0.7, ease: "easeOut"}})
@@ -132,12 +165,16 @@ function DockItem({
             </span>
             <motion.span
                 animate={bounce}
-                style={reduce ? {width: base, height: base} : {width: size, height: size}}
-                className={`block ${active ? "drop-shadow-[0_0_10px_hsl(var(--accent)/0.35)]" : ""}`}
+                style={
+                    reduce
+                        ? {width: base, height: base}
+                        : {width: base, height: base, scale, transformOrigin: "bottom center", willChange: "transform"}
+                }
+                className={`block ${active ? "ring-2 ring-accent/50 ring-offset-0 rounded-[22%]" : ""}`}
             >
                 {children}
             </motion.span>
-            <span className={`mt-1 h-1 w-1 rounded-full bg-foreground/80 transition-opacity ${running ? "opacity-100" : "opacity-0"}`}/>
+            <span className={`mt-1 h-1 w-1 rounded-full transition-opacity ${running ? (active ? "bg-accent opacity-100" : "bg-foreground/80 opacity-100") : "opacity-0"}`}/>
         </button>
     )
 }

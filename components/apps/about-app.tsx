@@ -1,5 +1,6 @@
 "use client"
 
+import {useState} from "react"
 import Image from "next/image"
 import {ArrowUpRight, Calendar, Download, FileText, Github, Globe, Linkedin, Mail} from "lucide-react"
 import {LINKS, SITE_CONFIG} from "@/lib/constants"
@@ -48,6 +49,7 @@ const skillCategories = [
 ]
 
 export default function AboutApp() {
+    const [cvOpen, setCvOpen] = useState(false)
     return (
         <div className="h-full overflow-y-auto px-4 py-4">
             <div className="mx-auto max-w-[65ch]">
@@ -57,7 +59,7 @@ export default function AboutApp() {
                         <div className="relative h-16 w-16 overflow-hidden rounded-2xl border-2 border-border">
                             <Image src="/assets/images/seif.jpg" alt="Seifeldin Sabry" fill className="object-cover" priority/>
                         </div>
-                        <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 animate-pulse-glow rounded-full border-2 border-background bg-accent"/>
+                        <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 animate-pulse rounded-full border-2 border-background bg-accent"/>
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -115,7 +117,7 @@ export default function AboutApp() {
                 </div>
 
                 {/* CV */}
-                <details className="group mt-5">
+                <details className="group mt-5" onToggle={(e) => setCvOpen(e.currentTarget.open)}>
                     <summary className="flex cursor-pointer list-none items-center gap-3 rounded-lg border border-border/70 bg-secondary/20 px-3 py-2.5 transition-colors duration-300 hover:border-accent/25 [&::-webkit-details-marker]:hidden">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background/60 text-accent">
                             <FileText size={16} aria-hidden="true"/>
@@ -154,13 +156,18 @@ export default function AboutApp() {
                                 </a>
                             </div>
                         </div>
-                        <div className="bg-white p-1.5">
-                            <iframe
-                                src="/assets/documents/seifeldin-sabry-cv.pdf#toolbar=0&navpanes=0&view=FitH"
-                                title="Seifeldin Sabry CV preview"
-                                className="h-[70vh] max-h-[720px] min-h-[420px] w-full rounded-sm border border-foreground/10 bg-white"
-                            />
-                        </div>
+                        {/* The embedded PDF viewer is heavy on phones: mount it only
+                            when the preview is actually opened. */}
+                        {cvOpen && (
+                            <div className="bg-white p-1.5">
+                                <iframe
+                                    src="/assets/documents/seifeldin-sabry-cv.pdf#toolbar=0&navpanes=0&view=FitH"
+                                    title="Seifeldin Sabry CV preview"
+                                    loading="lazy"
+                                    className="h-[70vh] max-h-[720px] min-h-[420px] w-full rounded-sm border border-foreground/10 bg-white"
+                                />
+                            </div>
+                        )}
                     </div>
                 </details>
 

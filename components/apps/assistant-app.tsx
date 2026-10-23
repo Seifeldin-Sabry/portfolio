@@ -25,7 +25,14 @@ export default function AssistantApp() {
     const busy = status === "submitted" || status === "streaming"
 
     useEffect(() => {
-        scrollRef.current?.scrollTo({top: scrollRef.current.scrollHeight, behavior: "smooth"})
+        const el = scrollRef.current
+        if (!el) return
+        // Follow the stream only while the reader is already at the bottom, and
+        // scroll instantly while tokens stream: restarting a smooth scroll on
+        // every chunk is what made the chat stutter.
+        const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 160
+        if (!nearBottom) return
+        el.scrollTo({top: el.scrollHeight, behavior: busy ? "auto" : "smooth"})
     }, [messages, busy])
 
     const submit = (text: string) => {

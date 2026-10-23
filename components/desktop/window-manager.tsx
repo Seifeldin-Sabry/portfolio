@@ -1,6 +1,6 @@
 "use client"
 
-import {createContext, useContext, useEffect, useMemo, useReducer, type ReactNode} from "react"
+import {createContext, useContext, useEffect, useReducer, type ReactNode} from "react"
 import {APP_META, type AppId} from "@/components/apps/registry"
 
 export interface WindowState {
@@ -23,6 +23,7 @@ export interface WindowManagerState {
 
 export type WindowAction =
     | {type: "open"; id: AppId}
+    | {type: "launch"; id: AppId}
     | {type: "close"; id: AppId}
     | {type: "minimize"; id: AppId}
     | {type: "restore"; id: AppId}
@@ -137,22 +138,39 @@ function reducer(state: WindowManagerState, action: WindowAction): WindowManager
         }
         case "close-all":
             return {...state, windows: {}, activeId: null}
+        case "launch": {
+            // Dock semantics: clicking the active app's icon minimizes it (macOS),
+            // anything else opens or restores. Lives in the reducer so the dock
+            // can hold a stable dispatch-only callback (no stale closures).
+            const win = state.windows[action.id]
+            if (win && !win.minimized && state.activeId === action.id) {
+                return reducer(state, {type: "minimize", id: action.id})
+            }
+            return reducer(state, {type: "open", id: action.id})
+        }
         case "fit-viewport": {
             // Browser resized: keep every window reachable and no larger than the screen.
             const vw = window.innerWidth
             const vh = window.innerHeight
             const windows: Partial<Record<AppId, WindowState>> = {}
+            let changed = false
             for (const win of Object.values(state.windows)) {
                 if (!win) continue
+                let next: WindowState
                 if (win.maximized) {
-                    windows[win.id] = {...win, x: 0, y: MENU_BAR_H, w: vw, h: vh - MENU_BAR_H - DOCK_AREA_H}
-                    continue
+                    next = {...win, x: 0, y: MENU_BAR_H, w: vw, h: vh - MENU_BAR_H - DOCK_AREA_H}
+                } else {
+                    const w = Math.min(win.w, vw - 24)
+                    const h = Math.min(win.h, usableHeight(vh))
+                    next = {...win, w, h, x: clampX(Math.min(win.x, vw - w - 12), w), y: clampY(win.y)}
                 }
-                const w = Math.min(win.w, vw - 24)
-                const h = Math.min(win.h, usableHeight(vh))
-                windows[win.id] = {...win, w, h, x: clampX(Math.min(win.x, vw - w - 12), w), y: clampY(win.y)}
+                const same = next.x === win.x && next.y === win.y && next.w === win.w && next.h === win.h
+                if (!same) changed = true
+                windows[win.id] = same ? win : next
             }
-            return {...state, windows}
+            // Bail out with the same reference when nothing moved: a resize storm
+            // (window drag, DevTools, mobile URL bar) must not re-render anything.
+            return changed ? {...state, windows} : state
         }
         case "close": {
             const windows = {...state.windows}
@@ -264,16 +282,30 @@ interface WindowManagerContextValue {
     dispatch: React.Dispatch<WindowAction>
 }
 
-const WindowManagerContext = createContext<WindowManagerContextValue | null>(null)
+// Two contexts: components that only dispatch (windows with their own stable
+// handlers) subscribe to the never-changing dispatch context and skip
+// re-rendering whenever unrelated window state changes.
+const WindowStateContext = createContext<WindowManagerState | null>(null)
+const WindowDispatchContext = createContext<React.Dispatch<WindowAction> | null>(null)
 
 export function WindowManagerProvider({children}: {children: ReactNode}) {
     const [state, dispatch] = useReducer(reducer, undefined, initState)
 
     useEffect(() => {
-        const fit = () => dispatch({type: "fit-viewport"})
-        fit() // saved layouts may come from a bigger screen
+        // Debounced: browser resize fires continuously while dragging the window
+        // edge (and when mobile toolbars show/hide). Fitting per event caused a
+        // full re-render storm; trailing debounce settles it once.
+        let id: ReturnType<typeof setTimeout> | null = null
+        const fit = () => {
+            if (id) clearTimeout(id)
+            id = setTimeout(() => dispatch({type: "fit-viewport"}), 120)
+        }
+        dispatch({type: "fit-viewport"}) // saved layouts may come from a bigger screen
         window.addEventListener("resize", fit)
-        return () => window.removeEventListener("resize", fit)
+        return () => {
+            if (id) clearTimeout(id)
+            window.removeEventListener("resize", fit)
+        }
     }, [])
 
     // Best-effort layout persistence, debounced so the synchronous localStorage
@@ -295,12 +327,25 @@ export function WindowManagerProvider({children}: {children: ReactNode}) {
         return () => clearTimeout(id)
     }, [state.windows])
 
-    const value = useMemo(() => ({state, dispatch}), [state])
-    return <WindowManagerContext.Provider value={value}>{children}</WindowManagerContext.Provider>
+    return (
+        <WindowDispatchContext.Provider value={dispatch}>
+            <WindowStateContext.Provider value={state}>{children}</WindowStateContext.Provider>
+        </WindowDispatchContext.Provider>
+    )
+}
+
+export function useWindowState(): WindowManagerState {
+    const state = useContext(WindowStateContext)
+    if (!state) throw new Error("useWindowState must be used inside WindowManagerProvider")
+    return state
+}
+
+export function useWindowDispatch(): React.Dispatch<WindowAction> {
+    const dispatch = useContext(WindowDispatchContext)
+    if (!dispatch) throw new Error("useWindowDispatch must be used inside WindowManagerProvider")
+    return dispatch
 }
 
 export function useWindowManager(): WindowManagerContextValue {
-    const ctx = useContext(WindowManagerContext)
-    if (!ctx) throw new Error("useWindowManager must be used inside WindowManagerProvider")
-    return ctx
+    return {state: useWindowState(), dispatch: useWindowDispatch()}
 }
