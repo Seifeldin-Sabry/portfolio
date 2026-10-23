@@ -3,11 +3,11 @@
 import {useState} from "react"
 import LeadForm from "@/components/apps/lead-form"
 
-type ToolId = "outbound" | "stripe"
+type ToolId = "outbound" | "automation"
 
 const TOOLS: {id: ToolId; label: string}[] = [
     {id: "outbound", label: "Outbound ROI (MSSPs)"},
-    {id: "stripe", label: "Stripe billing check"},
+    {id: "automation", label: "Automation savings"},
 ]
 
 export default function ToolsApp() {
@@ -30,7 +30,7 @@ export default function ToolsApp() {
                 ))}
             </div>
             <div className="flex-1 overflow-y-auto p-5 [&_p]:mb-0">
-                {tool === "outbound" ? <OutboundRoi/> : <StripeCheck/>}
+                {tool === "outbound" ? <OutboundRoi/> : <AutomationSavings/>}
             </div>
         </div>
     )
@@ -108,82 +108,48 @@ function Stat({label, value, highlight}: {label: string; value: string; highligh
     )
 }
 
-// ── Stripe billing health check ──────────────────────────────────────────────
+// ── Automation savings ──────────────────────────────────────────────────────
 
-/** Each check is a failure mode met while building Qfacts' self-serve billing. */
-export const STRIPE_CHECKS: {q: string; risk: string}[] = [
-    {q: "Every charge/subscription create call sends an idempotency key", risk: "Retries and double-clicks can charge a customer twice."},
-    {q: "Webhook handlers are idempotent: the same event twice is harmless", risk: "Stripe redelivers events; non-idempotent handlers double-provision or double-email."},
-    {q: "You verify webhook signatures", risk: "Anyone who finds the endpoint can forge 'payment succeeded'."},
-    {q: "Missed webhooks are reconciled (catch-up job or event replay)", risk: "One outage silently leaves accounts in the wrong billing state."},
-    {q: "Failed payments trigger dunning: retries plus customer emails", risk: "Involuntary churn: cards expire and revenue quietly leaks."},
-    {q: "There's a grace period before access is revoked", risk: "A single declined card locks out a paying customer."},
-    {q: "Upgrades, downgrades and seat changes (proration) are tested", risk: "Plan changes are where invoices go wrong and support tickets pile up."},
-    {q: "Concurrent checkouts for one org can't create duplicate subscriptions", risk: "Race conditions create two customers or two subscriptions."},
-    {q: "Billing state comes from Stripe, not a hand-maintained copy", risk: "Two sources of truth drift; someone ends up with free access."},
-    {q: "Trial expiry and conversion are automated and tested", risk: "Trials that never end, or end without a working checkout."},
-]
+const WEEKS_PER_MONTH = 52 / 12
 
-function StripeCheck() {
-    const [answers, setAnswers] = useState<(boolean | null)[]>(() => STRIPE_CHECKS.map(() => null))
-    const answered = answers.filter((a) => a !== null).length
-    const score = answers.filter((a) => a === true).length
-    const gaps = STRIPE_CHECKS.filter((_, i) => answers[i] === false)
-    const done = answered === STRIPE_CHECKS.length
+export function automationSavings(hoursPerWeek: number, automatablePct: number, hourlyCost: number) {
+    const hoursPerMonth = hoursPerWeek * WEEKS_PER_MONTH * (automatablePct / 100)
+    return {hoursPerMonth, perYear: hoursPerMonth * 12 * hourlyCost}
+}
+
+function AutomationSavings() {
+    const [hoursPerWeek, setHoursPerWeek] = useState(8)
+    const [automatable, setAutomatable] = useState(50)
+    const [hourlyCost, setHourlyCost] = useState(45)
+    const {hoursPerMonth, perYear} = automationSavings(hoursPerWeek, automatable, hourlyCost)
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-5">
             <div>
-                <h2 className="text-base font-semibold">Is your Stripe billing safe?</h2>
-                <p className="mt-1 text-xs text-muted-foreground">Ten checks, each a real way self-serve billing breaks. Two minutes.</p>
+                <h2 className="text-base font-semibold">How much time is your team losing to busywork?</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                    Copy-pasting between tools, chasing updates, re-typing data. Count it, then see what n8n and AI could take off your plate.
+                </p>
             </div>
-            <ol className="space-y-2">
-                {STRIPE_CHECKS.map((c, i) => (
-                    <li key={c.q} className="flex items-center gap-3 rounded-lg border border-border bg-secondary/10 px-3 py-2">
-                        <span className="w-5 text-xs tabular-nums text-muted-foreground">{i + 1}.</span>
-                        <span className="flex-1 text-xs">{c.q}</span>
-                        {[true, false].map((v) => (
-                            <button
-                                key={String(v)}
-                                onClick={() => setAnswers((a) => a.map((x, j) => (j === i ? v : x)))}
-                                aria-pressed={answers[i] === v}
-                                className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-                                    answers[i] === v ? (v ? "bg-sky-500/25 text-sky-300" : "bg-rose-500/25 text-rose-300") : "bg-foreground/[0.06] text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                {v ? "Yes" : "No"}
-                            </button>
-                        ))}
-                    </li>
-                ))}
-            </ol>
-            {done && (
-                <div className="space-y-3 rounded-lg border border-border bg-secondary/20 p-4">
-                    <p className="text-sm">
-                        Score: <span className="text-xl font-semibold tabular-nums text-accent">{score}/10</span>{" "}
-                        <span className="text-muted-foreground">
-                            {score === 10 ? "Solid. Rare, too." : score >= 7 ? "Mostly safe, with a few sharp edges." : "Real money and trust at risk."}
-                        </span>
-                    </p>
-                    {gaps.length > 0 && (
-                        <ul className="space-y-1.5">
-                            {gaps.map((g) => (
-                                <li key={g.q} className="text-xs">
-                                    <span className="font-medium">{g.q}.</span> <span className="text-muted-foreground">{g.risk}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            )}
-            {done && gaps.length > 0 && (
-                <LeadForm
-                    source="tools-stripe"
-                    cta="Want these fixed? Send your result to Seif, who built Qfacts' billing from scratch."
-                    context={`Stripe check: ${score}/10. Gaps: ${gaps.map((g) => g.q).join("; ")}.`}
-                />
-            )}
-            {!done && <p className="text-[11px] text-muted-foreground">{answered}/10 answered</p>}
+            <div className="grid grid-cols-3 gap-4">
+                <NumberField label="Repetitive work" hint="Team hours per week" value={hoursPerWeek} onChange={setHoursPerWeek} suffix="h"/>
+                <NumberField label="Automatable" hint="Share that follows a fixed pattern" value={automatable} onChange={(n) => setAutomatable(Math.min(100, n))} suffix="%"/>
+                <NumberField label="Cost of an hour" hint="Loaded cost of whoever does it" value={hourlyCost} onChange={setHourlyCost} suffix="€"/>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+                <Stat label="Hours back every month" value={`${Math.round(hoursPerMonth)} h`} highlight/>
+                <Stat label="Worth per year" value={eur(perYear)}/>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+                {hoursPerMonth >= 15
+                    ? "That's squarely in range: most teams I look at have 15+ hours a month to win back."
+                    : "Smaller teams often find more once the processes are mapped; a diagnosis makes it concrete."}
+            </p>
+            <LeadForm
+                source="tools-automation"
+                cta="Want those hours back? Send this to Seif and he'll look at your processes."
+                context={`Automation savings: ${hoursPerWeek} h/week repetitive, ${automatable}% automatable, €${hourlyCost}/h -> ${Math.round(hoursPerMonth)} h/month, ${eur(perYear)}/year.`}
+            />
         </div>
     )
 }

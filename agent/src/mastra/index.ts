@@ -143,6 +143,14 @@ export const mastra = new Mastra({
           });
         },
       }),
+      // Liveness for the site's status widget: no DB, no LLM, just "the worker answers".
+      registerApiRoute("/health", {
+        method: "GET",
+        handler: async () =>
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+          }),
+      }),
       registerApiRoute("/evals", {
         method: "GET",
         handler: async () => {

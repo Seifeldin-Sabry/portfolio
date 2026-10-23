@@ -1,0 +1,67 @@
+---
+title: "My Portfolio's AI Assistant Writes Its Own Tests, and They Caught a Security Bug"
+date: "23-10-2026"
+time: "12:00"
+excerpt: "A RAG assistant with LLM judges, deterministic guardrail checks and an eval suite that grows itself in CI. The best part: it caught my guardrails failing open."
+tags: ["AI Engineering", "Evals", "LLM", "Guardrails", "Mastra"]
+---
+
+The assistant on this site answers questions about my work. It's a small system, but I built it the way I'd build one for a client: retrieval over my own content, guardrails on the way in and out, and an eval suite that gates every change. This post is about that eval suite, because it does something I haven't seen many small projects do: it writes its own test cases. And last week it caught a real security bug in my guardrails.
+
+## Three kinds of correctness
+
+A chatbot can be wrong in three different ways, so the suite has three categories, each with its own gate in CI:
+
+- **Knowledge**: did it answer a question about me correctly, from the retrieved content, without inventing anything?
+- **Guardrail**: did it refuse prompt injections, jailbreaks and off-topic requests, and did it leak nothing about its own instructions?
+- **Agentic**: did it call the right tool? "Book me a call, I'm Jane, jane@example.com" must trigger the booking tool. "Can you book a call?" with no details must *not*.
+
+## Judges only where judgement is needed
+
+Knowledge answers get two **LLM judges**: *answer relevancy* (does it address the question?) and *faithfulness* (is every claim supported by the chunks retrieval actually returned?). Faithfulness gates the build: an average below 0.7 fails CI.
+
+Everything else is deterministic. Refusals, leaks and tool calls are string and set comparisons. That's deliberate. A judge that drifts should never be able to wave through a prompt injection, and deterministic checks don't have bad days.
+
+## The growth loop
+
+Hand-written test sets go stale: they test what you thought of in week one. So every week the suite mines new candidates from three places:
+
+1. **Failures**: every case that failed gets paraphrased by an LLM, so the weak spot gets tested from several angles.
+2. **Content changes**: when I edit my portfolio content, an LLM writes questions the new text answers, with "must mention" anchors. The script then checks every anchor appears **verbatim** in the source file, so the generator can't invent ground truth.
+3. **Red-teaming**: the LLM sees my existing attack prompts and writes new ones with techniques I haven't covered.
+
+The important part is what happens next. Each candidate runs through the **real agent twice**:
+
+- passes both times → promoted into the test set (regression protection)
+- fails both times → logged as a **gap**: a real weakness to fix in the agent, never auto-added to the gate
+- mixed → dropped, because a flaky test makes a gate noisy and everyone learns to ignore it
+
+Nothing lands without review: the loop publishes a branch and I merge it.
+
+## The bug it caught
+
+The guardrails originally used LLM-based detectors for prompt injection and PII. All of them, plus the judges and the case generator, ran on the same free-tier model. On Groq's free tier, the daily token limit is metered *per model*.
+
+So one eval run used up the whole daily budget. And when the injection detector couldn't reach its model, it logged this:
+
+```
+[PromptInjectionDetector] Detection agent failed, allowing content
+```
+
+**Allowing content.** Under quota exhaustion, the guardrail silently switched itself off. Nobody would have noticed in production, because to a visitor it looks exactly like everything working.
+
+## The fix: fail closed, and prove it before deploying
+
+- **The injection guard now fails closed.** If the classifier errors, times out, gets rate-limited or returns something unparseable, the message is blocked with a friendly "try again in a minute".
+- **One model per job.** Chat, the guard and the judges each use a different model, so a busy day for one can't starve another. PII redaction became plain regex: no model, nothing to run out.
+- **A live smoke test gates every deploy.** A fail-closed guard has a nasty failure mode: if the classifier's reply format changes, it blocks *everyone*. So before evals and before each deploy, CI checks that the guard allows a normal question and blocks an obvious injection.
+
+That smoke test paid for itself on day one. The dedicated injection-classifier model I first switched to returned HTTP 500 for every request. The guard failed closed, exactly as designed, and the smoke test refused to let it near production. I moved to a model that answers.
+
+## What I'd take to a client project
+
+- **Test the failure modes of your safety layer, not just its happy path.** A guardrail that fails open looks identical to one that works.
+- **Keep judges away from safety decisions.** Use them for nuance, use code for gates.
+- **Let the test set grow, but make promotion earn it.** Stability gates turn LLM-generated tests from noise into regression protection.
+
+You can see the live eval scores in the Lab app on this site, and you can try to break the assistant yourself. If you'd like something like this over your own docs, the Services app has the details.

@@ -52,7 +52,25 @@ export interface Service {
     /** external site for the offer */
     link?: string
     /** Tools-app tab that sizes this offer for the visitor */
-    tool?: "outbound" | "stripe"
+    tool?: "outbound" | "automation"
     /** app that demonstrates it live */
     demo?: string
+}
+
+export interface CaseStudy {
+    id: string
+    title: string
+    company: string
+    stack: string[]
+    problem: string
+    approach: string[]
+    outcome: string[]
+}
+
+export interface ChangelogEntry {
+    sha: string
+    date: string
+    /** conventional-commit type: feat, fix, perf, ... */
+    type: string
+    summary: string
 }

@@ -1,9 +1,9 @@
 import type {LucideIcon} from "lucide-react"
-import {BookOpen, Bot, Briefcase, Calculator, FlaskConical, Gamepad2, Gauge, Handshake, LayoutGrid, Mail, StickyNote, SquareTerminal, User} from "lucide-react"
-import type {Education, Experience, Project, Service} from "@/lib/content-types"
+import {Award, BookOpen, History, Bot, Briefcase, Calculator, FlaskConical, Gamepad2, Gauge, Handshake, LayoutGrid, Mail, StickyNote, SquareTerminal, User} from "lucide-react"
+import type {CaseStudy, ChangelogEntry, Education, Experience, Project, Service} from "@/lib/content-types"
 import type {BlogPost} from "@/lib/blogs"
 
-export type AppId = "about" | "projects" | "experience" | "blog" | "assistant" | "lab" | "notes" | "terminal" | "calculator" | "games" | "services" | "tools" | "mail"
+export type AppId = "about" | "projects" | "experience" | "blog" | "assistant" | "lab" | "notes" | "terminal" | "calculator" | "games" | "services" | "tools" | "mail" | "cases" | "changelog"
 
 export interface ContentProps {
     projects: Project[]
@@ -11,6 +11,8 @@ export interface ContentProps {
     education: Education[]
     posts: BlogPost[]
     services: Service[]
+    caseStudies: CaseStudy[]
+    changelog: ChangelogEntry[]
 }
 
 export interface AppMeta {
@@ -34,8 +36,10 @@ export const APP_META: Record<AppId, AppMeta> = {
     calculator: {id: "calculator", label: "Calculator", icon: Calculator, defaultSize: {w: 340, h: 460}, tint: "bg-gradient-to-b from-zinc-500 to-zinc-800"},
     services: {id: "services", label: "Services", icon: Handshake, defaultSize: {w: 600, h: 640}, tint: "bg-gradient-to-b from-amber-200 to-yellow-600"},
     tools: {id: "tools", label: "Tools", icon: Gauge, defaultSize: {w: 600, h: 620}, tint: "bg-gradient-to-b from-indigo-400 to-violet-700"},
+    cases: {id: "cases", label: "Case Studies", icon: Award, defaultSize: {w: 760, h: 560}, tint: "bg-gradient-to-b from-orange-300 to-red-600"},
+    changelog: {id: "changelog", label: "Changelog", icon: History, defaultSize: {w: 620, h: 520}, tint: "bg-gradient-to-b from-slate-300 to-slate-600"},
     mail: {id: "mail", label: "Mail", icon: Mail, defaultSize: {w: 520, h: 480}, tint: "bg-gradient-to-b from-sky-300 to-blue-600"},
     games: {id: "games", label: "Games", icon: Gamepad2, defaultSize: {w: 460, h: 520}, tint: "bg-gradient-to-b from-pink-400 to-fuchsia-600"},
 }
 
-export const DOCK_APPS: AppId[] = ["about", "services", "tools", "projects", "experience", "blog", "mail", "notes", "terminal", "calculator", "games", "assistant", "lab"]
+export const DOCK_APPS: AppId[] = ["about", "services", "cases", "tools", "projects", "experience", "blog", "mail", "notes", "changelog", "terminal", "calculator", "games", "assistant", "lab"]

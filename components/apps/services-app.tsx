@@ -44,7 +44,7 @@ export default function ServicesApp({services, onOpen}: {services: Service[]; on
                             </a>
                             {s.tool && (
                                 <button onClick={() => onOpen("tools")} className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-foreground/10">
-                                    {s.tool === "outbound" ? "Estimate your pipeline" : "Check your billing"}
+                                    {s.tool === "outbound" ? "Estimate your pipeline" : "Estimate your hours saved"}
                                 </button>
                             )}
                             {s.demo && (
