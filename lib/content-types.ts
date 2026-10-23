@@ -52,7 +52,7 @@ export interface Service {
     /** external site for the offer */
     link?: string
     /** Tools-app tab that sizes this offer for the visitor */
-    tool?: "outbound" | "stripe"
+    tool?: "outbound" | "automation"
     /** app that demonstrates it live */
     demo?: string
 }

@@ -23,7 +23,7 @@ export interface Persona {
  */
 export const PERSONAS: Persona[] = [
     {id: "mssp", label: "MSSP founder", hint: "I need pipeline", icon: ShieldCheck, tint: "from-amber-300 to-orange-600", apps: ["tools", "services"]},
-    {id: "founder", label: "Founder / CTO", hint: "I need an engineer", icon: Rocket, tint: "from-violet-400 to-indigo-600", apps: ["lab", "services"]},
+    {id: "founder", label: "Founder / CTO", hint: "I need software or automation", icon: Rocket, tint: "from-violet-400 to-indigo-600", apps: ["lab", "services"]},
     {id: "recruiter", label: "Recruiter", hint: "I'm hiring", icon: Briefcase, tint: "from-sky-400 to-blue-600", apps: ["experience", "about"]},
     {id: "engineer", label: "Engineer", hint: "Show me the code", icon: Code2, tint: "from-zinc-500 to-zinc-800", apps: ["projects", "lab"]},
 ]
