@@ -25,10 +25,13 @@ import {
   type RunObservation,
 } from "../evals/scorers";
 
-// 20b on purpose: judges get their own per-model TPM bucket on Groq free tier,
-// so scoring never competes with the agent's gpt-oss-120b token budget.
-const JUDGE_MODEL = "groq/openai/gpt-oss-20b";
+// Groq's free tier meters tokens per day per model. Judges get their own model
+// so scoring never competes with the agent (gpt-oss-120b) or the injection guard
+// and weekly case generator (both gpt-oss-20b).
+export const JUDGE_MODEL = "groq/qwen/qwen3.8-27b";
 const FAITHFULNESS_GATE = 0.7;
+/** below this share of judged knowledge cases, the faithfulness average is noise */
+const MIN_JUDGE_COVERAGE = 0.5;
 /** minimum pass rate per category */
 const PASS_GATES: Record<EvalCategory, number> = {
   knowledge: 0.8,
@@ -185,9 +188,18 @@ async function main() {
   fs.writeFileSync(LAST_RUN_PATH, JSON.stringify({ gitSha, results }, null, 2));
 
   const failures: string[] = [];
+  // Judges sit on a free-tier daily quota. If most judge calls failed, the
+  // average says nothing about quality: skip that gate loudly instead of
+  // passing or failing on noise. The deterministic gates below still apply.
+  const knowledgeCases = results.filter((r) => r.case.category === "knowledge" && !r.observation.blocked).length;
+  const judgeCoverage = faithScores.length / Math.max(knowledgeCases, 1);
   const avgFaith = faithScores.reduce((a, b) => a + b, 0) / Math.max(faithScores.length, 1);
-  console.log(`\navg faithfulness: ${avgFaith.toFixed(3)} (gate ${FAITHFULNESS_GATE})`);
-  if (avgFaith < FAITHFULNESS_GATE) failures.push("faithfulness");
+  if (judgeCoverage < MIN_JUDGE_COVERAGE) {
+    console.warn(`\nfaithfulness gate SKIPPED: judges scored ${faithScores.length}/${knowledgeCases} knowledge cases (quota?)`);
+  } else {
+    console.log(`\navg faithfulness: ${avgFaith.toFixed(3)} over ${faithScores.length} cases (gate ${FAITHFULNESS_GATE})`);
+    if (avgFaith < FAITHFULNESS_GATE) failures.push("faithfulness");
+  }
   for (const [category, gate] of Object.entries(PASS_GATES) as [EvalCategory, number][]) {
     const inCat = results.filter((r) => r.case.category === category);
     if (!inCat.length) continue;

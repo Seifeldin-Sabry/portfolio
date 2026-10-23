@@ -13,14 +13,20 @@ on:
   schedule:
     - cron: "17 3 * * 1" # weekly, monday 03:17 UTC — drift check
   workflow_dispatch:
+    inputs:
+      smoke_only:
+        description: "Only run the live model smoke test (no embeds, evals or growth)"
+        type: boolean
+        default: false
 
+# One run at a time across ALL branches: every run spends the same per-model
+# daily Groq quotas, and parallel runs (main + a PR branch) drained them.
 concurrency:
-  group: embed-eval-${{ github.ref }}
+  group: embed-eval
   cancel-in-progress: false
 
 permissions:
-  contents: write # grow-evals opens a PR with promoted cases
-  pull-requests: write
+  contents: write # growth loop pushes the evals/auto-grow review branch
 
 jobs:
   embed-and-eval:
@@ -39,39 +45,61 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Smoke-test live models (guard reply format, judge reachability)
+        id: smoke
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent smoke
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
       - name: Embed changed content (hash-diff, no-op when clean)
+        if: ${{ !inputs.smoke_only }}
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent embed
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
 
       - name: Run eval suite (regression gate)
+        if: ${{ !inputs.smoke_only }}
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent evals
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
           GIT_SHA: ${{ github.sha }}
 
       - name: Scorer self-check
+        if: ${{ !inputs.smoke_only }}
         run: pnpm --filter agent evals:check
 
       # Runs even when the gate failed: failures are the loop's best input.
+      # Weekly/manual only: each candidate costs two full agent runs, and the
+      # agent shares its daily Groq token budget with real visitors.
       - name: Grow eval dataset (failures, content diffs, red-team)
-        if: always()
+        if: always() && steps.smoke.outcome == 'success' && github.event_name != 'push' && !inputs.smoke_only
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent evals:grow
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
-          BASE_REF: ${{ github.event.before || 'HEAD~1' }}
+          BASE_REF: HEAD~1
 
-      - name: Open PR with promoted cases / gaps
-        if: always()
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: evals/auto-grow
-          add-paths: |
-            agent/evals/promoted.json
-            agent/evals/gaps.json
-          commit-message: "evals: promote stable cases from growth loop"
-          title: "evals: growth loop — promoted cases & gaps"
-          body: |
-            Automated by `agent/scripts/grow-evals.ts`.
-            - `promoted.json`: candidates that passed every stability run; merging adds them to the CI gate.
-            - `gaps.json`: candidates that failed every run — real weaknesses to fix in the agent, not in the dataset.
+      # Actions may not open PRs in this repo (a repo setting, deliberately off),
+      # so publish a branch on top of current main with ONLY the dataset files,
+      # and link a one-click PR from the run summary.
+      - name: Publish grown cases for review
+        if: always() && steps.smoke.outcome == 'success' && github.event_name != 'push' && !inputs.smoke_only
+        run: |
+          files=$(ls agent/evals/promoted.json agent/evals/gaps.json 2>/dev/null || true)
+          [ -n "$files" ] || { echo "Growth loop produced no new cases." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          mkdir -p /tmp/grown && cp $files /tmp/grown/
+          git fetch -q origin main
+          git checkout -q -f -B evals/auto-grow origin/main
+          cp /tmp/grown/* agent/evals/
+          git add agent/evals/promoted.json agent/evals/gaps.json 2>/dev/null || git add $files
+          if git diff --cached --quiet; then
+            echo "Growth loop: no dataset changes vs main." >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "evals: promote stable cases from growth loop"
+          git push -q -f origin evals/auto-grow
+          {
+            echo "### Growth loop: cases ready for review"
+            echo "[Open PR](https://github.com/${{ github.repository }}/compare/main...evals/auto-grow?expand=1)"
+            echo '- `promoted.json`: passed every stability run; merging adds them to the CI gate.'
+            echo '- `gaps.json`: failed every run, a weakness to fix in the agent, not the dataset.'
+          } >> "$GITHUB_STEP_SUMMARY"
