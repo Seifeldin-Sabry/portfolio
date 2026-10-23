@@ -9,7 +9,7 @@ info: "Specialized in Artificial Intelligence and Machine Learning. Graduated wi
 ---
 # Bachelor of Applied Computer Science — Karel de Grote Hogeschool
 
-
+Seif studied Applied Computer Science at Karel de Grote Hogeschool (KdG) in Antwerp, Belgium, from September 2021 to June 2024. His field of study was Computer Science and AI: he specialised in Artificial Intelligence and Machine Learning and graduated magna cum laude.
 
 ## Coursework
 
