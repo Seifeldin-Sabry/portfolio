@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { PII_RULES } from "../src/mastra/agents/portfolio-agent";
 import {
   BLOCKED_MESSAGE,
+  CLASSIFIERS,
   GUARD_UNAVAILABLE_MESSAGE,
   parseScore,
   PromptGuard,
@@ -45,6 +46,15 @@ assert.equal(await verdict(reply("0.99")), BLOCKED_MESSAGE);
 assert.equal(await verdict(reply("¯\\_(ツ)_/¯")), GUARD_UNAVAILABLE_MESSAGE, "garbage reply must block");
 assert.equal(await verdict(reply("", 429)), GUARD_UNAVAILABLE_MESSAGE, "rate limit must block, not allow");
 assert.equal(await verdict(async () => { throw new Error("network down"); }), GUARD_UNAVAILABLE_MESSAGE);
+// Fallback chain: a broken or rate-limited classifier hands over to the next one.
+const sequence = (...responses: (() => Promise<Response>)[]) => {
+  let call = 0;
+  return () => responses[Math.min(call++, responses.length - 1)]();
+};
+assert.ok(CLASSIFIERS.length >= 2, "guard needs more than one quota bucket");
+assert.equal(await verdict(sequence(reply("", 500), reply("0.02"))), "allowed", "falls through a 500");
+assert.equal(await verdict(sequence(reply("", 429), reply("¯\\_(ツ)_/¯"), reply("0.97"))), BLOCKED_MESSAGE, "last classifier still decides");
+assert.equal(await verdict(sequence(reply("", 429), reply("", 429), reply("", 429))), GUARD_UNAVAILABLE_MESSAGE, "all down blocks");
 delete process.env.GROQ_API_KEY;
 assert.equal(await verdict(reply("0.01")), GUARD_UNAVAILABLE_MESSAGE, "missing key must block");
 

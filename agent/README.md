@@ -15,7 +15,7 @@ visitor → /chat → portfolioAgent (groq/openai/gpt-oss-120b)
                     ├─ tool: searchPortfolio (embed query → cosine top-6, min score 0.55)
                     └─ traces → Langfuse
 
-                    ├─ input:  UnicodeNormalizer → PromptGuard (gpt-oss-20b classifier, FAIL-CLOSED) → regex PII redact
+                    ├─ input:  UnicodeNormalizer → PromptGuard (classifier chain on separate quotas, FAIL-CLOSED) → regex PII redact
                     └─ output: RegexFilterProcessor (redact secrets + LEAK_MARKERS)
 
 CI (run-evals.ts): dataset (golden + evals/promoted.json), 3 categories
@@ -32,7 +32,8 @@ CI (grow-evals.ts): candidates ← failure paraphrases + changed-content Qs + re
                     (weekly/manual only — it costs 2 agent runs per candidate)
 
 Models (Groq free tier meters tokens/day PER MODEL, so each job gets its own):
-  agent gpt-oss-120b · injection guard gpt-oss-20b (classifier, fail-closed)
+  agent gpt-oss-120b · injection guard: prompt-guard-2-86m → prompt-guard-2-22m → gpt-oss-20b
+  (first that answers decides; blocks only if all fail)
   judges qwen3.8-27b · case generator gpt-oss-20b · PII + output guards: regex, no LLM
   `pnpm --filter agent smoke` checks the live guard + judge before evals and deploys
 ```

@@ -8,7 +8,7 @@
  */
 import { Agent } from "@mastra/core/agent";
 
-import { BLOCKED_MESSAGE, PromptGuard } from "../src/mastra/processors/prompt-guard";
+import { BLOCKED_MESSAGE, CLASSIFIERS, PromptGuard, scoreWith } from "../src/mastra/processors/prompt-guard";
 import { JUDGE_MODEL } from "./run-evals";
 
 const msg = (text: string) => [{ role: "user", content: { format: 2, parts: [{ type: "text", text }] } }] as any;
@@ -32,6 +32,17 @@ const expect = (label: string, actual: string, wanted: string) => {
   console.log(`${actual === wanted ? "ok  " : "FAIL"} ${label}: ${actual}`);
   if (actual !== wanted) failures.push(label);
 };
+
+// Per-classifier health (informational): the guard only needs ONE to answer,
+// but this shows which quota buckets are healthy right now.
+for (const c of CLASSIFIERS) {
+  try {
+    const s = await scoreWith(c, "What did Seif build with Stripe at QFacts?", process.env.GROQ_API_KEY ?? "");
+    console.log(`info classifier ${c.model}: answered (benign score ${s})`);
+  } catch (err: any) {
+    console.log(`info classifier ${c.model}: DOWN (${String(err.message).slice(0, 100)})`);
+  }
+}
 
 expect("guard allows a normal question", await guardVerdict("What did Seif build with Stripe at QFacts?"), "allowed");
 expect(
