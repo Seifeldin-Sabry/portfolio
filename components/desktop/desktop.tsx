@@ -1,6 +1,6 @@
 "use client"
 
-import {memo, useCallback, useState, type ReactNode} from "react"
+import {useCallback, useEffect, useRef, useState} from "react"
 import {AnimatePresence, motion} from "framer-motion"
 import {ChevronLeft} from "lucide-react"
 import {APP_META, DOCK_APPS, type AppId, type ContentProps} from "@/components/apps/registry"
@@ -19,11 +19,23 @@ const WALLPAPER =
     "radial-gradient(ellipse 70% 55% at 18% 12%, hsl(28 45% 22% / 0.55), transparent 70%), radial-gradient(ellipse 60% 60% at 85% 90%, hsl(15 35% 18% / 0.6), transparent 70%)"
 
 /**
- * App bodies only depend on (id, content, onOpen), all stable, so memo keeps
- * every open app from re-rendering when another window opens, focuses or moves.
- * (See components/apps/app-host.tsx.)
+ * Mirrors the focused app into the URL (/apps/<id>), so the address bar is
+ * always a shareable link to what you're looking at. Skips the first render:
+ * landing on "/" shouldn't rewrite the URL before the visitor does anything.
  */
-export default function Desktop(content: ContentProps) {
+function useSyncAppUrl(activeId: AppId | null) {
+    const first = useRef(true)
+    useEffect(() => {
+        if (first.current) {
+            first.current = false
+            return
+        }
+        const path = activeId ? `/apps/${activeId}` : "/"
+        if (window.location.pathname !== path) window.history.replaceState(window.history.state, "", path)
+    }, [activeId])
+}
+
+export default function Desktop({initialApp, ...content}: ContentProps & {initialApp?: AppId}) {
     const isDesktop = useDesktopOS()
     const [booted, setBooted] = useState(false)
     const finishBoot = useCallback(() => setBooted(true), [])
@@ -32,10 +44,10 @@ export default function Desktop(content: ContentProps) {
         <div className="fixed inset-0 overflow-hidden bg-wallpaper text-foreground" style={{backgroundImage: WALLPAPER}}>
             {isDesktop === true && (
                 <WindowManagerProvider>
-                    <DesktopSurface content={content}/>
+                    <DesktopSurface content={content} initialApp={initialApp}/>
                 </WindowManagerProvider>
             )}
-            {isDesktop === false && <MobileSurface content={content}/>}
+            {isDesktop === false && <MobileSurface content={content} initialApp={initialApp}/>}
             <AnimatePresence>
                 {(!booted || isDesktop === null) && (
                     <BootScreen key="boot" mode={isDesktop === false ? "mobile" : "desktop"} onDone={finishBoot}/>
@@ -45,8 +57,12 @@ export default function Desktop(content: ContentProps) {
     )
 }
 
-function DesktopSurface({content}: {content: ContentProps}) {
+function DesktopSurface({content, initialApp}: {content: ContentProps; initialApp?: AppId}) {
     const {state, dispatch} = useWindowManager()
+    useEffect(() => {
+        if (initialApp) dispatch({type: "open", id: initialApp})
+    }, [initialApp, dispatch])
+    useSyncAppUrl(state.activeId)
     const [notificationsOpen, setNotificationsOpen] = useState(false)
     const windows = Object.values(state.windows).filter((w) => w !== undefined)
     const open = useCallback((id: AppId) => dispatch({type: "open", id}), [dispatch])
@@ -77,8 +93,9 @@ function DesktopSurface({content}: {content: ContentProps}) {
 }
 
 /** Touch / small screens: home-screen grid, each app opens full-screen. */
-function MobileSurface({content}: {content: ContentProps}) {
-    const [openId, setOpenId] = useState<AppId | null>(null)
+function MobileSurface({content, initialApp}: {content: ContentProps; initialApp?: AppId}) {
+    const [openId, setOpenId] = useState<AppId | null>(initialApp ?? null)
+    useSyncAppUrl(openId)
 
     return (
         <>

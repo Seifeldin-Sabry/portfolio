@@ -28,6 +28,21 @@ export const LINKS = {
   BUY_ME_A_COFFEE: "https://buymeacoffee.com/seifdx",
 } as const;
 
+/**
+ * Canonical origin for metadata/OG/sitemap. The env var wins when it's a real
+ * URL; locally it can still be dotenvx-encrypted ("encrypted:…"), so fall back.
+ */
+const envUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
+export const SITE_URL = envUrl?.startsWith("http") ? envUrl.replace(/\/$/, "") : "https://seif-dx.com";
+
+/**
+ * Calendly link tagged with where the click came from, so Calendly's
+ * UTM report shows which surface of the site actually produces calls.
+ */
+export function bookingUrl(source: string): string {
+  return `${LINKS.CALENDLY}?utm_source=portfolio&utm_medium=${encodeURIComponent(source)}`;
+}
+
 // UI system constants (single source of truth for the shell layers)
 // Windows stack from WINDOW upward (z grows on every focus), so shell layers sit far above.
 export const Z_INDEX = {

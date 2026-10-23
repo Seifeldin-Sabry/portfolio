@@ -16,6 +16,7 @@ interface Notice {
 }
 
 const NOTICES: Notice[] = [
+    {id: "availability", app: "about", title: "Seif", body: "Taking one new project this quarter. Ask the assistant what he's built, or book a quick chat from the Hire menu.", time: "now"},
     {id: "assistant", app: "assistant", title: "Assistant", body: "Ask me anything about Seif's work, e.g. “What did he build at QFacts?”", time: "now"},
     {id: "games", app: "games", title: "Games", body: "Minesweeper, Snake and Tic-tac-toe are installed. Beat the clock.", time: "now"},
     {id: "lab", app: "lab", title: "Lab", body: "Live eval scores from CI: knowledge, guardrail and agentic gates.", time: "today"},
