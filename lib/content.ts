@@ -12,6 +12,7 @@ import type {
   Experience,
   Project,
   Service,
+  CaseStudy,
 } from "./content-types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
@@ -144,6 +145,21 @@ export function getServices(): Service[] {
       link: data.link,
       tool: data.tool,
       demo: data.demo,
+    };
+  });
+}
+
+export function getCaseStudies(): CaseStudy[] {
+  return readDir("case-studies").map(({ data, body }) => {
+    const { sections } = splitSections(body);
+    return {
+      id: data.id,
+      title: data.title,
+      company: data.company,
+      stack: data.stack ?? [],
+      problem: sections["Problem"] ?? "",
+      approach: bullets(sections["What I did"]) ?? [],
+      outcome: bullets(sections["Outcome"]) ?? [],
     };
   });
 }

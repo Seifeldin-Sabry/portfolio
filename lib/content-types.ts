@@ -56,3 +56,21 @@ export interface Service {
     /** app that demonstrates it live */
     demo?: string
 }
+
+export interface CaseStudy {
+    id: string
+    title: string
+    company: string
+    stack: string[]
+    problem: string
+    approach: string[]
+    outcome: string[]
+}
+
+export interface ChangelogEntry {
+    sha: string
+    date: string
+    /** conventional-commit type: feat, fix, perf, ... */
+    type: string
+    summary: string
+}

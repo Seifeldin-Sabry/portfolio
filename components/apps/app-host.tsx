@@ -15,6 +15,8 @@ import GamesApp from "@/components/apps/games-app"
 import ServicesApp from "@/components/apps/services-app"
 import ToolsApp from "@/components/apps/tools-app"
 import MailApp from "@/components/apps/mail-app"
+import CaseStudiesApp from "@/components/apps/case-studies-app"
+import ChangelogApp from "@/components/apps/changelog-app"
 
 export function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) => void): ReactNode {
     switch (id) {
@@ -44,6 +46,10 @@ export function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) 
             return <ToolsApp/>
         case "mail":
             return <MailApp/>
+        case "cases":
+            return <CaseStudiesApp caseStudies={content.caseStudies}/>
+        case "changelog":
+            return <ChangelogApp changelog={content.changelog}/>
     }
 }
 

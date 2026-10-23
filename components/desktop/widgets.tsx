@@ -5,6 +5,7 @@ import {motion, useReducedMotion} from "framer-motion"
 import {Coffee, FileText} from "lucide-react"
 import type {AppId} from "@/components/apps/registry"
 import {useClock} from "@/components/desktop/menu-bar"
+import {AGENT_URL} from "@/lib/agent"
 import {bookingUrl, LINKS, Z_INDEX} from "@/lib/constants"
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
@@ -76,6 +77,8 @@ export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
                 </Widget>
 
                 <CoffeeWidget/>
+
+                <StatusWidget onOpen={onOpen}/>
 
                 <button
                     onClick={() => onOpen("notes")}
@@ -168,6 +171,55 @@ function CalendarWidget() {
                         {d ?? ""}
                     </span>
                 ))}
+            </div>
+        </Widget>
+    )
+}
+
+const STATUS_POLL_MS = 60_000
+
+/** Live system status: pings the assistant's worker and shows real latency. */
+function StatusWidget({onOpen}: {onOpen: (id: AppId) => void}) {
+    const [latency, setLatency] = useState<number | null | "down">(null)
+    useEffect(() => {
+        const ping = async () => {
+            if (document.hidden) return
+            const start = performance.now()
+            try {
+                const res = await fetch(`${AGENT_URL}/health`, {cache: "no-store"})
+                setLatency(res.ok ? Math.round(performance.now() - start) : "down")
+            } catch {
+                setLatency("down")
+            }
+        }
+        void ping()
+        const id = setInterval(ping, STATUS_POLL_MS)
+        return () => clearInterval(id)
+    }, [])
+    const up = typeof latency === "number"
+
+    return (
+        <Widget wide onClick={() => onOpen("lab")} label="Open the Lab">
+            <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">System status</p>
+                <span className="text-[11px] text-muted-foreground">live</span>
+            </div>
+            <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
+                <div>
+                    <p className="text-muted-foreground">Assistant API</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 font-medium">
+                        <span className={`h-1.5 w-1.5 rounded-full ${latency === null ? "bg-foreground/30" : up ? "bg-sky-400" : "bg-rose-400"}`}/>
+                        {latency === null ? "checking" : up ? `${latency} ms` : "offline"}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-muted-foreground">Guardrails</p>
+                    <p className="mt-0.5 font-medium">fail-closed</p>
+                </div>
+                <div>
+                    <p className="text-muted-foreground">Evals</p>
+                    <p className="mt-0.5 font-medium">gated in CI</p>
+                </div>
             </div>
         </Widget>
     )
