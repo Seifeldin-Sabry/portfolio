@@ -26,7 +26,7 @@ import { LAST_RUN_PATH, observe, type CaseResult } from "./run-evals";
 const GENERATOR_MODEL = "groq/openai/gpt-oss-20b";
 const STABILITY_RUNS = 2;
 /** Groq free tier: keep each loop iteration small. */
-const MAX_CANDIDATES_PER_RUN = 8;
+const MAX_CANDIDATES_PER_RUN = 5;
 const MAX_PROMOTED_PER_CATEGORY = 30;
 const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
 const CONTENT_DIRS = ["content", "data/blogs", "cv"];

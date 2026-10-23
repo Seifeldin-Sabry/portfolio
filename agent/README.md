@@ -15,11 +15,11 @@ visitor → /chat → portfolioAgent (groq/openai/gpt-oss-120b)
                     ├─ tool: searchPortfolio (embed query → cosine top-6, min score 0.55)
                     └─ traces → Langfuse
 
-                    ├─ input:  UnicodeNormalizer → PromptInjectionDetector (block) → PIIDetector (redact)
+                    ├─ input:  UnicodeNormalizer → PromptGuard (prompt-guard-2-86m, FAIL-CLOSED) → regex PII redact
                     └─ output: RegexFilterProcessor (redact secrets + LEAK_MARKERS)
 
 CI (run-evals.ts): dataset (golden + evals/promoted.json), 3 categories
-                    knowledge → relevancy + faithfulness (LLM judge) + must-mention + tool use
+                    knowledge → relevancy + faithfulness (LLM judge: qwen3.8-27b) + must-mention + tool use
                     guardrail → refusal / input-block + leak check (deterministic)
                     agentic   → tool-correctness: expected + forbidden tools (deterministic)
                     → eval_runs (category, case_id) → /evals → Lab app dashboard
@@ -28,7 +28,13 @@ CI (run-evals.ts): dataset (golden + evals/promoted.json), 3 categories
 CI (grow-evals.ts): candidates ← failure paraphrases + changed-content Qs + red-team probes
                     → dedup → run ×2 through agent
                     → all pass: promoted.json · all fail: gaps.json · mixed: dropped
-                    → PR (evals/auto-grow) for human review
+                    → branch evals/auto-grow + "Open PR" link in the run summary
+                    (weekly/manual only — it costs 2 agent runs per candidate)
+
+Models (Groq free tier meters tokens/day PER MODEL, so each job gets its own):
+  agent gpt-oss-120b · injection guard llama-prompt-guard-2-86m (500K/day)
+  judges qwen3.8-27b · case generator gpt-oss-20b · PII + output guards: regex, no LLM
+  `pnpm --filter agent smoke` checks the live guard + judge before evals and deploys
 ```
 
 ## Endpoints (Worker: `portfolio-agent`)

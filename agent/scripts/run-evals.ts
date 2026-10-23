@@ -25,9 +25,10 @@ import {
   type RunObservation,
 } from "../evals/scorers";
 
-// 20b on purpose: judges get their own per-model TPM bucket on Groq free tier,
-// so scoring never competes with the agent's gpt-oss-120b token budget.
-const JUDGE_MODEL = "groq/openai/gpt-oss-20b";
+// Groq's free tier meters tokens per day per model. Judges get their own model
+// so scoring never competes with the agent (gpt-oss-120b), the injection guard
+// (prompt-guard-2) or the case generator (gpt-oss-20b).
+export const JUDGE_MODEL = "groq/qwen/qwen3.8-27b";
 const FAITHFULNESS_GATE = 0.7;
 /** minimum pass rate per category */
 const PASS_GATES: Record<EvalCategory, number> = {

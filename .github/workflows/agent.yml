@@ -34,6 +34,16 @@ jobs:
       - name: Typecheck
         run: pnpm --filter agent typecheck
 
+      - name: Guardrail self-checks (fail-closed guard, PII redaction)
+        run: pnpm --filter agent evals:check
+
+      # A fail-closed guard with an unparseable classifier reply would block
+      # every visitor, so prove the live model still behaves before deploying.
+      - name: Smoke-test live models
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent smoke
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
       - name: Build Mastra worker
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent build
         env:

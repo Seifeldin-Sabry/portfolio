@@ -9,7 +9,8 @@
     "embed": "tsx scripts/embed.ts",
     "evals": "tsx scripts/run-evals.ts",
     "evals:grow": "tsx scripts/grow-evals.ts",
-    "evals:check": "tsx evals/scorers.ts"
+    "evals:check": "tsx evals/scorers.ts && tsx evals/guardrails.check.ts",
+    "smoke": "tsx scripts/smoke-models.ts"
   },
   "dependencies": {
     "@mastra/ai-sdk": "^1.10.0",

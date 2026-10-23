@@ -1,16 +1,23 @@
 import { Agent } from "@mastra/core/agent";
-import {
-  PIIDetector,
-  PromptInjectionDetector,
-  RegexFilterProcessor,
-  UnicodeNormalizer,
-} from "@mastra/core/processors";
+import { RegexFilterProcessor, UnicodeNormalizer } from "@mastra/core/processors";
+
+import { PromptGuard } from "../processors/prompt-guard";
 
 import { bookMeeting } from "../tools/book-meeting";
 import { searchPortfolio } from "../tools/search-portfolio";
 import { showContactForm } from "../tools/show-contact-form";
 
-const GUARD_MODEL = "groq/openai/gpt-oss-20b";
+/**
+ * Visitor PII redacted before the model (or any trace) sees it. Regex, not an
+ * LLM: zero cost, can't run out of quota. Emails are deliberately allowed:
+ * bookMeeting needs the visitor's own address.
+ */
+export const PII_RULES = [
+  { name: "credit-card", pattern: /\b\d(?:[ -]?\d){12,18}\b/g, replacement: "[card]" },
+  { name: "iban", pattern: /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){3,7}(?: ?[A-Z0-9]{1,3})?\b/g, replacement: "[iban]" },
+  { name: "us-ssn", pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: "[ssn]" },
+  { name: "phone", pattern: /(?<![\w.])\+?\d[\d ()\-.]{7,}\d(?![\w.])/g, replacement: "[phone]" },
+];
 
 /**
  * Fragments that only appear in this agent's instructions/tool wiring. If one
@@ -59,23 +66,11 @@ Friendly, direct, professional. First person about the site ("this portfolio"), 
   tools: { searchPortfolio, bookMeeting, showContactForm },
   inputProcessors: [
     // Strip zero-width/control chars first so obfuscated injections reach the
-    // LLM detector in plain form.
+    // classifier in plain form.
     new UnicodeNormalizer({ stripControlChars: true }),
-    new PromptInjectionDetector({
-      model: GUARD_MODEL,
-      threshold: 0.8,
-      strategy: "block",
-      detectionTypes: ["injection", "jailbreak", "system-override"],
-    }),
-    new PIIDetector({
-      model: GUARD_MODEL,
-      threshold: 0.6,
-      strategy: "redact",
-      // "email" intentionally NOT detected: contact tools (bookMeeting,
-      // sendEmail) need visitors to hand over their own email address.
-      detectionTypes: ["phone", "credit-card", "ssn", "api-key"],
-      redactionMethod: "mask",
-    }),
+    // Fail-closed injection classifier (blocks if the classifier is unavailable).
+    new PromptGuard(),
+    new RegexFilterProcessor({ phase: "input", strategy: "redact", presets: ["secrets"], rules: PII_RULES }),
   ],
   // Deterministic (zero-LLM-cost) output guard: secrets + internal leaks.
   outputProcessors: [
