@@ -11,6 +11,8 @@ import AppWindow from "@/components/desktop/window"
 import Dock from "@/components/desktop/dock"
 import MenuBar from "@/components/desktop/menu-bar"
 import {useWindowManager, WindowManagerProvider} from "@/components/desktop/window-manager"
+import LoginScreen, {type Persona} from "@/components/desktop/login-screen"
+import {PERSONA_KEY} from "@/lib/constants"
 import BootScreen from "@/components/shell/boot-screen"
 import {useDesktopOS} from "@/components/shell/device"
 
@@ -20,16 +22,16 @@ const WALLPAPER =
 
 /**
  * Mirrors the focused app into the URL (/apps/<id>), so the address bar is
- * always a shareable link to what you're looking at. Skips the first render:
+ * always a shareable link to what you're looking at. Only reacts to changes:
  * landing on "/" shouldn't rewrite the URL before the visitor does anything.
  */
 function useSyncAppUrl(activeId: AppId | null) {
-    const first = useRef(true)
+    // Compare with the last value rather than a "first run" flag: React's dev
+    // StrictMode runs effects twice, which would defeat a flag.
+    const previous = useRef(activeId)
     useEffect(() => {
-        if (first.current) {
-            first.current = false
-            return
-        }
+        if (previous.current === activeId) return
+        previous.current = activeId
         const path = activeId ? `/apps/${activeId}` : "/"
         if (window.location.pathname !== path) window.history.replaceState(window.history.state, "", path)
     }, [activeId])
@@ -63,6 +65,32 @@ function DesktopSurface({content, initialApp}: {content: ContentProps; initialAp
         if (initialApp) dispatch({type: "open", id: initialApp})
     }, [initialApp, dispatch])
     useSyncAppUrl(state.activeId)
+
+    // First desktop visit without a deep link: ask who's visiting.
+    const [showLogin, setShowLogin] = useState(false)
+    useEffect(() => {
+        try {
+            if (!initialApp && !localStorage.getItem(PERSONA_KEY)) setShowLogin(true)
+        } catch {
+            /* private mode: skip the picker */
+        }
+    }, [initialApp])
+    const choosePersona = useCallback(
+        (persona: Persona | null) => {
+            setShowLogin(false)
+            try {
+                localStorage.setItem(PERSONA_KEY, persona?.id ?? "browsing")
+            } catch {
+                /* private mode */
+            }
+            // Umami (already on the site) records who visits, no extra tracker.
+            ;(window as {umami?: {track: (event: string, data: object) => void}}).umami?.track("persona", {id: persona?.id ?? "browsing"})
+            if (!persona) return
+            dispatch({type: "close-all"})
+            for (const id of persona.apps) dispatch({type: "open", id})
+        },
+        [dispatch],
+    )
     const [notificationsOpen, setNotificationsOpen] = useState(false)
     const windows = Object.values(state.windows).filter((w) => w !== undefined)
     const open = useCallback((id: AppId) => dispatch({type: "open", id}), [dispatch])
@@ -86,7 +114,8 @@ function DesktopSurface({content, initialApp}: {content: ContentProps; initialAp
                 onLaunch={launch}
                 onCloseAll={closeAll}
             />
-            <BootToast onOpen={open}/>
+            <AnimatePresence>{showLogin && <LoginScreen key="login" onChoose={choosePersona}/>}</AnimatePresence>
+            {!showLogin && <BootToast onOpen={open}/>}
             <NotificationCenter open={notificationsOpen} onClose={() => setNotificationsOpen(false)} onOpen={open}/>
         </>
     )
