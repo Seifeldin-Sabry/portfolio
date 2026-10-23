@@ -9,7 +9,7 @@ LinkedIn's Post Inspector first: https://www.linkedin.com/post-inspector/).
 **Title:** Show HN: My portfolio is a desktop OS with an AI assistant that writes its own tests
 
 **Body:**
-I rebuilt my portfolio as a small desktop: draggable windows, a dock, a terminal,
+I rebuilt my portfolio as a small desktop: draggable windows, a dock, and
 Minesweeper. The part I'm proudest of is the assistant: a RAG agent with guardrails,
 and an eval suite that grows itself in CI (it paraphrases its own failures, writes
 questions about content I change, red-teams itself, and only keeps cases that pass
@@ -19,7 +19,7 @@ That suite caught my guardrails failing *open*: when the free-tier model hit its
 quota, the injection detector logged "allowing content" and switched itself off. Write-up:
 https://seif-dx.com/blog/self-improving-evals
 
-Site: https://seif-dx.com · Lab (live eval scores): https://seif-dx.com/apps/lab
+Site: https://seif-dx.com · Assistant + live eval scores: https://seif-dx.com/apps/assistant
 
 ## LinkedIn
 
@@ -35,7 +35,7 @@ The fix:
 → a live smoke test that gates every deploy (it caught a broken model on day one)
 
 The whole system is on my site. Try to break the assistant:
-https://seif-dx.com/apps/lab
+https://seif-dx.com/apps/assistant
 
 If you're building an assistant over your own docs and want it done with this level of
 care, I'm taking one project this quarter.
@@ -60,7 +60,7 @@ build-time OG cards. Link: https://seif-dx.com
 
 | Audience | Link |
 |---|---|
-| MSSP founders (SDX outbound) | https://seif-dx.com/apps/tools |
+| MSSP founders (SDX outbound) | https://seif-dx.com/apps/services |
 | Freelance clients | https://seif-dx.com/apps/services |
-| Engineers / HN | https://seif-dx.com/apps/lab |
-| Recruiters | https://seif-dx.com/apps/experience |
+| Engineers / HN | https://seif-dx.com/apps/assistant |
+| Recruiters | https://seif-dx.com/apps/work |

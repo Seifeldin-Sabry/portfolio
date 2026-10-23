@@ -2,24 +2,14 @@
 
 import {memo, useEffect, useState, type ReactNode} from "react"
 import {motion, useReducedMotion} from "framer-motion"
-import {Coffee, FileText} from "lucide-react"
-import type {AppId} from "@/components/apps/registry"
+import {Coffee} from "lucide-react"
 import {useClock} from "@/components/desktop/menu-bar"
-import {AGENT_URL} from "@/lib/agent"
 import {bookingUrl, LINKS, Z_INDEX} from "@/lib/constants"
 
-const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
 const COFFEE_KEY = "seif-os-coffees"
 
-export const SHIPPED = [
-    {title: "Ollie AI assistant", detail: "RAG over customer documents, human review"},
-    {title: "Mobile companion", detail: "checklists from the shop floor"},
-    {title: "Marketing site & CMS", detail: "off Wix · Next.js · Strapi"},
-    {title: "Stripe billing", detail: "trials · tiered seats · dunning"},
-]
-
 /** Desktop widgets: sit on the wallpaper, under every window. Memoized: window changes don't touch them. */
-export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
+export default memo(function Widgets() {
     const reduce = useReducedMotion()
 
     return (
@@ -37,18 +27,6 @@ export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
             >
                 <ClockWidget/>
                 <CalendarWidget/>
-
-                <Widget wide onClick={() => onOpen("experience")} label="Open Experience">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">Recently shipped</p>
-                    <ul className="mt-2 space-y-1.5">
-                        {SHIPPED.map((item) => (
-                            <li key={item.title}>
-                                <p className="mb-0 text-[13px] font-medium leading-tight">{item.title}</p>
-                                <p className="mb-0 text-[11px] leading-tight text-muted-foreground">{item.detail}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </Widget>
 
                 <Widget>
                     <div className="flex items-center gap-1.5">
@@ -77,23 +55,6 @@ export default memo(function Widgets({onOpen}: {onOpen: (id: AppId) => void}) {
                 </Widget>
 
                 <CoffeeWidget/>
-
-                <StatusWidget onOpen={onOpen}/>
-
-                <button
-                    onClick={() => onOpen("notes")}
-                    className="col-span-2 -rotate-1 rounded-sm [@media(max-height:900px)]:hidden bg-[#f3dfa2] px-4 py-3 text-left text-[#3b3016] shadow-[0_14px_30px_rgba(0,0,0,0.45)] transition-transform hover:rotate-0"
-                >
-                    <p className="font-mono text-[10px] uppercase tracking-wider opacity-60">note to self</p>
-                    <p className="mt-1 text-[13px] leading-snug">
-                        drag windows around ✦ play minesweeper ✦ ask the assistant anything about my work
-                    </p>
-                </button>
-
-                <div className="col-span-2 flex justify-end gap-5 px-1 [@media(max-height:1000px)]:hidden">
-                    <DesktopFile label="CV.pdf" href={CV_URL}/>
-                    <DesktopFile label="Notes" onClick={() => onOpen("notes")}/>
-                </div>
             </motion.aside>
         </div>
     )
@@ -176,55 +137,6 @@ function CalendarWidget() {
     )
 }
 
-const STATUS_POLL_MS = 60_000
-
-/** Live system status: pings the assistant's worker and shows real latency. */
-function StatusWidget({onOpen}: {onOpen: (id: AppId) => void}) {
-    const [latency, setLatency] = useState<number | null | "down">(null)
-    useEffect(() => {
-        const ping = async () => {
-            if (document.hidden) return
-            const start = performance.now()
-            try {
-                const res = await fetch(`${AGENT_URL}/health`, {cache: "no-store"})
-                setLatency(res.ok ? Math.round(performance.now() - start) : "down")
-            } catch {
-                setLatency("down")
-            }
-        }
-        void ping()
-        const id = setInterval(ping, STATUS_POLL_MS)
-        return () => clearInterval(id)
-    }, [])
-    const up = typeof latency === "number"
-
-    return (
-        <Widget wide onClick={() => onOpen("lab")} label="Open the Lab">
-            <div className="flex items-center justify-between">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">System status</p>
-                <span className="text-[11px] text-muted-foreground">live</span>
-            </div>
-            <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
-                <div>
-                    <p className="text-muted-foreground">Assistant API</p>
-                    <p className="mt-0.5 flex items-center gap-1.5 font-medium">
-                        <span className={`h-1.5 w-1.5 rounded-full ${latency === null ? "bg-foreground/30" : up ? "bg-sky-400" : "bg-rose-400"}`}/>
-                        {latency === null ? "checking" : up ? `${latency} ms` : "offline"}
-                    </p>
-                </div>
-                <div>
-                    <p className="text-muted-foreground">Guardrails</p>
-                    <p className="mt-0.5 font-medium">fail-closed</p>
-                </div>
-                <div>
-                    <p className="text-muted-foreground">Evals</p>
-                    <p className="mt-0.5 font-medium">gated in CI</p>
-                </div>
-            </div>
-        </Widget>
-    )
-}
-
 /** Virtual coffee counter (per browser) + a link to buy a real one. */
 function CoffeeWidget() {
     const [count, setCount] = useState(0)
@@ -269,26 +181,5 @@ function CoffeeWidget() {
                 </a>
             </div>
         </Widget>
-    )
-}
-
-function DesktopFile({label, href, onClick}: {label: string; href?: string; onClick?: () => void}) {
-    const body = (
-        <>
-            <span className="flex h-12 w-10 items-center justify-center rounded-md border border-foreground/15 bg-foreground/[0.06] text-muted-foreground transition-colors group-hover:text-foreground">
-                <FileText size={18} strokeWidth={1.5}/>
-            </span>
-            <span className="rounded px-1 text-[11px] text-foreground/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.6)] group-hover:bg-accent/30">{label}</span>
-        </>
-    )
-    const className = "group flex flex-col items-center gap-1"
-    return href ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
-            {body}
-        </a>
-    ) : (
-        <button onClick={onClick} className={className}>
-            {body}
-        </button>
     )
 }

@@ -7,6 +7,8 @@ import {Send} from "lucide-react"
 import {Streamdown} from "streamdown"
 
 import {AGENT_URL, sendToSeif} from "@/lib/agent"
+import LabApp from "@/components/apps/lab-app"
+import Tabs from "@/components/apps/tabs"
 
 const SUGGESTIONS = [
     "What does Seif do at QFacts?",
@@ -14,7 +16,19 @@ const SUGGESTIONS = [
     "Book a call with Seif",
 ]
 
+/** Assistant window: chat plus how it's built (the former Lab app). */
 export default function AssistantApp() {
+    return (
+        <Tabs tabs={ASSISTANT_TABS}>{(tab) => (tab === "chat" ? <Chat/> : <LabApp/>)}</Tabs>
+    )
+}
+
+const ASSISTANT_TABS: {id: "chat" | "lab"; label: string}[] = [
+    {id: "chat", label: "Chat"},
+    {id: "lab", label: "How it's built"},
+]
+
+function Chat() {
     const [input, setInput] = useState("")
     const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -49,7 +63,7 @@ export default function AssistantApp() {
                 <div className="flex-1">
                     <p className="text-xs font-medium leading-none">Ask about Seif</p>
                     <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-                        RAG, guardrails, evals — <a href="/ai" className="underline hover:text-accent">how it works</a>
+                        RAG, guardrails, evals: see the <span className="text-foreground">How it&apos;s built</span> tab
                     </p>
                 </div>
                 <span className={`h-2 w-2 rounded-full ${busy ? "animate-pulse bg-amber-400" : "bg-accent"}`}/>

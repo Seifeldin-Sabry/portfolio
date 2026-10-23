@@ -3,53 +3,26 @@
 import {memo, startTransition, useEffect, useState, type ReactNode} from "react"
 import type {AppId, ContentProps} from "@/components/apps/registry"
 import AboutApp from "@/components/apps/about-app"
-import ProjectsApp from "@/components/apps/projects-app"
-import ExperienceApp from "@/components/apps/experience-app"
+import WorkApp from "@/components/apps/work-app"
+import ServicesApp from "@/components/apps/services-app"
 import BlogApp from "@/components/apps/blog-app"
 import AssistantApp from "@/components/apps/assistant-app"
-import LabApp from "@/components/apps/lab-app"
-import NotesApp from "@/components/apps/notes-app"
-import TerminalApp from "@/components/apps/terminal-app"
-import CalculatorApp from "@/components/apps/calculator-app"
 import GamesApp from "@/components/apps/games-app"
-import ServicesApp from "@/components/apps/services-app"
-import ToolsApp from "@/components/apps/tools-app"
-import MailApp from "@/components/apps/mail-app"
-import CaseStudiesApp from "@/components/apps/case-studies-app"
-import ChangelogApp from "@/components/apps/changelog-app"
 
 export function renderApp(id: AppId, content: ContentProps, onOpen: (id: AppId) => void): ReactNode {
     switch (id) {
         case "about":
             return <AboutApp/>
-        case "projects":
-            return <ProjectsApp projects={content.projects}/>
-        case "experience":
-            return <ExperienceApp experiences={content.experiences} education={content.education}/>
+        case "work":
+            return <WorkApp content={content}/>
+        case "services":
+            return <ServicesApp services={content.services} onOpen={onOpen}/>
         case "blog":
             return <BlogApp posts={content.posts}/>
         case "assistant":
             return <AssistantApp/>
-        case "lab":
-            return <LabApp/>
-        case "notes":
-            return <NotesApp/>
-        case "terminal":
-            return <TerminalApp onOpen={onOpen}/>
-        case "calculator":
-            return <CalculatorApp/>
         case "games":
             return <GamesApp/>
-        case "services":
-            return <ServicesApp services={content.services} onOpen={onOpen}/>
-        case "tools":
-            return <ToolsApp/>
-        case "mail":
-            return <MailApp/>
-        case "cases":
-            return <CaseStudiesApp caseStudies={content.caseStudies}/>
-        case "changelog":
-            return <ChangelogApp changelog={content.changelog}/>
     }
 }
 

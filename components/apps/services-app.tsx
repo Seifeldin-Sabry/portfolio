@@ -1,12 +1,16 @@
 "use client"
 
+import {useState} from "react"
 import {ArrowUpRight} from "lucide-react"
+import {AutomationFinder, OutboundRoi} from "@/components/apps/lead-tools"
 import type {AppId} from "@/components/apps/registry"
 import type {Service} from "@/lib/content-types"
 import {bookingUrl} from "@/lib/constants"
 
 /** What you can hire Seif (or SDX Studio) for. Copy lives in content/services/*.md. */
 export default function ServicesApp({services, onOpen}: {services: Service[]; onOpen: (id: AppId) => void}) {
+    // Each offer's interactive tool opens inside its own card: no separate app to find.
+    const [openTool, setOpenTool] = useState<string | null>(null)
     return (
         <div className="h-full overflow-y-auto [&_p]:mb-0">
             <div className="border-b border-window-border px-5 py-4">
@@ -43,13 +47,17 @@ export default function ServicesApp({services, onOpen}: {services: Service[]; on
                                 Book a quick chat
                             </a>
                             {s.tool && (
-                                <button onClick={() => onOpen("tools")} className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-foreground/10">
-                                    {s.tool === "outbound" ? "Estimate your pipeline" : "Estimate your hours saved"}
+                                <button
+                                    onClick={() => setOpenTool(openTool === s.id ? null : s.id)}
+                                    aria-expanded={openTool === s.id}
+                                    className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-foreground/10"
+                                >
+                                    {openTool === s.id ? "Close" : s.tool === "outbound" ? "Estimate your pipeline" : "Find your automation opportunities"}
                                 </button>
                             )}
                             {s.demo && (
                                 <button onClick={() => onOpen(s.demo as AppId)} className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-foreground/10">
-                                    See the live demo
+                                    See the assistant I built
                                 </button>
                             )}
                             {s.link && (
@@ -58,6 +66,11 @@ export default function ServicesApp({services, onOpen}: {services: Service[]; on
                                 </a>
                             )}
                         </div>
+                        {openTool === s.id && (
+                            <div className="mt-4 border-t border-border pt-4">
+                                {s.tool === "outbound" ? <OutboundRoi/> : <AutomationFinder/>}
+                            </div>
+                        )}
                     </article>
                 ))}
             </div>

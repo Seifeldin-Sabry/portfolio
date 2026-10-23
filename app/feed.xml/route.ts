@@ -1,18 +1,19 @@
 import RSS from "rss"
 import { getSortedBlogPosts } from "@/lib/blogs"
+import { SITE_URL } from "@/lib/constants"
 
 export const dynamic = "force-static"
 
 export async function GET() {
     const posts = getSortedBlogPosts()
-    const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL
+    const baseUrl = SITE_URL
 
     const feed = new RSS({
         title: "Seif's Blog",
         description: "Blog posts about web development, technology, and software engineering",
         feed_url: `${baseUrl}/feed.xml`,
         site_url: baseUrl,
-        image_url: `${baseUrl}/og-image.png`,
+        image_url: `${baseUrl}/opengraph-image`,
         language: "en",
         pubDate: new Date().toUTCString(),
         ttl: 60,

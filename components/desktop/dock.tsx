@@ -2,7 +2,7 @@
 
 import {memo, useLayoutEffect, useRef, useState, type ReactNode} from "react"
 import {motion, useAnimationControls, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue} from "framer-motion"
-import {FileText, Trash2} from "lucide-react"
+import {FileText} from "lucide-react"
 import {DOCK_APPS, type AppId, APP_META} from "@/components/apps/registry"
 import {Z_INDEX} from "@/lib/constants"
 
@@ -11,7 +11,6 @@ interface DockProps {
     activeId: AppId | null
     minimizedIds: AppId[]
     onLaunch: (id: AppId) => void
-    onCloseAll: () => void
 }
 
 const CV_URL = "/assets/documents/seifeldin-sabry-cv.pdf"
@@ -43,7 +42,7 @@ function useBaseSize(): number {
     return size
 }
 
-function Dock({openIds, activeId, minimizedIds, onLaunch, onCloseAll}: DockProps) {
+function Dock({openIds, activeId, minimizedIds, onLaunch}: DockProps) {
     const mouseX = useMotionValue(Infinity)
     const reduce = useReducedMotion()
     const base = useBaseSize()
@@ -79,11 +78,6 @@ function Dock({openIds, activeId, minimizedIds, onLaunch, onCloseAll}: DockProps
                         <FileText className="h-1/2 w-1/2" strokeWidth={1.6}/>
                     </span>
                 </DockItem>
-                <DockItem mouseX={mouseX} base={base} label="Trash · close all windows" onClick={onCloseAll}>
-                    <span className="flex h-full w-full items-center justify-center rounded-[22%] bg-foreground/10 text-foreground/80">
-                        <Trash2 className="h-1/2 w-1/2" strokeWidth={1.5}/>
-                    </span>
-                </DockItem>
             </div>
         </div>
     )
@@ -96,7 +90,6 @@ function dockEqual(prev: DockProps, next: DockProps): boolean {
     return (
         prev.activeId === next.activeId &&
         prev.onLaunch === next.onLaunch &&
-        prev.onCloseAll === next.onCloseAll &&
         sameMembers(prev.openIds, next.openIds) &&
         sameMembers(prev.minimizedIds, next.minimizedIds)
     )

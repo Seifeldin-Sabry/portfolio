@@ -66,11 +66,3 @@ export interface CaseStudy {
     approach: string[]
     outcome: string[]
 }
-
-export interface ChangelogEntry {
-    sha: string
-    date: string
-    /** conventional-commit type: feat, fix, perf, ... */
-    type: string
-    summary: string
-}
