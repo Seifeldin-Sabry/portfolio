@@ -18,22 +18,22 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 const DESCRIPTION =
-    "Seifeldin Sabry: software engineer in Antwerp. Owns the Qfacts platform end to end (TypeScript, GCP, Stripe, AI). Founder of SDX Studio."
+    "Seifeldin Sabry: founder of SDX Studio, which books qualified meetings with security buyers for MSSPs. Also a software engineer in Antwerp who owns the Qfacts platform end to end."
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
-    title: "Seif | Software Engineer & Founder",
+    title: "Seif | Founder of SDX Studio & Software Engineer",
     description: DESCRIPTION,
     alternates: {canonical: "/"},
     openGraph: {
         type: "website",
         siteName: "Seif",
-        title: "Seif | Software Engineer & Founder",
+        title: "Seif | Founder of SDX Studio & Software Engineer",
         description: DESCRIPTION,
         url: "/",
         locale: "en_BE",
     },
-    twitter: {card: "summary_large_image", title: "Seif | Software Engineer & Founder", description: DESCRIPTION},
+    twitter: {card: "summary_large_image", title: "Seif | Founder of SDX Studio & Software Engineer", description: DESCRIPTION},
 }
 
 /** Structured data so search engines know who this is and what he offers. */
@@ -60,9 +60,9 @@ const JSON_LD = {
             "@id": `${SITE_URL}/#sdx-studio`,
             name: "SDX Studio",
             url: LINKS.SDX_STUDIO,
-            description: "GTM engineering: a done-for-you outbound agency for MSSPs (managed security service providers).",
+            description: "Done-for-you outbound for MSSPs (managed security service providers): 6 qualified meetings with security buyers in 90 days, or SDX keeps working free until they are held.",
             founder: {"@id": `${SITE_URL}/#person`},
-            areaServed: "Europe",
+            areaServed: ["United States", "United Kingdom", "Europe", "Asia-Pacific"],
         },
     ],
 }

@@ -6,7 +6,7 @@ import type {AppId} from "@/components/apps/registry"
  * properly in LinkedIn, Slack or email instead of as a bare homepage link.
  */
 export const APP_PAGES: Record<AppId, {title: string; description: string}> = {
-    about: {title: "About Seif", description: "Software engineer in Antwerp. Owns the Qfacts platform end to end; founder of SDX Studio."},
+    about: {title: "About Seif", description: "Founder of SDX Studio, which books qualified meetings with security buyers for MSSPs. Software engineer in Antwerp who owns the Qfacts platform end to end."},
     work: {title: "Work", description: "Platform & infrastructure owner at Qfacts: experience, case studies and projects."},
     services: {title: "Hire Seif", description: "Outbound for MSSPs via SDX Studio, freelance software engineering, and AI automation workflows that win back 15+ hours a month."},
     blog: {title: "Writing", description: "Notes on platform engineering, AI evals and self-hosting."},
