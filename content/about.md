@@ -14,9 +14,10 @@ products and the systems behind them — from type-safe monorepos and
 event-driven infrastructure to billing, onboarding, and automation that holds
 up in production.
 
-He is the founder of SDX Studio (started March 2026), a GTM engineering
-business: a done-for-you outbound agency for MSSPs (managed security service
-providers), run from Claude Code (https://sdxstudio.co). Alongside that he works as a software engineer at QFacts — where he owns the
+He is the founder of SDX Studio (started March 2026), a done-for-you outbound
+agency for MSSPs (managed security service providers): it books qualified
+meetings with security buyers, 6 held meetings in 90 days, and keeps working
+free until they are delivered (https://sdxstudio.co). Alongside that he works as a software engineer at QFacts — where he owns the
 platform end to end and shipped the in-product AI agent, the mobile companion
 and the company's new marketing site and CMS.
 

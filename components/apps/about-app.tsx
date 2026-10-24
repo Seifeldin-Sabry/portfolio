@@ -67,11 +67,40 @@ export default function AboutApp() {
                             <span className="rounded bg-accent/10 px-1.5 py-0.5 font-mono text-xs text-accent">Live</span>
                         </div>
                         <p className="mt-0.5 text-sm text-muted-foreground">
-                            Engineer @ <span className="font-medium text-foreground">Qfacts</span> · Founder @{" "}
+                            Founder @{" "}
                             <a href={LINKS.SDX_STUDIO} target="_blank" rel="noopener noreferrer" className="font-medium text-foreground underline decoration-foreground/30 underline-offset-2 hover:text-accent">
                                 SDX Studio
-                            </a> (GTM engineering)
+                            </a> (outbound for MSSPs) · Engineer @ <span className="font-medium text-foreground">Qfacts</span>
                         </p>
+                    </div>
+                </div>
+
+                {/* SDX Studio comes first: MSSP prospects from outreach land here too. */}
+                <div className="mt-5 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-wider text-accent">SDX Studio</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-foreground">
+                        I book qualified meetings with security buyers for MSSPs. 6 held meetings in 90 days, or I keep
+                        working free until you have them.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        <a
+                            href={LINKS.SDX_STUDIO}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors duration-300 hover:bg-accent/10"
+                        >
+                            See the offer
+                            <ArrowUpRight size={13} aria-hidden="true"/>
+                        </a>
+                        <a
+                            href={LINKS.SDX_DISCOVERY}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-300 hover:border-accent/40 hover:text-foreground"
+                        >
+                            Book a 30-minute call
+                            <ArrowUpRight size={13} aria-hidden="true"/>
+                        </a>
                     </div>
                 </div>
 
@@ -111,8 +140,8 @@ export default function AboutApp() {
                         Remote
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"/>
-                        Open to opportunities
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent"/>
+                        Antwerp, Belgium
                     </span>
                 </div>
 

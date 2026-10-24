@@ -14,5 +14,5 @@ Done-for-you outbound for managed security service providers, run by SDX Studio,
 
 - ICP and target-account research for security buyers
 - Lead scraping and enrichment, run as versioned playbooks from Claude Code
-- LinkedIn outreach (Sales Navigator + HeyReach) and CISO-targeted cold email
+- LinkedIn outreach (HeyReach) and CISO-targeted cold email
 - Booked, qualified meetings straight onto your calendar

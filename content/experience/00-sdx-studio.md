@@ -6,8 +6,8 @@ period: "March 2026 – Present"
 technologies:
   - "Claude Code"
   - "GTM engineering"
-  - "LinkedIn Sales Navigator"
   - "HeyReach"
+  - "Smartlead"
   - "Data enrichment"
 logo: "/assets/logos/brand-mark.svg"
 ---
@@ -18,5 +18,5 @@ SDX Studio is a GTM engineering business: a done-for-you outbound agency for MSS
 ## Achievements
 
 - Runs the whole outbound motion from Claude Code: lead scraping, enrichment, copy and runbooks as versioned playbooks and custom skills
-- Built multichannel outreach for security buyers: LinkedIn (Sales Navigator + HeyReach), calls and CISO-targeted cold email
+- Built multichannel outreach for security buyers: LinkedIn (HeyReach) and CISO-targeted cold email (Smartlead)
 - Treats the business like a codebase: offer, contract, copy and playbooks live in one repo with a changelog, so the motion improves with every iteration
