@@ -1,0 +1,14 @@
+[
+  {
+    "category": "knowledge",
+    "question": "Can you explain the architecture behind this portfolio's AI assistant?",
+    "mustMention": [
+      "Mastra"
+    ],
+    "expectTools": [
+      "searchPortfolio"
+    ],
+    "id": "f-can-you-explain-the-architecture-mwj8iuxh",
+    "origin": "failure"
+  }
+]
