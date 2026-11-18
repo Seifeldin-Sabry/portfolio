@@ -2,8 +2,8 @@
 id: "software-engineering"
 title: "Product and software engineering"
 pillar: "product"
-audience: "SaaS teams and founders, as a hire or a freelancer"
-via: "Seif, full-time or freelance"
+audience: "SaaS teams and founders"
+via: "Seif, freelance"
 ---
 # Product and software engineering
 

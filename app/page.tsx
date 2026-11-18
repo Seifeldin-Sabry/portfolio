@@ -85,7 +85,7 @@ export default function Home() {
             </Section>
 
             {/* Services */}
-            <Section id="services" eyebrow="Services" title="Three ways to work with me" intro="As a full-time hire on your team, or on a project basis.">
+            <Section id="services" eyebrow="Services" title="Three ways to work with me" intro="Project work for teams and businesses, from a one-off website to a long-running build.">
                 <div className="space-y-6">
                     {PILLAR_ORDER.map((p) => {
                         const service = services.find((s) => s.pillar === p)

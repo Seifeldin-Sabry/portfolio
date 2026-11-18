@@ -22,9 +22,8 @@ engineering agency that runs done-for-you outbound; its first niche is MSSPs
 (managed security service providers), and the same playbook is built to work
 for any B2B niche (https://sdxstudio.co).
 
-## What Seif is open to
+## Ways to work with Seif
 
-- Software engineering, product engineering, AI engineering and GTM engineering roles, in London or remote in Europe.
 - Freelance projects: websites, migrations and SEO/AEO for local and small businesses, GTM and outbound systems for B2B teams, and product engineering for SaaS.
 
 ## How Seif works

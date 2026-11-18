@@ -13,7 +13,7 @@ export const PROFILE = {
     intro:
         "Software engineer at QFacts, where I own a GAMP 5 validated SaaS platform end to end, and founder of SDX Studio, a GTM engineering agency. I work in TypeScript and Python, and I use AI where it saves real hours.",
     /** Shown as a small status line in the hero. Set to null to hide it. */
-    availability: "Open to software and GTM engineering roles in London or remote in Europe, and to freelance projects.",
+    availability: null as string | null,
 } as const
 
 export const PILLARS: Record<Pillar, {label: string; title: string; blurb: string; anchor: string}> = {
@@ -53,7 +53,7 @@ export const ASSISTANT_STARTERS: {audience: string; questions: string[]}[] = [
         audience: "Hiring",
         questions: [
             "What has Seif built at QFacts?",
-            "Is Seif a fit for a GTM engineer role?",
+            "What has Seif built as a GTM engineer?",
             "What is his TypeScript and Python experience?",
         ],
     },

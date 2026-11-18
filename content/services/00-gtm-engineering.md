@@ -3,7 +3,7 @@ id: "gtm-engineering"
 title: "GTM engineering and AI outbound"
 pillar: "gtm"
 audience: "B2B teams, founders and agencies that need pipeline"
-via: "Seif, through SDX Studio or as a GTM engineer on your team"
+via: "Seif, through SDX Studio"
 link: "https://sdxstudio.co"
 ---
 # GTM engineering and AI outbound

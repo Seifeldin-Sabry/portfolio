@@ -4,7 +4,7 @@ title: "From Wix to a site that search engines and AI assistants can read"
 company: "QFacts"
 pillar: "web"
 featured: true
-period: "March 2026 – present"
+period: "2026 – present"
 summary: "Moved qfacts.be off Wix to Next.js with a CMS the marketing team runs, fixed the SEO foundations, and opened the site to AI assistants."
 link: "https://qfacts.be"
 stack: ["Next.js", "Strapi", "Cloud Run", "Pulumi", "PostHog", "Ahrefs", "Search Console"]
@@ -28,14 +28,13 @@ QFacts sells an eQMS to pharma and biotech SMEs, and its website lived on Wix. T
 ## Outcome
 
 - Marketing publishes on its own; engineers are out of the loop for content.
-- Search traffic is growing: visitors arriving from search engines went from 20 in October to 68 in the first 18 days of November 2026.
-- AI assistants have started sending visitors (ChatGPT in September, Gemini in November), and the site is now built to be cited by them.
+- Around 10× more daily visitors than before the move in June 2026, and still growing.
+- AI assistants such as ChatGPT and Gemini have started sending visitors, and the site is built to be cited by them.
 
 ## Numbers
 
-- 133 | pages in the sitemap | live sitemap, 18 Nov 2026
+- ~10× | daily visitors since the June 2026 move | analytics
+- 130+ | indexable pages | live sitemap
 - 5 | languages with hreflang | live site
-- 3.4× | search visitors, October vs 1–18 November | PostHog
 - 17 | search and AI crawlers named in robots.txt | live site
-- 12 | blog articles live, written in the CMS | live sitemap
-- 89 | Lighthouse mobile score, home page | lab test, Oct 2026
+- 10+ | blog articles live, written in the CMS | live sitemap
