@@ -64,7 +64,7 @@ const JSON_LD = {
             "@id": `${SITE_URL}/#sdx-studio`,
             name: "SDX Studio",
             url: LINKS.SDX_STUDIO,
-            description: "GTM engineering agency running done-for-you outbound. First niche: MSSPs (managed security service providers), 6 qualified meetings with security buyers in 90 days, or SDX keeps working free until they are held.",
+            description: "GTM engineering agency running done-for-you outbound. First niche: MSSPs (managed security service providers); the same playbook works for any B2B niche.",
             founder: {"@id": `${SITE_URL}/#person`},
             areaServed: ["United States", "United Kingdom", "Europe", "Asia-Pacific"],
         },

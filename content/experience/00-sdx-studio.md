@@ -13,7 +13,7 @@ logo: "/assets/logos/brand-mark.svg"
 ---
 # Founder — SDX Studio
 
-SDX Studio is a GTM engineering agency that runs done-for-you outbound. Its first niche is MSSPs (managed security service providers), and the playbook is built to be reused for any B2B niche. The MSSP offer is simple: 6 qualified appointments in 90 days, and SDX keeps working for free until they're delivered. Website: https://sdxstudio.co
+SDX Studio is a GTM engineering agency that runs done-for-you outbound. Its first niche is MSSPs (managed security service providers), and the playbook is built to be reused for any B2B niche. Website: https://sdxstudio.co
 
 ## Achievements
 
