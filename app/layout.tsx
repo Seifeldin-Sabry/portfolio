@@ -5,6 +5,9 @@ import {JetBrains_Mono} from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
 import {ThemeProvider} from "@/components/theme-provider"
+import AssistantProvider from "@/components/assistant/assistant-provider"
+import Header from "@/components/site/header"
+import Footer from "@/components/site/footer"
 import {LINKS, SITE_CONFIG, SITE_URL} from "@/lib/constants"
 
 const geistSans = Geist({
@@ -17,23 +20,24 @@ const jetbrainsMono = JetBrains_Mono({
     variable: "--font-jetbrains-mono",
 })
 
+const TITLE = "Seifeldin Sabry | Product engineer & GTM engineer"
 const DESCRIPTION =
-    "Seifeldin Sabry: founder of SDX Studio, which books qualified meetings with security buyers for MSSPs. Also a software engineer in Antwerp who owns the Qfacts platform end to end."
+    "Seif builds the product (TypeScript, Python), the website that gets it found (migrations, SEO and AEO) and the outbound that fills the pipeline (AI-driven GTM). Software engineer at QFacts, founder of SDX Studio."
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
-    title: "Seif | Founder of SDX Studio & Software Engineer",
+    title: {default: TITLE, template: "%s · Seif"},
     description: DESCRIPTION,
     alternates: {canonical: "/"},
     openGraph: {
         type: "website",
         siteName: "Seif",
-        title: "Seif | Founder of SDX Studio & Software Engineer",
+        title: TITLE,
         description: DESCRIPTION,
         url: "/",
         locale: "en_BE",
     },
-    twitter: {card: "summary_large_image", title: "Seif | Founder of SDX Studio & Software Engineer", description: DESCRIPTION},
+    twitter: {card: "summary_large_image", title: TITLE, description: DESCRIPTION},
 }
 
 /** Structured data so search engines know who this is and what he offers. */
@@ -47,12 +51,12 @@ const JSON_LD = {
             alternateName: "Seif",
             url: SITE_URL,
             email: `mailto:${SITE_CONFIG.EMAIL}`,
-            jobTitle: "Software Engineer",
+            jobTitle: ["Software Engineer", "Product Engineer", "GTM Engineer"],
             worksFor: {"@type": "Organization", name: "Qfacts", url: "https://qfacts.be"},
             founder: {"@id": `${SITE_URL}/#sdx-studio`},
             alumniOf: {"@type": "CollegeOrUniversity", name: "Karel de Grote Hogeschool"},
             address: {"@type": "PostalAddress", addressLocality: "Antwerp", addressCountry: "BE"},
-            knowsAbout: ["TypeScript", "Python", "NestJS", "Next.js", "Google Cloud Platform", "Pulumi", "Stripe billing", "AI agents", "LLM evaluation", "GTM engineering"],
+            knowsAbout: ["TypeScript", "Python", "NestJS", "Next.js", "React", "Google Cloud Platform", "Pulumi", "Stripe billing", "AI agents", "LLM evaluation", "GTM engineering", "Outbound sales automation", "Search engine optimization", "Answer engine optimization", "Website migration"],
             sameAs: [LINKS.GITHUB, LINKS.LINKEDIN, LINKS.SDX_STUDIO],
         },
         {
@@ -60,7 +64,7 @@ const JSON_LD = {
             "@id": `${SITE_URL}/#sdx-studio`,
             name: "SDX Studio",
             url: LINKS.SDX_STUDIO,
-            description: "Done-for-you outbound for MSSPs (managed security service providers): 6 qualified meetings with security buyers in 90 days, or SDX keeps working free until they are held.",
+            description: "GTM engineering agency running done-for-you outbound. First niche: MSSPs (managed security service providers), 6 qualified meetings with security buyers in 90 days, or SDX keeps working free until they are held.",
             founder: {"@id": `${SITE_URL}/#person`},
             areaServed: ["United States", "United Kingdom", "Europe", "Asia-Pacific"],
         },
@@ -87,8 +91,13 @@ export default function RootLayout({
             <Script defer src="https://cloud.umami.is/script.js" data-website-id="58ea0ecd-d768-4e47-b26e-374a65a6d005" strategy="afterInteractive" />
         </head>
         <body className={`${geistSans.variable} ${jetbrainsMono.variable} font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" disableTransitionOnChange>
-            {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <AssistantProvider>
+                <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-background">Skip to content</a>
+                <Header/>
+                <main id="main">{children}</main>
+                <Footer/>
+            </AssistantProvider>
         </ThemeProvider>
         </body>
         </html>

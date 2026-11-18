@@ -9,41 +9,47 @@ website: "https://seif-dx.com"
 
 # About Seifeldin Sabry (Seif)
 
-Seif is a software engineer and founder based in Belgium. He builds reliable
-products and the systems behind them — from type-safe monorepos and
-event-driven infrastructure to billing, onboarding, and automation that holds
-up in production.
+Seif is a product engineer and GTM engineer based in Belgium. He builds three
+things, and they connect: the product (TypeScript and Python, from database to
+UI), the website that gets it found (migrations, SEO and AEO), and the outbound
+engine that fills the pipeline (signal-based, AI-written, human-approved).
 
-He is the founder of SDX Studio (started March 2026), a done-for-you outbound
-agency for MSSPs (managed security service providers): it books qualified
-meetings with security buyers, 6 held meetings in 90 days, and keeps working
-free until they are delivered (https://sdxstudio.co). Alongside that he works as a software engineer at QFacts — where he owns the
-platform end to end and shipped the in-product AI agent, the mobile companion
-and the company's new marketing site and CMS.
+Since July 2025 he has been a software engineer at QFacts, a GAMP 5 validated
+eQMS for pharma and biotech SMEs, where he owns the platform end to end and
+shipped the in-product AI agent, Stripe billing, the mobile companion and the
+new marketing site and CMS. In March 2026 he founded SDX Studio, a GTM
+engineering agency that runs done-for-you outbound; its first niche is MSSPs
+(managed security service providers), and the same playbook is built to work
+for any B2B niche (https://sdxstudio.co).
+
+## Ways to work with Seif
+
+- Freelance projects: websites, migrations and SEO/AEO for local and small businesses, GTM and outbound systems for B2B teams, and product engineering for SaaS.
 
 ## How Seif works
 
 Seif takes pride in his work, in clear communication and in the trust he builds
-with the people he works with. He focuses on delivering quality outcomes for
-the business and picks up new skills wherever he can.
+with the people he works with. He owns outcomes, not tickets: several of the
+biggest initiatives at QFacts (the monorepo, the website migration, the admin
+console) started as his own proposals.
 
-## AI-Assisted Engineering
+## AI-assisted engineering
 
-Seif works in the terminal (cmux), not an IDE. He codes with Claude Code
-and Command Code, uses T3 Code to combine different coding agents, and runs
-automated schedules so his software processes
-keep improving themselves. This portfolio's own AI assistant is built with
-Mastra (agents, RAG, guardrails), Langfuse observability, self-improving evals
-in CI, pgvector on Neon Postgres, and runs on Cloudflare Workers.
+Seif works in the terminal (cmux), not an IDE. He codes with Claude Code and
+Command Code, uses T3 Code to combine different coding agents, and runs
+automated schedules so his software and outbound processes keep improving
+themselves. This portfolio's own AI assistant is built with Mastra (agents,
+RAG, guardrails), Langfuse observability, self-improving evals in CI, pgvector
+on Neon Postgres, and runs on Cloudflare Workers.
 
-## Contact & Hiring
+## Contact
 
 - Email: seif-dx@proton.me
 - GitHub: https://github.com/Seifeldin-Sabry
 - LinkedIn: https://www.linkedin.com/in/seifeldin-sabry-b8a542202/
 - Book a quick chat: https://calendly.com/seif-sdxstudio/quick-chat
 
-## Outside of Work
+## Outside of work
 
 Travel, tennis, gym, and long walks with a 20 kg weighted vest. Holds a
 driver's licence.

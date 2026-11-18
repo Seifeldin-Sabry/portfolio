@@ -43,21 +43,3 @@ export const SITE_URL = envUrl?.startsWith("http") ? envUrl.replace(/\/$/, "") :
 export function bookingUrl(source: string): string {
   return `${LINKS.CALENDLY}?utm_source=portfolio&utm_medium=${encodeURIComponent(source)}`;
 }
-
-// UI system constants (single source of truth for the shell layers)
-// Windows stack from WINDOW upward (z grows on every focus), so shell layers sit far above.
-export const Z_INDEX = {
-  WIDGETS: 1,
-  WINDOW: 10,
-  MENUBAR: 100_000,
-  DOCK: 100_000,
-  OVERLAY: 100_010,
-  BOOT: 200_000,
-} as const;
-
-// Shape lock: windows/cards 12px, controls pill, inputs 8px
-export const SHAPE = {
-  WINDOW: "rounded-xl",
-  CONTROL: "rounded-full",
-  INPUT: "rounded-lg",
-} as const;

@@ -141,10 +141,9 @@ export function getServices(): Service[] {
       audience: data.audience,
       via: data.via,
       description: intro,
+      pillar: data.pillar,
       includes: bullets(sections["Includes"]) ?? [],
       link: data.link,
-      tool: data.tool,
-      demo: data.demo,
     };
   });
 }
@@ -156,10 +155,23 @@ export function getCaseStudies(): CaseStudy[] {
       id: data.id,
       title: data.title,
       company: data.company,
+      pillar: data.pillar,
+      featured: data.featured === true,
+      summary: data.summary ?? "",
+      period: data.period,
+      link: data.link,
       stack: data.stack ?? [],
       problem: sections["Problem"] ?? "",
       approach: bullets(sections["What I did"]) ?? [],
       outcome: bullets(sections["Outcome"]) ?? [],
+      metrics: (bullets(sections["Numbers"]) ?? []).map((line) => {
+        const [value, label, source] = line.split("|").map((part) => part.trim());
+        return { value, label, source: source ?? "" };
+      }),
     };
   });
+}
+
+export function getCaseStudy(id: string): CaseStudy | undefined {
+  return getCaseStudies().find((study) => study.id === id);
 }
