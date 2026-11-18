@@ -12,8 +12,8 @@ Seif designs and runs outbound as an engineered system, not a spreadsheet and a 
 
 ## Includes
 
-- ICP and offer design: who to target, which signals mean "now" (hiring, funding, new tools, job posts), and what to say
-- Lead sourcing and enrichment: scrapers and data APIs (Apify, Google Maps, job boards, Exa), verified emails (Hunter), deduplication across runs
-- AI-written, human-approved outreach: personalised first lines from real signals, never a mass blast, nothing sent without approval
-- Multichannel sequences: cold email (Smartlead) and LinkedIn (HeyReach), with replies routed into a CRM (Attio)
-- Playbooks as code: every run is a versioned script and runbook in Claude Code, so the next niche starts from a working system
+- Email infrastructure: dedicated sending domains and mailboxes, warmed up and monitored, with sequences in Smartlead and verified emails from Hunter
+- LinkedIn: the same buyers reached through HeyReach, so outreach is one conversation across two channels
+- A content engine: posts and assets built from the same research, so prospects who look you up find something relevant
+- Good volume aimed by signals: every lead picked because a signal (hiring, funding, new tools, job posts, website gaps) matches what the buyer needs now
+- AI-written, human-approved messages, replies routed into a CRM (Attio), and the whole playbook versioned in Claude Code so the next niche starts from a working system

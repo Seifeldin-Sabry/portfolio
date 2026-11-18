@@ -1,0 +1,118 @@
+---
+title: "From Demo to Production: Six Ways AI Agents Break, and How I Counter Each"
+date: "18-11-2026"
+time: "09:00"
+excerpt: "Hallucinations, prompt injection, personal data, agents that never get better, unhappy users nobody hears about, and actions nobody approved. What goes wrong when an agent meets real users, and the Mastra, Langfuse and PostHog patterns I use to stop it."
+tags: ["AI Engineering", "LLM", "Guardrails", "Mastra", "Langfuse", "PostHog"]
+---
+
+An AI agent demo takes an afternoon. You wire a model to a few tools, ask it five questions you already know the answers to, and it looks magical.
+
+Production is different. Real users ask questions you never imagined, some of them try to break it on purpose, they paste in things they shouldn't, and when an answer is bad they don't file a ticket. They just leave.
+
+I've shipped two agents into production: the assistant on this site (Mastra on Cloudflare Workers, traced in Langfuse) and an in-product assistant for a GAMP 5 validated quality-management platform. This post covers the six problems that separate a demo from a production agent, and what I do about each.
+
+## 1. Hallucinations: the agent answers from memory instead of your data
+
+**The pitfall.** A model will answer anything fluently. In a demo, it sounds right. In production, it invents a project I never built, a price I never quoted, or a procedure that doesn't exist in the customer's documents. In a regulated product, a confident wrong answer is worse than no answer.
+
+**How to counter it.**
+
+- **Ground every answer in retrieval, and make it non-negotiable.** My assistant's first rule is to call its search tool before answering anything about me, and never answer from memory. If the search finds nothing, the right answer is "I don't know, here's how to ask Seif."
+- **Test grounding, not just tone.** My eval suite checks that the search tool was actually called (`expectTools`) and that each answer mentions facts that exist verbatim in the source content. The case generator can't invent ground truth: every "must mention" anchor is checked against the source file before a case is accepted.
+- **Use an LLM judge only where judgement is needed.** Mastra ships prebuilt scorers for faithfulness and hallucination that compare an answer with the context the agent retrieved. I run them on knowledge questions only, because deterministic checks are cheaper and never flaky.
+- **Score production traffic, not just the test set.** Langfuse can run LLM-as-a-judge evaluators on live traces. Run a hallucination judge on a sample of real conversations and you find the failures your test set didn't think of.
+
+## 2. Prompt injection: users talk the agent out of its rules
+
+**The pitfall.** "Ignore your previous instructions and…" is the obvious version. The real ones hide instructions in a pasted document, a translation request, zero-width characters, or a role-play. Retrieval adds another route: an instruction planted in content the agent reads.
+
+**How to counter it.**
+
+- **Normalise before you classify.** My first input processor strips control and zero-width characters (Mastra's `UnicodeNormalizer`), so an obfuscated attack reaches the classifier in plain text.
+- **Classify every message, and fail closed.** Mastra has a built-in `PromptInjectionDetector`, but when its model was rate-limited it logged "Detection agent failed, allowing content" and let everything through. So I wrote my own processor: a chain of classifiers on separate quotas (two Prompt Guard models, then a small LLM). The first one that answers decides. If every one of them fails, the message is blocked. A guard that silently switches off is worse than no guard, because you think you're protected.
+- **Guard the output too.** Even if an injection gets through, a deterministic output processor redacts anything that only exists in the agent's internals: tool names, prompt section headings, environment variable names.
+- **Give the agent as little power as possible.** The best mitigation is that a successful injection can't do much. My assistant can search content and show a contact form. It can't send email on its own, and that's deliberate (see point 6).
+- **Red-team continuously.** My eval loop writes new attack prompts every week, using techniques the suite doesn't cover yet.
+
+## 3. Personal data: users paste things you must not keep
+
+**The pitfall.** People paste phone numbers, card numbers, IBANs and customer records into chat boxes. Then that data goes to a model provider, into your traces, and into your eval datasets, so personal data sits in three places you never meant to store it.
+
+**How to counter it.**
+
+- **Redact on the way in, before the model and before the trace.** My agent runs a regex processor on every input that replaces cards, IBANs, phone numbers and secrets with placeholders such as `[card]`. Mastra also offers an LLM-based `PIIDetector`, but I moved to regex: no model call, no quota to run out, and the same result every time.
+- **Don't let contact details pass through the LLM at all.** When a visitor wants to reach me, the agent renders a contact form. The form posts straight to an email endpoint, so names and email addresses never enter the conversation, the model or the trace.
+- **Pseudonymise the trace.** Langfuse groups a conversation by session and user. I set the user ID to a short hash of the visitor's IP, so I can see that one person asked five questions without storing who they are. The raw IP never leaves the worker.
+- **Remember where else data lives.** Retention settings on traces, and a rule that production conversations only become eval cases after a human has reviewed them.
+
+## 4. An agent that never improves
+
+**The pitfall.** Teams launch an agent, fix the three complaints that week, and then it freezes. The test set still covers what someone thought of in week one, and every prompt change is a gamble.
+
+**How to counter it.** Build a loop where failures become tests:
+
+- **Mine new cases automatically.** Every week, my suite generates candidates from three sources: paraphrases of cases that failed, questions about content that changed, and new red-team attacks.
+- **Keep only stable cases.** Each candidate runs through the real agent twice. Passes both times: promoted to the regression set. Fails both times: logged as a gap to fix. Mixed: dropped, because a flaky test teaches everyone to ignore the gate.
+- **Gate every change.** The suite runs in CI on every pull request that touches the agent, and a smoke test checks the guard still allows a normal question and still blocks an obvious attack before each deploy.
+- **Keep a human on the merge button.** The loop opens a pull request with its new cases. It never edits its own test set. "Self-improving" should mean the agent proposes and a person approves, not that it rewrites its own rules.
+- **Feed production back in.** Langfuse datasets can be built from real traces, and its prompt management lets you version prompts and compare runs. The bad conversations from point 5 are the best test cases you'll ever get.
+
+I wrote about this loop in detail in [my post on self-improving evals](/blog/self-improving-evals), including the security bug it caught.
+
+## 5. Unhappy users you never hear about
+
+**The pitfall.** Your dashboards say the agent is up and answering fast. Meanwhile users get unhelpful answers, rephrase twice, and leave. Latency and error rates don't measure whether the answer was good.
+
+**How to counter it.**
+
+- **Trace everything, grouped by conversation.** Mastra exports traces to Langfuse with one config block: every model call, tool call, token count and cost, with the chat ID as the session. When someone complains, you can open the exact conversation.
+- **Ask, cheaply.** A thumbs up/down under each answer, tied to its trace ID. Langfuse's browser SDK records it as a score on that trace:
+
+```ts
+await langfuse.score({
+  traceId: message.traceId,
+  name: "user-feedback",
+  value: thumbsUp ? 1 : 0,
+  dataType: "BOOLEAN",
+});
+```
+
+- **Watch what users do, not just what they say.** Most people never click a thumb. Implicit signals tell you more: they rephrase the same question, abandon the chat after one answer, hit the "try again" button, or ask for a human. PostHog's LLM analytics captures each generation as an event (Mastra has a PostHog exporter too), so you can put those AI events in the same funnels as the rest of the product. That way "did people who used the assistant book a call?" is one query.
+- **Close the loop.** When a user is unhappy:
+  1. Open the trace and find where it went wrong: retrieval found nothing, retrieval found the wrong thing, or the model ignored good context.
+  2. Fix the cause: missing content gets written, bad retrieval gets tuned, a prompt rule gets added.
+  3. Turn the conversation into an eval case, so the fix is protected from regressions.
+  4. Use a Langfuse annotation queue to review a sample of low-scored traces every week, so the fixes come from evidence instead of the loudest complaint.
+
+To be honest about my own site: it has tracing, judges and the eval loop, but no thumbs yet. That's next on the list.
+
+## 6. An agent that acts on its own
+
+**The pitfall.** The demo that impresses people is the agent that *does* things: sends the email, updates the record, closes the ticket. In production, every autonomous action is a decision nobody approved. In a GAMP-regulated environment such as pharma, medical devices or anything under GxP, that isn't a risk you manage. It simply isn't allowed.
+
+**Why GAMP changes the rules.** In a validated system, every change to a quality record has to be attributable to a person, reviewed, and recorded in an audit trail that shows who did what and why. An AI isn't a person you can hold accountable, and its output isn't deterministic, so you can't validate it like a normal function. If the AI can change a controlled document, the document is no longer under control.
+
+**How to counter it: the AI drafts, a human decides.**
+
+- **The AI never writes to the system of record.** In the regulated product I worked on, the assistant answers questions from the customer's own documents and finds similar past quality events. When it helps revise a document, the result is staged as a draft. A qualified person reviews it, edits it, and approves it through the normal workflow, with their name on the audit trail. The AI saves time on the blank page. It never takes the decision.
+- **Make approval a property of the tool, not a promise in the prompt.** "Always ask before acting" in a system prompt is a suggestion, and an injection can talk the agent out of it. Mastra lets you mark a tool with `requireApproval: true`. The run pauses before the tool executes, and your app approves or declines it with `approveToolCall` or `declineToolCall`. That pause is enforced in code, outside the model's reach.
+- **Separate the actor from the author.** The audit trail should show that the content was AI-assisted *and* who approved it. Hiding the AI's role is as bad as letting it act alone.
+- **Validate the workflow, not the model.** You can't prove an LLM is always right, but you can validate the controls around it: drafts can't skip review, nothing reaches the record without an approval, and every step is logged. That's what makes an AI feature defensible in an audit.
+
+The same principle applies outside regulated work. My portfolio assistant can offer a contact form, but it can't send an email on its own. My outbound agency's AI writes the first draft of every message, and a person approves each one before it goes out.
+
+## The short version
+
+| Pitfall | Counter | Tools |
+| --- | --- | --- |
+| Hallucinations | Mandatory retrieval, grounding evals, judges on live traffic | Mastra scorers, Langfuse evaluators |
+| Prompt injection | Normalise, classify, fail closed, redact output, least privilege | Mastra processors |
+| Personal data | Redact before the model and the trace, keep contact details out of the LLM, pseudonymous IDs | Regex processors, Langfuse sessions |
+| No improvement | Failures become tests, stability gate, human-approved datasets | CI evals, Langfuse datasets |
+| Silent unhappiness | Tracing, explicit and implicit feedback, weekly review of low scores | Langfuse scores, PostHog LLM analytics |
+| Unapproved actions | AI drafts, humans approve, enforced in code, audited | Mastra tool approval |
+
+A demo proves an agent *can* work. Production is about proving it keeps working when users are careless, hostile or unhappy, and that a person stays accountable for anything it changes.
+
+If you're taking an agent from demo to production and want a second pair of eyes, [book a call](https://calendly.com/seif-sdxstudio/quick-chat?utm_source=portfolio&utm_medium=blog&utm_campaign=agent-production) or ask the assistant in the corner. It's running everything above except the thumbs.

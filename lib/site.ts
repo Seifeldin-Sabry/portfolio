@@ -32,7 +32,7 @@ export const PILLARS: Record<Pillar, {label: string; title: string; blurb: strin
     gtm: {
         label: "GTM engineering",
         title: "I build outbound that compounds",
-        blurb: "Signal-based prospecting, enrichment, AI-written and human-approved outreach. One playbook, pointed at any B2B niche.",
+        blurb: "Email infrastructure, LinkedIn, a content engine and good volume aimed by buyer signals. One playbook, pointed at any B2B niche.",
         anchor: "gtm",
     },
 }

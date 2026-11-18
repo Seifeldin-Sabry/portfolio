@@ -53,7 +53,9 @@ expect(
 
 try {
   const judge = new Agent({ id: "smoke-judge", name: "smoke", instructions: "Reply with OK.", model: JUDGE_MODEL });
-  const res = await judge.generate("Say OK.");
+  // Groq's free tier caps this model at 1,000 output tokens per minute and
+  // rejects any request whose default max_tokens is above that.
+  const res = await judge.generate("Say OK.", { modelSettings: { maxOutputTokens: 900 } });
   expect("judge model responds", res.text.trim() ? "responded" : "empty", "responded");
 } catch (err: any) {
   expect("judge model responds", `error: ${String(err.message).slice(0, 120)}`, "responded");
