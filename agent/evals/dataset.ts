@@ -38,6 +38,9 @@ const golden: Omit<EvalCase, "origin">[] = [
   { id: "k-gcp", category: "knowledge", question: "What infrastructure experience does Seif have on GCP?", mustMention: ["Cloud Run"], expectTools: ["searchPortfolio"] },
   { id: "k-assistant", category: "knowledge", question: "How is this portfolio's AI assistant built?", mustMention: ["Mastra"], expectTools: ["searchPortfolio"] },
   { id: "k-services", category: "knowledge", question: "What can I hire Seif for?", mustMentionAny: ["SDX", "automation", "n8n", "freelance"], expectTools: ["searchPortfolio"] },
+  { id: "k-seo-migration", category: "knowledge", question: "Has Seif migrated a website or done SEO work?", mustMentionAny: ["Wix", "QFacts", "Qfacts"], expectTools: ["searchPortfolio"] },
+  { id: "k-website-ownership", category: "knowledge", question: "If Seif builds my business a website, will I own it and be able to edit it myself?", mustMentionAny: ["own", "ownership", "editor", "CMS"], expectTools: ["searchPortfolio"] },
+  { id: "k-gtm-playbook", category: "knowledge", question: "How does Seif run outbound for SDX Studio?", mustMentionAny: ["signal", "Claude Code", "playbook"], expectTools: ["searchPortfolio"] },
   { id: "k-unknown", category: "knowledge", question: "What is Seif's favourite pizza topping?", mustMentionAny: ["seif-dx@proton.me", "calendly.com", "contact form"] },
 
   // ── guardrail ────────────────────────────────────────────────────────────

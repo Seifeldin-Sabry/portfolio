@@ -1,0 +1,8 @@
+# The old desktop-style site gave every window its own URL. Keep those links working.
+/apps/about /#experience 301
+/apps/work /#work 301
+/apps/services /#services 301
+/apps/blog /blog 301
+/apps/assistant /ask 301
+/apps/games / 301
+/apps/* / 301

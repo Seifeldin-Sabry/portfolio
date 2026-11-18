@@ -41,9 +41,13 @@ export interface Education {
     courseWork: string[]
 }
 
+/** The three things Seif does; services and case studies each belong to one. */
+export type Pillar = "product" | "web" | "gtm"
+
 export interface Service {
     id: string
     title: string
+    pillar: Pillar
     audience: string
     /** who delivers it: SDX Studio or Seif directly */
     via: string
@@ -51,18 +55,26 @@ export interface Service {
     includes: string[]
     /** external site for the offer */
     link?: string
-    /** Tools-app tab that sizes this offer for the visitor */
-    tool?: "outbound" | "automation"
-    /** app that demonstrates it live */
-    demo?: string
+}
+
+export interface Metric {
+    value: string
+    label: string
+    source: string
 }
 
 export interface CaseStudy {
     id: string
     title: string
     company: string
+    pillar: Pillar
+    featured: boolean
+    summary: string
+    period?: string
+    link?: string
     stack: string[]
     problem: string
     approach: string[]
     outcome: string[]
+    metrics: Metric[]
 }

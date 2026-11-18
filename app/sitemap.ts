@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import { parse } from "date-fns"
 import { getSortedBlogPosts } from "@/lib/blogs"
 import { BLOG_CONFIG, SITE_URL } from "@/lib/constants"
-import { APP_PAGES } from "@/lib/app-pages"
+import { getCaseStudies } from "@/lib/content"
 
 export const dynamic = "force-static"
 
@@ -27,11 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: "weekly" as const,
             priority: 1,
         },
-        ...Object.keys(APP_PAGES).map((app) => ({
-            url: `${baseUrl}/apps/${app}`,
+        ...getCaseStudies().map((study) => ({
+            url: `${baseUrl}/work/${study.id}`,
             changeFrequency: "monthly" as const,
-            priority: 0.6,
+            priority: study.featured ? 0.8 : 0.6,
         })),
+        { url: `${baseUrl}/blog`, changeFrequency: "weekly" as const, priority: 0.6 },
+        { url: `${baseUrl}/ask`, changeFrequency: "monthly" as const, priority: 0.5 },
         ...posts,
     ]
 }

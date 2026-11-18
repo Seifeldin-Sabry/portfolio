@@ -1,7 +1,10 @@
 ---
 id: "ai-assistant"
 title: "An AI assistant a regulated product can trust"
-company: "Qfacts"
+featured: true
+summary: "Ollie, the in-product AI agent: retrieval over each customer's documents, human-reviewed drafts, evals and tracing, in a GAMP 5 validated product."
+pillar: "product"
+company: "QFacts"
 stack: ["RAG", "LLM evaluation", "Durable jobs", "Tracing"]
 ---
 # An AI assistant a regulated product can trust
