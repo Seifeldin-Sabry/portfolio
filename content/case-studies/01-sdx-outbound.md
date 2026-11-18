@@ -5,7 +5,7 @@ company: "SDX Studio"
 pillar: "gtm"
 featured: true
 period: "March 2026 – present"
-summary: "SDX Studio is my GTM engineering agency. Its outbound engine finds buyers from signals, writes with AI, sends with human approval, and points at a new niche by changing a config, not the machine."
+summary: "SDX Studio is my GTM engineering agency. Its outbound runs on four parts: email infrastructure, LinkedIn, a content engine, and steady volume aimed by signals that match what the buyer needs right now."
 link: "https://sdxstudio.co"
 stack: ["Claude Code", "Apify", "Hunter", "Smartlead", "HeyReach", "Attio", "Exa"]
 ---
@@ -13,26 +13,19 @@ stack: ["Claude Code", "Apify", "Hunter", "Smartlead", "HeyReach", "Attio", "Exa
 
 ## Problem
 
-Most outbound is a list bought once, a template blasted to it, and a reply rate nobody can explain. It does not compound: every new campaign starts from zero, and nothing is learned about which signals actually predict a reply.
+Most outbound is a list bought once, a template blasted to it, and a reply rate nobody can explain. It burns domains, ignores what the buyer actually needs, and does not compound: every new campaign starts from zero.
 
 ## What I did
 
-- Founded SDX Studio, a done-for-you outbound agency. The first niche is MSSPs (managed security service providers): 6 qualified meetings with security buyers in 90 days, or SDX keeps working for free until they are held.
-- Built the engine as versioned playbooks and custom skills in Claude Code: ICP, signals, sourcing, enrichment, copy and sending are each a step with a runbook.
-- Sourcing from signals, not static lists: job posts, hiring spikes and funding from scrapers and data APIs (Apify, job boards, Google Maps, Exa), with verified emails from Hunter and deduplication across runs.
-- AI writes the first draft of every message from the signal that triggered it; a human approves before anything is sent.
-- Multichannel delivery: cold email through Smartlead and LinkedIn through HeyReach, with replies tracked in Attio.
-- Made the niche a parameter: the same pipeline has been pointed at security buyers, at decision makers in SaaS, and at local businesses with website gaps.
+- Founded SDX Studio, a done-for-you outbound agency, and built its playbook as code in Claude Code, so each part is a versioned step with a runbook.
+- Email infrastructure: dedicated sending domains and mailboxes, warmed up and monitored, so cold email lands in the inbox and the main domain stays safe. Sequences run through Smartlead, with verified emails from Hunter.
+- LinkedIn: the same buyers are reached through HeyReach, so a prospect sees one consistent conversation across two channels instead of a lone cold email.
+- A content engine: posts and assets written from the same research as the outreach, so when a prospect looks you up there is something worth reading about their problem.
+- Good volume, aimed by signals: enough sends to matter, but every lead is picked because a signal matches the buyer's need right now, such as a job post, a hiring push, funding, a new tool or a gap on their website. Signals come from scrapers and data APIs (Apify, job boards, Google Maps, Exa).
+- AI writes the first draft of each message from the signal that triggered it, a human approves it before anything is sent, and replies are tracked in Attio.
 
 ## Outcome
 
-- One playbook, reused per niche: a new market starts from a working system instead of a blank sheet.
-- Cheap to run: one signal-based run that found 32 decision makers at SaaS companies and drafted a personal email to each cost about $5.60 in data.
-- Another run built and audited a list of 805 local businesses in three cities for under $1 of data credits.
-
-## Numbers
-
-- 3 | niches run through the same pipeline | security buyers, SaaS teams, local businesses
-- 32 | decision makers found and drafted in one run | about $5.60 of data
-- 805 | local businesses sourced and audited in one run | under $1 of data
-- 0 | messages sent without human approval | by design
+- One playbook for any B2B niche: change the ICP, the signals and the offer, keep the machine. It has been pointed at security buyers, SaaS teams and local businesses.
+- Outreach that reads as relevant, because it starts from something the buyer is dealing with, not from a template.
+- Nothing is sent without a human approving it.
