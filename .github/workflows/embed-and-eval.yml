@@ -45,15 +45,17 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Smoke-test live models (guard reply format, judge reachability)
-        id: smoke
-        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent smoke
-        env:
-          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
-
+      # Embedding uses Workers AI, not Groq, so new content reaches the assistant
+      # even on a day the judge's Groq quota is spent and the smoke test fails.
       - name: Embed changed content (hash-diff, no-op when clean)
         if: ${{ !inputs.smoke_only }}
         run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent embed
+        env:
+          DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
+
+      - name: Smoke-test live models (guard reply format, judge reachability)
+        id: smoke
+        run: pnpm dlx @dotenvx/dotenvx@1.71.3 run -- pnpm --filter agent smoke
         env:
           DOTENV_PRIVATE_KEY: ${{ secrets.DOTENV_PRIVATE_KEY }}
 
